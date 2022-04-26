@@ -598,8 +598,7 @@ const OpcionSistema = (props) => {
         moduloFiltro,
       ),
     );
-  }, [
-    // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
     dispatch,
     page,
     rowsPerPage,
