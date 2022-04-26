@@ -272,6 +272,7 @@
   "common.tag": "Etiqueta",
   "common.labels": "Etiquetas",
   "common.email": "Email",
+  "common.ni": "Identificacion",
   "common.phone": "Teléfono",
   "common.birthday": "Cumpleaños",
   "common.selectLabel": "Seleccionar etiqueta",

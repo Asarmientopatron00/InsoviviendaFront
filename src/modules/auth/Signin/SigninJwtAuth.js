@@ -131,9 +131,9 @@ const SigninJwtAuth = (props) => {
               <Box width='100%' mb={{xs: 5, xl: 8}}>
                 <MyTextField
                   fullWidth
-                  placeholder={messages['common.email']}
+                  placeholder={messages['common.ni']}
                   name='username'
-                  label={<IntlMessages id='common.email' />}
+                  label={<IntlMessages id='common.ni' />}
                   variant='outlined'
                   className={classes.myTextFieldRoot}
                 />

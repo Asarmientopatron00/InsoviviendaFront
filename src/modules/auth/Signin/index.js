@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import Tabs from '@material-ui/core/Tabs';
+import React from 'react';
 import SigninJwtAuth from './SigninJwtAuth';
 import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
@@ -64,12 +63,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Signin = (props) => {
-  const [value, setValue] = useState(1);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   const classes = useStyles(props);
 
   return (
@@ -77,7 +70,7 @@ const Signin = (props) => {
       <Box mb={{xs: 6, md: 8, xl: 18}} textAlign='center'>
         <img
           className={classes.imgRoot}
-          src='/assets/images/logo-white-with-name.png'
+          src='/assets/images/logo-home.png'
           alt='crema-logo'
         />
       </Box>
@@ -98,15 +91,9 @@ const Signin = (props) => {
               <IntlMessages id='common.login' />
             </Box>
           </Box>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor='primary'
-            textColor='primary'
-            aria-label='simple tabs example'
-            className={classes.muiTabsFull}></Tabs>
-
-          <>{value === 1 && <SigninJwtAuth />}</>
+          <>
+            <SigninJwtAuth />
+          </>
         </Card>
       </Box>
     </Box>
