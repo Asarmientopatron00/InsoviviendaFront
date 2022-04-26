@@ -17,11 +17,17 @@ const AuthRoutes = ({children}) => {
   const history = useHistory();
   const {routes, changeNavStyle, updateThemeStyle, updateThemeMode, setRTL} =
     useContext(AppContext);
-
   const [loading, user] = useAuthToken();
   const initialPath = useSelector(({settings}) => settings.initialPath);
   const currentRoute = matchRoutes(routes, pathname)[0].route;
   let isPermitted = checkPermission(currentRoute.auth, user ? user.role : null);
+  const paginaInicial = user
+    ? user.permisos[0]
+      ? user.permisos[0].opciones[0]
+        ? user.permisos[0].opciones[0].url
+        : initialUrl
+      : initialUrl
+    : initialUrl;
 
   useEffect(() => {
     function setInitPath() {
@@ -34,7 +40,13 @@ const AuthRoutes = ({children}) => {
           '/reset-password',
           '/error-pages/error-404',
           '/forget-password',
-        ].indexOf(pathname) === -1
+        ].indexOf(pathname) === -1 &&
+          pathname.search('/signin') === -1 &&
+          pathname.search('/signup') === -1 &&
+          pathname.search('/confirm-signup') === -1 &&
+          pathname.search('/reset-password') === -1 &&
+          pathname.search('/forget-password') === -1 &&
+          pathname.search('/error-pages/error-404') === -1
       ) {
         if (isPermitted) {
           dispatch(setInitialPath(pathname));
@@ -81,10 +93,10 @@ const AuthRoutes = ({children}) => {
           pathname === '/signin' ||
           pathname === '/signup'
         ) {
-          history.push(initialUrl);
+          history.push(paginaInicial);
         } else if (
           initialPath &&
-          initialUrl !== initialPath &&
+          paginaInicial !== initialPath &&
           (initialPath !== '/' ||
             initialPath !== '/signin' ||
             initialPath !== '/signup')
@@ -93,7 +105,7 @@ const AuthRoutes = ({children}) => {
         }
       }
     }
-  }, [user, loading, initialPath, isPermitted, pathname, history]);
+  }, [user, loading, initialPath, isPermitted, pathname, history, paginaInicial]);
 
   return loading ? <Loader /> : <>{children}</>;
 };
