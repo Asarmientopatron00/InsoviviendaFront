@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button, RadioGroup, Radio} from '@material-ui/core';
-import {Field, Form, useField} from 'formik';
-import TextField from '@material-ui/core/TextField';
+import {Field, Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import Scrollbar from '../../../../@crema/core/Scrollbar';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
@@ -9,21 +8,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
+import MyTextField from 'shared/components/MyTextField';
 
-const MyTextField = (props) => {
-  const [field, meta] = useField(props);
-  const errorText = meta.error && meta.touched ? meta.error : '';
-  return (
-    <TextField
-      {...props}
-      {...field}
-      helperText={errorText}
-      error={!!errorText}
-    />
-  );
-};
-
-const UsuarioForm = (props) => {
+const ModuloForm = (props) => {
   const {handleOnClose, accion, values, initialValues, aplicaciones, titulo} =
     props;
 
@@ -121,26 +108,6 @@ const UsuarioForm = (props) => {
               required
               disabled={disabled}
             />
-
-            {/* <MyTextField
-              className={classes.myTextField}
-              label='Aplicación'
-              name='aplicacion_id'
-              disabled={disabled}
-              select={true}
-              required>
-              {aplicaciones.map((aplicacion) => {
-                return (
-                  <MenuItem
-                    value={aplicacion.id}
-                    key={aplicacion.id}
-                    className={classes.pointer}
-                    style={aplicacion.estado === 0 ? {display: 'none'} : {}}>
-                    {aplicacion.nombre}
-                  </MenuItem>
-                );
-              })}
-            </MyTextField> */}
             <MyTextField
               className={classes.myTextField}
               label='Icono'
@@ -205,4 +172,4 @@ const UsuarioForm = (props) => {
   );
 };
 
-export default UsuarioForm;
+export default ModuloForm;

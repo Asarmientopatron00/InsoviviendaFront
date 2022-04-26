@@ -15,8 +15,10 @@ const AppLogo = () => {
       alignItems: 'center',
     },
     logo: {
-      height: 36,
+      height: 80,
       marginRight: 10,
+      marginTop: 10,
+      marginBottom: 10,
     },
   }));
   const classes = useStyles();
@@ -27,8 +29,8 @@ const AppLogo = () => {
           className={classes.logo}
           src={
             themeMode === ThemeMode.DARK
-              ? '/assets/images/logo-white.png'
-              : '/assets/images/logo.png'
+              ? '/assets/images/logo-home.png'
+              : '/assets/images/logo-home.png'
           }
           alt='crema-logo'
         />
@@ -38,8 +40,8 @@ const AppLogo = () => {
           className={classes.logo}
           src={
             themeMode === ThemeMode.DARK
-              ? '/assets/images/logo-white-with-name.png'
-              : '/assets/images/logo-with-name.png'
+              ? '/assets/images/logo-home.png'
+              : '/assets/images/logo-home.png'
           }
           alt='crema-logo'
         />

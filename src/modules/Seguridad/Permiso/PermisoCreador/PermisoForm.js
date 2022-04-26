@@ -1,24 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button} from '@material-ui/core';
-import {Form, useField} from 'formik';
-import TextField from '@material-ui/core/TextField';
+import {Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import Scrollbar from '../../../../@crema/core/Scrollbar';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
-
-const MyTextField = (props) => {
-  const [field, meta] = useField(props);
-  const errorText = meta.error && meta.touched ? meta.error : '';
-  return (
-    <TextField
-      {...props}
-      {...field}
-      helperText={errorText}
-      error={!!errorText}
-    />
-  );
-};
+import MyTextField from 'shared/components/MyTextField';
 
 const PermisoForm = (props) => {
   const {handleOnClose, accion, initialValues, opcionesSistema, titulo} = props;

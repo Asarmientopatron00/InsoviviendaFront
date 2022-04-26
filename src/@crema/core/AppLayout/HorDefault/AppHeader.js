@@ -12,7 +12,6 @@ import Hidden from '@material-ui/core/Hidden';
 import HorizontalNav from '../../Navigation/HorizontalNav';
 import Box from '@material-ui/core/Box';
 import useStyles from './AppHeader.style';
-import SearchBar from '../../SearchBar';
 import NotificationBar from './NotificationBar';
 import clsx from 'clsx';
 import HeaderMessages from '../../HeaderMessages';
@@ -76,11 +75,11 @@ const AppHeader = () => {
 
               <AppLogo />
               <Box className={classes.grow} />
-              <SearchBar />
+              {/* <SearchBar /> */}
               <Box className={clsx(classes.sectionDesktop)}>
-                <LanguageSwitcher />
+                {/* <LanguageSwitcher />
                 <HeaderMessages />
-                <Notifications />
+                <Notifications /> */}
               </Box>
 
               <HorUserInfo bgType='white' />

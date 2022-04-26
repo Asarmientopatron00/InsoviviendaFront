@@ -10,8 +10,6 @@ import {
   onCreate,
 } from '../../../../redux/actions/UsuarioAction';
 import Slide from '@material-ui/core/Slide';
-// import IntlMessages from '../../../../@crema/utility/IntlMessages';
-// import PropTypes from 'prop-types';
 import UsuarioForm from './UsuarioForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
@@ -137,10 +135,7 @@ const UsuarioCreador = (props) => {
                   dispatch(onUpdate(data, handleOnClose, updateColeccion));
                 }
               }
-              // resetForm();
               setSubmitting(false);
-              // handleOnClose();
-              // updateColeccion();
             }}>
             {({values, initialValues, setFieldValue}) => (
               <UsuarioForm
@@ -161,10 +156,3 @@ const UsuarioCreador = (props) => {
 };
 
 export default UsuarioCreador;
-
-// UsuarioCreador.prototype = {
-//   isAddContact: PropTypes.bool.isRequired,
-//   handleAddContactClose: PropTypes.func.isRequired,
-//   selectedRow: PropTypes.object,
-//   onUpdateContact: PropTypes.func,
-// };

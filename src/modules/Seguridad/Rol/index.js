@@ -41,6 +41,12 @@ import {
 } from 'shared/constants/Constantes';
 import {MessageView} from '@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
+import MyCell from 'shared/components/MyCell';
+import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
+
+const {
+  theme: {palette},
+} = defaultConfig;
 
 const cells = [
   {
@@ -67,7 +73,8 @@ const cells = [
     value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
     align: 'center',
     mostrarInicio: true,
-    cellColor: (value) => (value === 1 ? 'rgb(36,142,131)' : 'rgb(203,36,40)'),
+    cellColor: (value) =>
+      value === 1 ? palette.secondary.main : palette.secondary.red,
   },
   {
     id: 'usuario_modificacion_nombre',
@@ -102,23 +109,6 @@ const cells = [
     mostrarInicio: false,
   },
 ];
-
-const MyCell = (props) => {
-  const {align, width, claseBase, value, cellColor} = props;
-  const classes = useStyles({width: width, cellColor: cellColor});
-
-  let allClassName = claseBase;
-
-  if (width !== undefined) {
-    allClassName = `${allClassName} ${classes.cellWidth}`;
-  }
-
-  return (
-    <TableCell align={align} className={allClassName}>
-      <span className={cellColor ? classes.cellColor : ''}>{value}</span>
-    </TableCell>
-  );
-};
 
 function EnhancedTableHead(props) {
   const {classes, order, orderBy, onRequestSort, columnasMostradas} = props;
@@ -799,6 +789,7 @@ const Roles = (props) => {
                           if (columna.mostrar) {
                             return (
                               <MyCell
+                                useStyles={useStyles}
                                 key={row.id + columna.id}
                                 align={columna.align}
                                 width={columna.width}

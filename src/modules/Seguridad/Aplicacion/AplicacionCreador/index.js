@@ -10,8 +10,6 @@ import {
   onCreate,
 } from '../../../../redux/actions/AplicacionAction';
 import Slide from '@material-ui/core/Slide';
-// import IntlMessages from '../../../../@crema/utility/IntlMessages';
-// import PropTypes from 'prop-types';
 import AplicacionForm from './AplicacionForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';

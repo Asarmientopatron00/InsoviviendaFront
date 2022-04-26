@@ -1,61 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button, RadioGroup, Radio} from '@material-ui/core';
-import {Field, Form, useField} from 'formik';
-import TextField from '@material-ui/core/TextField';
-// import {useIntl} from 'react-intl';
+import {Field, Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import Scrollbar from '../../../../@crema/core/Scrollbar';
-// import PropTypes from 'prop-types';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import FormControl from '@material-ui/core/FormControl';
-// import {Fonts} from '../../../../shared/constants/AppEnums';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
-
-const MyTextField = (props) => {
-  const [field, meta] = useField(props);
-  const errorText = meta.error && meta.touched ? meta.error : '';
-  return (
-    <TextField
-      {...props}
-      {...field}
-      helperText={errorText}
-      error={!!errorText}
-    />
-  );
-};
-
-// const MySelectField= (props) => {
-//   const [field, meta] = useField(props);
-//   const errorText = meta.error && meta.touched ? meta.error : '';
-
-//   return (
-//     <Field
-//       {...props}
-//       {...field}
-//       row
-//     >
-//     <Field
-//       type='radio'
-//       as={Radio}
-//       value="1"
-//       label="Activo"
-//       name={props.name}
-//       className={props.className}
-//     />
-
-//     <Field
-//       as={Radio}
-//       name={props.name}
-//       type='radio'
-//       value="0"
-//       label="Inactivo"
-//       className={props.className}
-//     />
-//   </Field>
-//   );
-// };
+import MyTextField from 'shared/components/MyTextField';
 
 const UsuarioForm = (props) => {
   const {handleOnClose, accion, roles, values, initialValues, titulo} = props;
@@ -66,20 +19,6 @@ const UsuarioForm = (props) => {
       setDisabled(true);
     }
   }, [initialValues.estado, accion]);
-
-  // useEffect(()=>{
-  //   if (accion==='crear'){
-  //     setEstado('1');
-  //   } else {
-  //     setEstado(values.estado);
-  //   }
-  //   alert(values.estado)
-  // },[values.estado,accion])
-
-  // useEffect(()=>{
-  //   alert(values.estado)
-  // },[values.estado])
-  // const {messages} = useIntl();
 
   const useStyles = makeStyles((theme) => ({
     bottomsGroup: {
@@ -145,7 +84,6 @@ const UsuarioForm = (props) => {
             component='h6'
             mb={{xs: 4, xl: 6}}
             fontSize={20}
-            // fontWeight={Fonts.MEDIUM}
             fontWeight='bold'>
             {titulo}
           </Box>
@@ -223,15 +161,6 @@ const UsuarioForm = (props) => {
                 />
               </Field>
             </FormControl>
-
-            {/* <MySelectField
-              className={classes.MySelectField}
-              label= 'Estado'
-              name='estado'
-              disabled={accion==='ver'}
-              type='radio'
-              as={RadioGroup}
-            ></MySelectField> */}
           </Box>
         </Box>
       </Scrollbar>
@@ -257,11 +186,3 @@ const UsuarioForm = (props) => {
 };
 
 export default UsuarioForm;
-
-// UsuarioForm.prototype = {
-//   values: PropTypes.object.isRequired,
-//   userImage: PropTypes.object.isRequired,
-//   setUserImage: PropTypes.func,
-//   setFieldValue: PropTypes.func,
-//   handleOnClose: PropTypes.func,
-// };

@@ -28,6 +28,7 @@ import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
 import {useDispatch, useSelector} from 'react-redux';
 import {useDebounce} from 'shared/hooks/useDebounce';
+import MyCell from 'shared/components/MyCell';
 
 const cells = [
   {
@@ -79,23 +80,6 @@ const cells = [
     mostrarInicio: true,
   },
 ];
-
-const MyCell = (props) => {
-  const {align, width, claseBase, value, cellColor} = props;
-  const classes = useStyles({width: width, cellColor: cellColor});
-
-  let allClassName = claseBase;
-
-  if (width !== undefined) {
-    allClassName = `${allClassName} ${classes.cellWidth}`;
-  }
-
-  return (
-    <TableCell align={align} className={allClassName}>
-      <span className={cellColor ? classes.cellColor : ''}>{value}</span>
-    </TableCell>
-  );
-};
 
 function EnhancedTableHead(props) {
   const {classes, order, orderBy, onRequestSort, columnasMostradas} = props;
@@ -786,6 +770,7 @@ const ConsultaAuditoria = (props) => {
                             if (columna.mostrar) {
                               return (
                                 <MyCell
+                                  useStyles={useStyles}
                                   key={row.id + columna.id}
                                   align={columna.align}
                                   width={columna.width}

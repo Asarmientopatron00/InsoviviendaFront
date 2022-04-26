@@ -24,11 +24,12 @@ const defaultConfig = {
         default: '#F4F7FE',
       },
       primary: {
-        main: '#0A8FDC',
+        main: '#905232',
         contrastText: '#fff',
       },
       secondary: {
-        main: '#F04F47',
+        main: '#628233',
+        red: '#d0365c',
       },
       sidebar: {
         bgColor: '#313541',
@@ -134,7 +135,7 @@ const defaultConfig = {
   },
   themeStyle: ThemeStyle.STANDARD,
   themeMode: ThemeMode.SEMI_DARK,
-  navStyle: NavStyle.STANDARD,
+  navStyle: NavStyle.DRAWER,
   layoutType: LayoutType.FULL_WIDTH,
   footerType: FooterType.FLUID,
   headerType: HeaderType.DARK,

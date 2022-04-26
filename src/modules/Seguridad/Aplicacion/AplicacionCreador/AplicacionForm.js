@@ -1,31 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button, RadioGroup, Radio} from '@material-ui/core';
-import {Field, Form, useField} from 'formik';
-import TextField from '@material-ui/core/TextField';
-// import {useIntl} from 'react-intl';
+import {Field, Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import Scrollbar from '../../../../@crema/core/Scrollbar';
-// import PropTypes from 'prop-types';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import FormControl from '@material-ui/core/FormControl';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
+import MyTextField from 'shared/components/MyTextField';
 
-const MyTextField = (props) => {
-  const [field, meta] = useField(props);
-  const errorText = meta.error && meta.touched ? meta.error : '';
-  return (
-    <TextField
-      {...props}
-      {...field}
-      helperText={errorText}
-      error={!!errorText}
-    />
-  );
-};
-
-const UsuarioForm = (props) => {
+const AplicacionForm = (props) => {
   const {handleOnClose, accion, values, initialValues, titulo} = props;
 
   const [disabled, setDisabled] = useState(false);
@@ -162,4 +147,4 @@ const UsuarioForm = (props) => {
   );
 };
 
-export default UsuarioForm;
+export default AplicacionForm;
