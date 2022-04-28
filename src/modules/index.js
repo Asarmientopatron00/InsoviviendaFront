@@ -6,11 +6,13 @@ import {errorPagesConfigs} from './errorPages';
 import {authRouteConfig} from './auth';
 import {initialUrl} from '../shared/constants/AppConst';
 import {seguridadConfigs} from './Seguridad';
+import {personasEntidadesConfigs} from './PersonasEntidades';
 
 const routeConfigs = [
   ...authRouteConfig,
   ...errorPagesConfigs,
   ...seguridadConfigs,
+  ...personasEntidadesConfigs
 ];
 
 const routes = [

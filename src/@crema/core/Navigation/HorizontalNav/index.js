@@ -7,11 +7,13 @@ import List from '@material-ui/core/List';
 
 import routesConfig from '../../../../modules/routesConfig';
 import Box from '@material-ui/core/Box';
+import {useAuthUser} from '../../../../@crema/utility/AppHooks';
 
 const HorizontalNav = () => {
+  const user = useAuthUser();
   return (
     <List className='navbarNav'>
-      {routesConfig.map((item) => (
+      {user.permisos.map((item) => (
         <React.Fragment key={item.id}>
           {item.type === 'group' && (
             <HorizontalGroup item={item} nestedLevel={0} />

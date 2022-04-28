@@ -58,7 +58,7 @@ const AppHeader = () => {
   return (
     <>
       <AppBar position='relative'>
-        <NotificationBar />
+        {/* <NotificationBar /> */}
         <Toolbar className={classes.headerMain}>
           <Box className={classes.headerContainer}>
             <Box className={classes.headerMainFlex}>

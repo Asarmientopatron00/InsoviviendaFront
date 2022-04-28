@@ -43,14 +43,14 @@ function HorizontalItem(props) {
       activeClassName='active'
       className={clsx('navItemSubmenu', classes.root, dense && 'dense')}
       exact={item.exact}>
-      {item.icon && (
+      {item.icono_menu && (
         <Box fontSize={{xs: 16, xl: 18}} mr={3} clone>
-          <Icon style={{color: active ? 'white' : 'action'}}>{item.icon}</Icon>
+          <Icon style={{color: active ? 'white' : 'action'}}>{item.icono_menu}</Icon>
         </Box>
       )}
       <ListItemText
         className='navLinkTextSubmenu'
-        primary={<IntlMessages id={item.messageId} />}
+        primary={item.nombre}
       />
       {item.count && (
         <Box ml={4} clone>
@@ -63,9 +63,9 @@ function HorizontalItem(props) {
 
 HorizontalItem.propTypes = {
   item: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     title: PropTypes.string,
-    icon: PropTypes.string,
+    icono_menu: PropTypes.string,
     url: PropTypes.string,
   }),
 };

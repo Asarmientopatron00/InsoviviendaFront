@@ -111,16 +111,16 @@ function HorizontalCollapse(props) {
               onMouseLeave={() => handleToggle(false)}
               aria-owns={opened ? 'menu-list-grow' : null}
               aria-haspopup='true'>
-              {item.icon && (
+              {item.icono_menu && (
                 <Icon
                   style={{color: active ? 'white' : 'action'}}
                   className={classes.icon}>
-                  {item.icon}
+                  {item.icono_menu}
                 </Icon>
               )}
               <ListItemText
                 className='navLinkTextSubmenu'
-                primary={<IntlMessages id={item.messageId} />}
+                primary={item.nombre}
               />
               <Box p={0} clone>
                 <IconButton disableRipple>
@@ -135,7 +135,7 @@ function HorizontalCollapse(props) {
           )}
         </Reference>
         {ReactDOM.createPortal(
-          <Popper placement='right' eventsEnabled={opened} positionFixed>
+          <Popper placement='bottom' eventsEnabled={opened} positionFixed>
             {({ref, style, placement, arrowProps}) =>
               opened && (
                 <Box
@@ -143,6 +143,9 @@ function HorizontalCollapse(props) {
                   style={{
                     ...style,
                     boxShadow: '0 0 3px 0 rgba(0, 0, 0, 0.2)',
+                    maxHeight: 380,
+                    minWidth: 200,
+                    overflowY: 'auto',
                     zIndex: 1110 + nestedLevel + 1,
                   }}
                   data-placement={placement}
@@ -156,9 +159,9 @@ function HorizontalCollapse(props) {
                     <Paper
                       onMouseEnter={() => handleToggle(true)}
                       onMouseLeave={() => handleToggle(false)}>
-                      {item.children && (
+                      {item.opciones && (
                         <ul className={clsx(classes.children, classes.pl0)}>
-                          {item.children.map((item) => (
+                          {item.opciones.map((item) => (
                             <React.Fragment key={item.id}>
                               {item.type === 'group' && (
                                 <HorizontalGroup
@@ -200,9 +203,9 @@ function HorizontalCollapse(props) {
 
 HorizontalCollapse.propTypes = {
   item: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     title: PropTypes.string,
-    icon: PropTypes.string,
+    icono_menu: PropTypes.string,
     children: PropTypes.array,
   }),
 };

@@ -21,7 +21,7 @@ const defaultConfig = {
       type: ThemeMode.LIGHT,
       background: {
         paper: '#FFFFFF',
-        default: '#F4F7FE',
+        default: '#EAEAEA',
       },
       primary: {
         main: '#905232',
@@ -35,6 +35,7 @@ const defaultConfig = {
         bgColor: '#313541',
         textColor: '#808183',
       },
+      colorHover: '#a5b77d',
       gray: {
         50: '#fafafa',
         100: '#f7fafc',
@@ -135,7 +136,7 @@ const defaultConfig = {
   },
   themeStyle: ThemeStyle.STANDARD,
   themeMode: ThemeMode.SEMI_DARK,
-  navStyle: NavStyle.DRAWER,
+  navStyle: NavStyle.HOR_LIGHT_NAV,
   layoutType: LayoutType.FULL_WIDTH,
   footerType: FooterType.FLUID,
   headerType: HeaderType.DARK,

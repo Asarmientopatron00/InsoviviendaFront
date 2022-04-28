@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {Box, Button} from '@material-ui/core';
+import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import {Form, Formik} from 'formik';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
@@ -21,10 +23,13 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import ModuloCreator from './ModuloCreador';
-import {onGetColeccion, onDelete} from '../../../redux/actions/ModuloAction';
-import {onGetColeccionLigera} from '../../../redux/actions/AplicacionAction';
+import {
+  onGetColeccion,
+  onDelete,
+} from '../../../redux/actions/PersonaAction';
 import {useDispatch, useSelector} from 'react-redux';
+// import {onGetColeccionLigera as onGetColeccionLigeraBarrio} from 'redux/actions/BarrioAction';
+// import {onGetColeccionLigera as onGetColeccionLigeraFamilia} from 'redux/actions/FamiliaAction';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import Popover from '@material-ui/core/Popover';
@@ -32,22 +37,51 @@ import TuneIcon from '@material-ui/icons/Tune';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
 import Swal from 'sweetalert2';
-import {MessageView} from '../../../@crema';
+import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
+import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
+import {history} from 'redux/store';
+import {
+  SEXO,
+  ESTADO,
+  ESTADO_TRAMITE,
+  ESTADO_REGISTRO,
+  CATEGORIA_APORTES,
+} from 'shared/constants/ListaValores';
 import {
   UPDATE_TYPE,
   CREATE_TYPE,
   DELETE_TYPE,
 } from 'shared/constants/Constantes';
+import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
-import MyCell from 'shared/components/MyCell';
-import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
-
-const {
-  theme: {palette},
-} = defaultConfig;
+import MyCell from 'shared/components/MyCell';
 
 const cells = [
+  {
+    id: 'tipIdeDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Identificacion',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'personasCategoriaAportes',
+    typeHead: 'string',
+    label: 'Categoria Aportes',
+    value: (value) => CATEGORIA_APORTES.map((sex) => (sex.id === value ? sex.nombre : '')),
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'personasIdentificacion',
+    typeHead: 'numeric',
+    label: 'Identificacion',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
   {
     id: 'nombre',
     typeHead: 'string',
@@ -57,38 +91,228 @@ const cells = [
     mostrarInicio: true,
   },
   {
-    id: 'aplicacion',
+    id: 'personasFechaVinculacion',
     typeHead: 'string',
-    label: 'Aplicación',
+    label: 'Fecha Vinculacion',
+    value: (value) => moment(value).format('YYYY-MM-DD'),
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'personasFechaNacimiento',
+    typeHead: 'string',
+    label: 'Fecha Nacimiento',
+    value: (value) => moment(value).format('YYYY-MM-DD'),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'identificacion_persona',
+    typeHead: 'numeric',
+    label: 'Familia Id',
     value: (value) => value,
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'icono_menu',
+    id: 'personasEstadoTramite',
     typeHead: 'string',
-    label: 'Icono',
-    value: (value) => value,
+    label: 'Est. Tramite',
+    value: (value) => ESTADO_TRAMITE.map((sex) => (sex.id === value ? sex.nombre : '')),
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'posicion',
+    id: 'personasEstadoRegistro',
     typeHead: 'string',
-    label: 'Posición',
-    value: (value) => value,
+    label: 'Est. Solicitud',
+    value: (value) => ESTADO_REGISTRO.map((sex) => (sex.id === value ? sex.nombre : '')),
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'estado',
-    typeHead: 'boolean',
-    label: 'Estado',
-    value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
-    align: 'center',
-    mostrarInicio: true,
-    cellColor: (value) =>
-      value === 1 ? palette.secondary.main : palette.secondary.red,
+    id: 'paisesDescripcion',
+    typeHead: 'string',
+    label: 'Pais Nacimiento',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'depNacimiento',
+    typeHead: 'string',
+    label: 'Depto. Nacimiento',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'ciuNacimiento',
+    typeHead: 'string',
+    label: 'Ciudad Nacimiento',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'estCivDescripcion',
+    typeHead: 'string',
+    label: 'Est. Civil',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'tipPobDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Poblacion',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'tipDisDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Discapacidad',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'epsDescripcion',
+    typeHead: 'string',
+    label: 'EPS',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'graEscDescripcion',
+    typeHead: 'string',
+    label: 'Grado Escolaridad',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasVehiculo',
+    typeHead: 'string',
+    label: 'Vehiculo',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasCorreo',
+    typeHead: 'string',
+    label: 'Correo',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'departamentosDescripcion',
+    typeHead: 'string',
+    label: 'Departamento',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'ciudadesDescripcion',
+    typeHead: 'string',
+    label: 'Ciudad',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'comunasDescripcion',
+    typeHead: 'string',
+    label: 'Comuna',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'barriosDescripcion',
+    typeHead: 'string',
+    label: 'Barrio',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasDireccion',
+    typeHead: 'string',
+    label: 'Direccion',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasZona',
+    typeHead: 'string',
+    label: 'Zona',
+    value: (value) => SEXO.map((sex) => (sex.id === value ? sex.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasEstrato',
+    typeHead: 'numeric',
+    label: 'Estrato',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasTelefonoCasa',
+    typeHead: 'numeric',
+    label: 'Tel. Casa',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasTelefonoCelular',
+    typeHead: 'numeric',
+    label: 'Tel. Celular',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'tipVivDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Vivienda',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasTipoPropiedad',
+    typeHead: 'string',
+    label: 'Tipo Propiedad',
+    value: (value) => SEXO.map((sex) => (sex.id === value ? sex.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'telefono_contacto_familia',
+    typeHead: 'string',
+    label: 'Telefono Contacto Familia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'observaciones',
+    typeHead: 'string',
+    label: 'Observaciones',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
   },
   {
     id: 'usuario_modificacion_nombre',
@@ -97,7 +321,7 @@ const cells = [
     value: (value) => value,
     align: 'left',
     width: '140px',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'fecha_modificacion',
@@ -106,7 +330,7 @@ const cells = [
     value: (value) => moment(value).format('DD-MM-YYYY HH:mm:ss'),
     align: 'left',
     width: '180px',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'usuario_creacion_nombre',
@@ -130,15 +354,17 @@ const cells = [
 
 function EnhancedTableHead(props) {
   const {classes, order, orderBy, onRequestSort, columnasMostradas} = props;
+
   return (
     <TableHead>
       <TableRow className={classes.head}>
         <TableCell
-          style={{fontWeight: 'bold'}}
           align='center'
-          className={classes.headCell}>
+          style={{fontWeight: 'bold'}}
+          className={classes.headCellWoMargin}>
           {'Acciones'}
         </TableCell>
+
         {columnasMostradas.map((cell) => {
           if (cell.mostrar) {
             return (
@@ -157,6 +383,7 @@ function EnhancedTableHead(props) {
                 <TableSortLabel
                   active={orderBy === cell.id}
                   direction={orderBy === cell.id ? order : 'asc'}
+                  // onClick={createSortHandler(cell.id)}
                   onClick={() => {
                     onRequestSort(cell.id);
                   }}>
@@ -175,6 +402,12 @@ function EnhancedTableHead(props) {
             return <th key={cell.id}></th>;
           }
         })}
+        {/* <TableCell
+          align='center'
+          style={{fontWeight: 'bold'}}
+          className={classes.headCellWoMargin}>
+          {'Datos Adicionales'}
+        </TableCell> */}
       </TableRow>
     </TableHead>
   );
@@ -198,7 +431,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     boxShadow: '0px 0px 5px 5px rgb(0 0 0 / 10%)',
     borderRadius: '4px',
     display: 'grid',
-    gap: '20px',
+    // gap: '20px',
   },
   highlight:
     theme.palette.type === 'light'
@@ -234,6 +467,16 @@ const useToolbarStyles = makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
+  exportButton: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+    boxShadow:
+      '0px 3px 5px -1px rgb(0 0 0 / 30%), 0px 6px 10px 0px rgb(0 0 0 / 20%), 0px 1px 18px 0px rgb(0 0 0 / 16%)',
+    '&:hover': {
+      backgroundColor: theme.palette.colorHover,
+      cursor: 'pointer',
+    },
+  },
   horizontalBottoms: {
     width: 'min-content',
     display: 'flex',
@@ -254,10 +497,17 @@ const useToolbarStyles = makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
+  x: {
+    position: 'absolute',
+    color: '#4caf50',
+    fontSize: '14px',
+    top: '19px',
+    fontWeight: 'bold',
+  },
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '4fr 4fr 4fr 1fr',
     gap: '20px',
   },
   pairFilters: {
@@ -273,12 +523,18 @@ const EnhancedTableToolbar = (props) => {
   const {
     numSelected,
     titulo,
-    onOpenAddModulo,
+    onOpenAddParticipante,
     handleOpenPopoverColumns,
     queryFilter,
     nombreFiltro,
+    numeroDocumentoFiltro,
+    familiaFiltro,
+    primerApellidoFiltro,
+    categoriaApFiltro,
+    estadoFiltro,
     limpiarFiltros,
     permisos,
+    familias,
   } = props;
   return (
     <Toolbar
@@ -304,6 +560,42 @@ const EnhancedTableToolbar = (props) => {
               {titulo}
             </Typography>
             <Box className={classes.horizontalBottoms}>
+              <Formik>
+                <Form>
+                  {permisos.indexOf('Exportar') >= 0 && (
+                    <Tooltip
+                      title='Exportar'
+                      component='a'
+                      className={classes.linkDocumento}
+                      // onClick={onOpenAddParticipante}
+                      href={
+                        defaultConfig.API_URL +
+                        '/participantes/informe-participantes' +
+                        '?nombre=' +
+                        nombreFiltro +
+                        '&documento=' +
+                        numeroDocumentoFiltro +
+                        '&familia=' +
+                        familiaFiltro +
+                        '&barrio=' +
+                        primerApellidoFiltro +
+                        '&sexo=' +
+                        categoriaApFiltro +
+                        '&estado=' +
+                        estadoFiltro
+                      }>
+                      <IconButton
+                        className={classes.exportButton}
+                        aria-label='filter list'>
+                        <Box component='span' className={classes.x}>
+                          X
+                        </Box>
+                        <InsertDriveFile />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Form>
+              </Formik>
               <Tooltip
                 title='Mostrar/Ocultar Columnas'
                 onClick={handleOpenPopoverColumns}>
@@ -314,7 +606,9 @@ const EnhancedTableToolbar = (props) => {
                 </IconButton>
               </Tooltip>
               {permisos.indexOf('Crear') >= 0 && (
-                <Tooltip title='Crear Módulo' onClick={onOpenAddModulo}>
+                <Tooltip
+                  title='Crear Participante'
+                  onClick={onOpenAddParticipante}>
                   <IconButton
                     className={classes.createButton}
                     aria-label='filter list'>
@@ -326,13 +620,85 @@ const EnhancedTableToolbar = (props) => {
           </Box>
           <Box className={classes.contenedorFiltros}>
             <TextField
-              label='Nombre'
-              name='nombre'
+              label='Identificacion'
+              name='numeroDocumentoFiltro'
+              id='numeroDocumentoFiltro'
+              onChange={queryFilter}
+              value={numeroDocumentoFiltro}
+            />
+            <TextField
+              label='Estado'
+              name='estadoFiltro'
+              id='estadoFiltro'
+              select={true}
+              onChange={queryFilter}
+              value={estadoFiltro}>
+              {ESTADO.map((estado) => {
+                return (
+                  <MenuItem
+                    value={estado.id}
+                    key={estado.id}
+                    id={estado.id}
+                    className={classes.pointer}>
+                    {estado.nombre}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+            <TextField
+              label='Categoria Aportes'
+              name='categoriaApFiltro'
+              id='categoriaApFiltro'
+              select={true}
+              onChange={queryFilter}
+              value={categoriaApFiltro}>
+              {SEXO.map((estado) => {
+                return (
+                  <MenuItem
+                    value={estado.id}
+                    key={estado.id}
+                    id={estado.id}
+                    className={classes.pointer}>
+                    {estado.nombre}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+          </Box>
+          <Box className={classes.contenedorFiltros}>
+            <TextField
+              label='Nombres'
+              name='nombreFiltro'
               id='nombreFiltro'
               onChange={queryFilter}
               value={nombreFiltro}
-              className={classes.inputFiltros}
             />
+            <TextField
+              label='Primer Apellido'
+              name='primerApellidoFiltro'
+              id='primerApellidoFiltro'
+              onChange={queryFilter}
+              value={primerApellidoFiltro}
+            />
+            <TextField
+              label='Familia'
+              name='familiaFiltro'
+              id='familiaFiltro'
+              select={true}
+              onChange={queryFilter}
+              value={familiaFiltro}>
+              {familias.map((familia) => {
+                return (
+                  <MenuItem
+                    value={familia.id}
+                    key={familia.id}
+                    id={familia.id}
+                    className={classes.pointer}>
+                    {familia.nombre}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
             <Box display='grid'>
               <Box display='flex' mb={2}>
                 <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
@@ -363,11 +729,16 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onOpenAddModulo: PropTypes.func.isRequired,
+  onOpenAddParticipante: PropTypes.func.isRequired,
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
   nombreFiltro: PropTypes.string.isRequired,
+  numeroDocumentoFiltro: PropTypes.string.isRequired,
+  familiaFiltro: PropTypes.string.isRequired,
+  primerApellidoFiltro: PropTypes.string.isRequired,
+  categoriaApFiltro: PropTypes.string.isRequired,
+  estadoFiltro: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -378,6 +749,14 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '15px',
     paddingRight: '15px',
     marginTop: '5px',
+  },
+  linkDocumento: {
+    textDecoration: 'underline',
+    color: 'blue',
+    textAlign: 'center',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   root: {
     width: '100%%',
@@ -390,11 +769,23 @@ const useStyles = makeStyles((theme) => ({
   headCell: {
     padding: '0px 0px 0px 15px',
   },
+  headCellWoMargin: {
+    padding: '0px',
+    width: 'max-content',
+    fontSize: '14px',
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '14px',
+    },
+  },
   row: {
     padding: 'none',
   },
   cell: (props) => ({
-    padding: props.vp + ' 0px ' + props.vp + ' 15px',
+    fontSize: '13px',
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '14px',
+    },
+    padding: props.vp + ' 0px ' + props.vp + ' 10px',
     whiteSpace: 'nowrap',
   }),
   cellWidth: (props) => ({
@@ -405,8 +796,8 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
   }),
   acciones: (props) => ({
-    padding: props.vp + ' 0px ' + props.vp + ' 15px',
-    minWidth: '100px',
+    padding: props.vp + ' 0px ' + props.vp + ' 10px',
+    minWidth: '120px',
   }),
   paper: {
     width: '100%',
@@ -429,6 +820,10 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   generalIcons: {
+    height: '20px',
+    [theme.breakpoints.up('xl')]: {
+      height: '25px',
+    },
     '&:hover': {
       color: theme.palette.colorHover,
       cursor: 'pointer',
@@ -442,6 +837,9 @@ const useStyles = makeStyles((theme) => ({
   },
   deleteIcon: {
     color: theme.palette.primary.main,
+  },
+  descargarIcon: {
+    color: theme.palette.enviaEmailBottoms,
   },
   popoverColumns: {
     display: 'grid',
@@ -460,8 +858,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Modulos = (props) => {
-  const [showForm, setShowForm] = useState(false);
+const Participante = (props) => {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [orderByToSend, setOrderByToSend] = React.useState(
@@ -473,25 +870,40 @@ const Modulos = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
 
-  const [accion, setAccion] = useState('ver');
-  const [moduloSeleccionado, setModuloSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({moduloReducer}) => moduloReducer,
+    ({personaReducer}) => personaReducer,
   );
 
-  const {message, error, messageType} = useSelector(({common}) => common);
+  // const familias = useSelector(({familiaReducer}) => familiaReducer.ligera);
+  const familias = [
+    {id: 1, nombre: 'Hola'}
+  ]
 
+  const {message, error, messageType} = useSelector(({common}) => common);
   useEffect(() => {
     if (message || error) {
       if (messageType === DELETE_TYPE) {
-        Swal.fire('Eliminado', message, 'success');
+        Swal.fire('Eliminada', message, 'success');
+        updateColeccion();
       }
     }
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
   const [nombreFiltro, setNombreFiltro] = useState('');
+  const [numeroDocumentoFiltro, setNumeroDocumentoFiltro] = useState('');
+  const [familiaFiltro, setFamiliaFiltro] = useState('');
+  const [primerApellidoFiltro, setPrimerApellidoFiltro] = useState('');
+  const [categoriaApFiltro, setCategoriaApFiltro] = useState('');
+  const [estadoFiltro, setEstadoFiltro] = useState('');
+
   const debouncedName = useDebounce(nombreFiltro, 800);
+  const debouncedId = useDebounce(numeroDocumentoFiltro, 800);
+  const debouncedFamily = useDebounce(familiaFiltro, 800);
+  const debouncedLastName = useDebounce(primerApellidoFiltro, 800);
+  const debouncedApCategory = useDebounce(categoriaApFiltro, 800);
+  const debouncedStatus = useDebounce(estadoFiltro, 800);
+
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
 
@@ -521,6 +933,10 @@ const Modulos = (props) => {
   const classes = useStyles({vp: vp});
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    // dispatch(onGetColeccionLigeraFamilia());
+  }, [dispatch]);
+
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
   const [titulo, setTitulo] = useState('');
@@ -544,23 +960,92 @@ const Modulos = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, orderByToSend));
-  }, [dispatch, page, rowsPerPage, debouncedName, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch(
+      onGetColeccion(
+        page,
+        rowsPerPage,
+        nombreFiltro,
+        numeroDocumentoFiltro,
+        familiaFiltro,
+        primerApellidoFiltro,
+        categoriaApFiltro,
+        estadoFiltro,
+        orderByToSend,
+      ),
+    );
+  }, [
+    dispatch,
+    page,
+    rowsPerPage,
+    debouncedName,
+    debouncedId,
+    debouncedFamily,
+    debouncedLastName,
+    debouncedApCategory,
+    debouncedStatus,
+    orderByToSend,
+  ]);
 
   const updateColeccion = () => {
     setPage(1);
-    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, orderByToSend));
+    dispatch(
+      onGetColeccion(
+        page,
+        rowsPerPage,
+        nombreFiltro,
+        numeroDocumentoFiltro,
+        familiaFiltro,
+        primerApellidoFiltro,
+        categoriaApFiltro,
+        estadoFiltro,
+        orderByToSend,
+      ),
+    );
   };
   useEffect(() => {
     setPage(1);
-  }, [debouncedName, orderByToSend]);
+  }, [
+    debouncedName,
+    orderByToSend,
+    debouncedId,
+    debouncedFamily,
+    debouncedLastName,
+    debouncedApCategory,
+    debouncedStatus,
+  ]);
 
   const queryFilter = (e) => {
-    setNombreFiltro(e.target.value);
+    switch (e.target.name) {
+      case 'nombreFiltro':
+        setNombreFiltro(e.target.value);
+        break;
+      case 'numeroDocumentoFiltro':
+        setNumeroDocumentoFiltro(e.target.value);
+        break;
+      case 'familiaFiltro':
+        setFamiliaFiltro(e.target.value);
+        break;
+      case 'primerApellidoFiltro':
+        setPrimerApellidoFiltro(e.target.value);
+        break;
+      case 'categoriaApFiltro':
+        setCategoriaApFiltro(e.target.value);
+        break;
+      case 'estadoFiltro':
+        setEstadoFiltro(e.target.value);
+        break;
+      default:
+        break;
+    }
   };
 
   const limpiarFiltros = () => {
     setNombreFiltro('');
+    setNumeroDocumentoFiltro('');
+    setFamiliaFiltro('');
+    setPrimerApellidoFiltro('');
+    setCategoriaApFiltro('');
+    setEstadoFiltro('');
   };
 
   const changeOrderBy = (id) => {
@@ -579,10 +1064,8 @@ const Modulos = (props) => {
     }
   };
 
-  const onOpenEditModulo = (id) => {
-    setModuloSeleccionado(id);
-    setAccion('editar');
-    setShowForm(true);
+  const onOpenEditParticipante = (id) => {
+    history.push(history.location.pathname + '/editar/' + id);
   };
 
   const handleClosePopover = () => {
@@ -621,16 +1104,14 @@ const Modulos = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewModulo = (id) => {
-    setModuloSeleccionado(id);
-    setAccion('ver');
-    setShowForm(true);
+  const onOpenViewParticipante = (id) => {
+    history.push(history.location.pathname + '/ver/' + id);
   };
 
-  const onDeleteModulo = (id) => {
+  const onDeleteParticipante = (id) => {
     Swal.fire({
       title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar El Módulo?',
+      text: '¿Seguro Que Desea Eliminar El Participante?',
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -640,28 +1121,13 @@ const Modulos = (props) => {
       confirmButtonText: 'SI',
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(onDelete(id, updateColeccion));
+        dispatch(onDelete(id));
       }
     });
   };
 
-  const onOpenAddModulo = () => {
-    setModuloSeleccionado(0);
-    setAccion('crear');
-    setShowForm(true);
-  };
-
-  const aplicaciones = useSelector(
-    ({aplicacionReducer}) => aplicacionReducer.ligera,
-  );
-  useEffect(() => {
-    dispatch(onGetColeccionLigera());
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleOnClose = () => {
-    setShowForm(false);
-    setModuloSeleccionado(0);
-    setAccion('ver');
+  const onOpenAddParticipante = () => {
+    history.push(history.location.pathname + '/crear');
   };
 
   const handleSelectAllClick = (event) => {
@@ -682,6 +1148,10 @@ const Modulos = (props) => {
     setPage(1);
   };
 
+  const onOpenParticipanteDatosAdicionales = (id) => {
+    history.push(history.location.pathname + '-datos-adicionales/' + id);
+  };
+
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const [showTable, setShowTable] = useState(true);
@@ -699,11 +1169,17 @@ const Modulos = (props) => {
         {permisos && (
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onOpenAddModulo={onOpenAddModulo}
+            onOpenAddParticipante={onOpenAddParticipante}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
             nombreFiltro={nombreFiltro}
+            numeroDocumentoFiltro={numeroDocumentoFiltro}
+            familiaFiltro={familiaFiltro}
+            primerApellidoFiltro={primerApellidoFiltro}
+            categoriaApFiltro={categoriaApFiltro}
+            estadoFiltro={estadoFiltro}
+            familias={familias}
             permisos={permisos}
             titulo={titulo}
           />
@@ -754,70 +1230,87 @@ const Modulos = (props) => {
                   columnasMostradas={columnasMostradas}
                 />
                 <TableBody>
-                  {rows.map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
+                  {
+                    rows.map((row, index) => {
+                      const isItemSelected = isSelected(row.name);
 
-                    return (
-                      <TableRow
-                        hover
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.id}
-                        selected={isItemSelected}
-                        className={classes.row}>
-                        <TableCell align='center' className={classes.acciones}>
-                          {permisos.indexOf('Modificar') >= 0 && (
-                            <Tooltip title={<IntlMessages id='boton.editar' />}>
-                              <EditIcon
-                                onClick={() => onOpenEditModulo(row.id)}
-                                className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Listar') >= 0 && (
-                            <Tooltip title={<IntlMessages id='boton.ver' />}>
-                              <VisibilityIcon
-                                onClick={() => onOpenViewModulo(row.id)}
-                                className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Eliminar') >= 0 && (
+                      return (
+                        <TableRow
+                          hover
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
+                          className={classes.row}>
+                          <TableCell
+                            align='center'
+                            className={classes.acciones}>
+                            {permisos.indexOf('Modificar') >= 0 && (
+                              <Tooltip
+                                title={<IntlMessages id='boton.editar' />}>
+                                <EditIcon
+                                  onClick={() => onOpenEditParticipante(row.id)}
+                                  className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                              </Tooltip>
+                            )}
+                            {permisos.indexOf('Listar') >= 0 && (
+                              <Tooltip title={<IntlMessages id='boton.ver' />}>
+                                <VisibilityIcon
+                                  onClick={() => onOpenViewParticipante(row.id)}
+                                  className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
+                              </Tooltip>
+                            )}
+                            {permisos.indexOf('Eliminar') >= 0 && (
+                              <Tooltip
+                                title={<IntlMessages id='boton.eliminar' />}>
+                                <DeleteIcon
+                                  onClick={() => onDeleteParticipante(row.id)}
+                                  className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
+                              </Tooltip>
+                            )}
+                          </TableCell>
+
+                          {columnasMostradas.map((columna) => {
+                            if (columna.mostrar) {
+                              return (
+                                <MyCell
+                                  useStyles={useStyles}
+                                  key={row.id + columna.id}
+                                  align={columna.align}
+                                  width={columna.width}
+                                  claseBase={classes.cell}
+                                  value={columna.value(row[columna.id])}
+                                  cellColor={
+                                    columna.cellColor
+                                      ? columna.cellColor(row[columna.id])
+                                      : ''
+                                  }
+                                />
+                              );
+                            } else {
+                              return <th key={row.id + columna.id}></th>;
+                            }
+                          })}
+                          {/* <TableCell align='center' className={classes.cell}>
                             <Tooltip
-                              title={<IntlMessages id='boton.eliminar' />}>
-                              <DeleteIcon
-                                onClick={() => onDeleteModulo(row.id)}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
-                            </Tooltip>
-                          )}
-                        </TableCell>
-
-                        {columnasMostradas.map((columna) => {
-                          if (columna.mostrar) {
-                            return (
-                              <MyCell
-                                useStyles={useStyles}
-                                key={row.id + columna.id}
-                                align={columna.align}
-                                width={columna.width}
-                                claseBase={classes.cell}
-                                value={columna.value(row[columna.id])}
-                                cellColor={
-                                  columna.cellColor
-                                    ? columna.cellColor(row[columna.id])
-                                    : ''
+                              title={
+                                <IntlMessages id='boton.datosAdicionales' />
+                              }>
+                              <Icon
+                                path={mdiDatabasePlusOutline}
+                                onClick={() =>
+                                  onOpenParticipanteDatosAdicionales(row.id)
                                 }
-                              />
-                            );
-                          } else {
-                            return <th key={row.id + columna.id}></th>;
-                          }
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                                className={`${classes.generalIcons}`}></Icon>
+                            </Tooltip>
+                          </TableCell> */}
+                        </TableRow>
+                      );
+                    })
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
-
             <Box className={classes.paginacion}>
               <Box>
                 <p>{textoPaginacion}</p>
@@ -863,20 +1356,6 @@ const Modulos = (props) => {
           </Box>
         )}
       </Paper>
-
-      {showForm ? (
-        <ModuloCreator
-          showForm={showForm}
-          modulo={moduloSeleccionado}
-          accion={accion}
-          handleOnClose={handleOnClose}
-          updateColeccion={updateColeccion}
-          titulo={titulo}
-          aplicaciones={aplicaciones}
-        />
-      ) : (
-        ''
-      )}
 
       <Popover
         id='popoverColumns'
@@ -929,4 +1408,4 @@ const Modulos = (props) => {
   );
 };
 
-export default Modulos;
+export default Participante;

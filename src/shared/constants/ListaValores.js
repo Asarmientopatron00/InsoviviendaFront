@@ -145,3 +145,21 @@ export const ADDRESS_LABELS = [
   'Correg',
   'Ver',
 ];
+
+export const CATEGORIA_APORTES = [
+  {id: 'AA', nombre: 'Primera', estado: 1},
+  {id: 'BB', nombre: 'Segunda', estado: 1},
+  {id: 'CC', nombre: 'Tercera', estado: 1},
+];
+
+export const ESTADO_REGISTRO = [
+  {id: 'PE', nombre: 'Pendiente', estado: 1},
+  {id: 'AC', nombre: 'Aceptada', estado: 1},
+  {id: 'NA', nombre: 'No aplica', estado: 1},
+];
+
+export const ESTADO_TRAMITE = [
+  {id: 'PE', nombre: 'Pendiente', estado: 1},
+  {id: 'AC', nombre: 'Aceptada', estado: 1},
+  {id: 'NA', nombre: 'No aplica', estado: 1},
+];

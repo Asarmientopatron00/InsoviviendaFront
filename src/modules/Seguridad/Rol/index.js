@@ -43,6 +43,7 @@ import {MessageView} from '@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
+import moment from 'moment';
 
 const {
   theme: {palette},
@@ -87,7 +88,7 @@ const cells = [
   {
     id: 'fecha_modificacion',
     label: 'Fecha Última Modificación',
-    value: (value) => new Date(value).toLocaleString('es-CL'),
+    value: (value) => moment(value).format('DD-MM-YYYY HH:mm:ss'),
     align: 'left',
     width: '180px',
     mostrarInicio: true,
@@ -103,7 +104,7 @@ const cells = [
   {
     id: 'fecha_creacion',
     label: 'Fecha Creación',
-    value: (value) => new Date(value).toLocaleString('es-CL'),
+    value: (value) => moment(value).format('DD-MM-YYYY HH:mm:ss'),
     align: 'left',
     width: '180px',
     mostrarInicio: false,

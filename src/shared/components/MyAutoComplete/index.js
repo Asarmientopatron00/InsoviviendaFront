@@ -59,6 +59,7 @@ const MyAutocomplete = (props) => {
             {...field}
             name={props.name}
             className={props.className}
+            style={props.style}
             label={props.label}
             required={props.required}
             helperText={errorText}

@@ -11,6 +11,8 @@ import UsuarioReducer from './UsuarioReducer';
 import OpcionSistemaReducer from './OpcionSistemaReducer';
 import ConsultaAuditoriaReducer from './ConsultaAuditoriaReducer';
 import PermisoReducer from './PermisoReducer';
+// PersonasEntidades
+import PersonaReducer from './PersonaReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -25,5 +27,6 @@ const reducers = (history) =>
     opcionSistemaReducer: OpcionSistemaReducer,
     permisoReducer: PermisoReducer,
     consultaAuditoriaReducer: ConsultaAuditoriaReducer,
+    personaReducer: PersonaReducer,
   });
 export default reducers;

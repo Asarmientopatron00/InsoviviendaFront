@@ -2,13 +2,13 @@ import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   headerMain: {
-    minHeight: 56,
+    minHeight: 100,
     paddingRight: 0,
     paddingLeft: 0,
-    backgroundColor: theme.palette.primary.main,
+    background: 'linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 0%, rgba(118,160,70,1) 80%, rgba(118,160,70,1) 100%)',
     color: theme.palette.primary.contrastText,
     [theme.breakpoints.up('sm')]: {
-      minHeight: 70,
+      minHeight: 100,
     },
     '& .crAppsSearch': {
       backgroundColor: theme.palette.primary.contrastText,

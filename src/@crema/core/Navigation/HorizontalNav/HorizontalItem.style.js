@@ -3,6 +3,9 @@ import {makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: 48,
+    '&:hover': {
+      backgroundColor: '#f4f7fe',
+    },
     '&.active': {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.secondary.contrastText + '!important',

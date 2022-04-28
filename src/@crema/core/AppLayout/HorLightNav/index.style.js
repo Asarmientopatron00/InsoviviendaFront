@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => {
       marginLeft: 'auto',
       marginRight: 'auto',
       [theme.breakpoints.up('lg')]: {
-        maxWidth: 1140,
+        maxWidth: '100vw',
       },
       [theme.breakpoints.up('xl')]: {
         maxWidth: 1720,

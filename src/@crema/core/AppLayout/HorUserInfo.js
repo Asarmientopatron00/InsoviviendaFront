@@ -1,16 +1,13 @@
 import React, {useContext} from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import {useDispatch} from 'react-redux';
 import {onJWTAuthSignout} from '../../../redux/actions';
 import {useAuthUser} from '../../utility/AppHooks';
 import AppContext from '../../utility/AppContext';
-import {makeStyles} from '@material-ui/core';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import Box from '@material-ui/core/Box';
+import {makeStyles, MenuItem, Menu, Box, Button} from '@material-ui/core';
 import {orange} from '@material-ui/core/colors';
 import {AuthType, Fonts} from '../../../shared/constants/AppEnums';
 import Hidden from '@material-ui/core/Hidden';
+import {Person} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -39,6 +36,19 @@ const useStyles = makeStyles((theme) => {
       fontWeight: Fonts.MEDIUM,
       color: (props) =>
         props.bgType === 'colored' ? 'white' : theme.palette.text.primary,
+    },
+    logoutBtn: {
+      backgroundColor: theme.palette.secondary.red,
+      width: '90%',
+      color: 'white',
+      margin: '10px 10px',
+      fontFamily: theme.typography.primaryFont,
+      '&:hover': {
+        backgroundColor: 'rgba(203,36,40,0.7)',
+      },
+    },
+    btnContainer: {
+      borderTop: '1px solid rgb(231,180,38)',
     },
   };
 });
@@ -72,16 +82,20 @@ const HorUserInfo = ({bgType = 'colored'}) => {
   return (
     <Box py={2} pl={{xs: 2, sm: 3, md: 5}}>
       <Box className={classes.userRoot} display='flex' onClick={handleClick}>
-        {user.photoURL ? (
-          <Avatar className={classes.avatar} src={user.photoURL} />
-        ) : (
-          <Avatar className={classes.avatar}>{getUserAvatar()}</Avatar>
-        )}
         <Hidden mdDown>
-          <Box ml={3} className={classes.userName}>
-            {user.displayName ? user.displayName : user.email}
-            <Box fontSize={13} fontWeight={Fonts.LIGHT}>
-              System Manager
+          <Box
+            display='flex'
+            style={{justifyContent: 'space-evenly', alignItems: 'center'}}
+            ml={3}
+            className={classes.userName}>
+            <Person
+              style={{width: '50px', height: '50px', color: 'white'}}
+            />
+            <Box>
+              {user.displayName ? user.displayName : user.email}
+              <Box fontSize={13} fontWeight={Fonts.LIGHT}>
+                {user.identificacion_usuario}
+              </Box>
             </Box>
           </Box>
         </Hidden>
@@ -93,15 +107,30 @@ const HorUserInfo = ({bgType = 'colored'}) => {
           keepMounted
           open={Boolean(anchorEl)}
           onClose={handleClose}>
-          <MenuItem>My account</MenuItem>
           <MenuItem
-            onClick={() => {
-              if (user && user.authType === AuthType.JWT_AUTH) {
-                dispatch(onJWTAuthSignout());
-              }
-            }}>
-            Logout
+            className={classes.font}
+            style={{fontWeight: 'bold', color: 'black'}}
+            disabled={true}>
+            {user.displayName}
           </MenuItem>
+          <MenuItem
+            className={classes.font}
+            style={{fontWeight: 'bold', color: 'black'}}
+            disabled={true}>
+            {user.correo_electronico}
+          </MenuItem>
+          <Box className={classes.btnContainer}>
+            <Button
+              className={classes.logoutBtn}
+              onClick={() => {
+                if (user && user.authType === AuthType.JWT_AUTH) {
+                  dispatch(onJWTAuthSignout());
+                }
+              }}
+              variant='contained'>
+                Cerrar Sesión
+            </Button>
+          </Box>
         </Menu>
       </Box>
     </Box>
