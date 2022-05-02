@@ -16,7 +16,6 @@ import * as ReactDOM from 'react-dom';
 import HorizontalItem from './HorizontalItem';
 import HorizontalGroup from './HorizontalGroup';
 import Box from '@material-ui/core/Box';
-import IntlMessages from '../../../utility/IntlMessages';
 import AppContext from '../../../utility/AppContext';
 
 const useStyles = makeStyles((theme) => ({

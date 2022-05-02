@@ -1,12 +1,13 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button} from '@material-ui/core';
 import {Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
 import MyTextField from 'shared/components/MyTextField';
-import MyRadioField from 'shared/components/MyRadioField';
 import MySelectField from 'shared/components/MySelectField';
+import { CATEGORIA_APORTES, DATO_BOOLEAN, ESTADO_REGISTRO, ESTADO_TRAMITE, ESTRATO, GENERO, INDICATIVO_PC, PARENTESCO, SEGURIDAD_SOCIAL, TIPO_CONTRATO, TIPO_PROPIEDAD, TIPO_TRABAJO, ZONA } from 'shared/constants/ListaValores';
+import MyCurrencyField from 'shared/components/MyCurrencyField';
 
 const options = [
   {id: 1, nombre: 'Uno', estado: 1},
@@ -18,7 +19,7 @@ const options = [
 const ParticipanteForm = (props) => {
   const {
     accion,
-    values,
+    // values,
     initialValues,
     // tiposDocumentos,
     // onChangeDepartamento,
@@ -36,10 +37,10 @@ const ParticipanteForm = (props) => {
 
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {
-    if (accion === 'ver' || initialValues.estado === '0') {
+    if (accion === 'ver' || initialValues.personasEstadoRegistro === 'IN') {
       setDisabled(true);
     }
-  }, [initialValues.estado, accion]);
+  }, [initialValues.estado, accion]); //eslint-disable-line
 
   // let onChangeDepartamento1 = useRef();
   // onChangeDepartamento1 = (id) => {
@@ -198,7 +199,7 @@ const ParticipanteForm = (props) => {
           <Box className={classes.inputs_4}>
             <MyTextField
               className={classes.myTextField}
-              label='Identificacion'
+              label='Identificación'
               name='personasIdentificacion'
               disabled={disabled}
               required
@@ -210,17 +211,17 @@ const ParticipanteForm = (props) => {
               }}
               name='tipo_identificacion_id'
               inputValue={initialValues.tipo_identificacion_id}
-              label='Tipo Identificacion'
+              label='Tipo Identificación'
               className={classes.myTextField}
               required
               disabled={disabled}
             />
             <MySelectField
-              label='Categoria Aportes'
+              label='Categoría Aportes'
               className={classes.myTextField}
               disabled={disabled}
               name='personasCategoriaAportes'
-              options={options}
+              options={CATEGORIA_APORTES}
               variant='standard'
             />
             <MyTextField
@@ -229,11 +230,6 @@ const ParticipanteForm = (props) => {
               name='personasNombres'
               disabled={disabled}
               required
-              inputProps={{
-                style: {
-                  fontSize: '14px',
-                },
-              }}
             />
             <MyTextField
               className={classes.myTextField}
@@ -241,22 +237,12 @@ const ParticipanteForm = (props) => {
               name='personasPrimerApellido'
               disabled={disabled}
               required
-              inputProps={{
-                style: {
-                  fontSize: '14px',
-                },
-              }}
             />
             <MyTextField
               className={classes.myTextField}
               label='Segundo Apellido'
               name='personasSegundoApellido'
               disabled={disabled}
-              inputProps={{
-                style: {
-                  fontSize: '14px',
-                },
-              }}
             />
             <MyTextField
               className={classes.myTextField}
@@ -267,14 +253,14 @@ const ParticipanteForm = (props) => {
               name='personasFechaNacimiento'
               disabled={disabled}
               type='date'
-              inputProps={{
-                style: {
-                  fontSize: '14px',
-                },
-              }}
+              // inputProps={{
+              //   style: {
+              //     fontSize: '14px',
+              //   },
+              // }}
             />
             <MyAutocomplete
-              label='Pais Nacimiento'
+              label='País Nacimiento'
               style={{
                 paddingRight: '10px'
               }}
@@ -304,11 +290,11 @@ const ParticipanteForm = (props) => {
               options={options}
             />
             <MySelectField
-              label='Genero'
+              label='Género'
               className={classes.myTextField}
               disabled={disabled}
               name='personasGenero'
-              options={options}
+              options={GENERO}
               variant='standard'
             />
             <MySelectField
@@ -324,11 +310,11 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasParentesco'
-              options={options}
+              options={PARENTESCO}
               variant='standard'
             />
             <MySelectField
-              label='Tipo Poblacion'
+              label='Tipo Población'
               className={classes.myTextField}
               disabled={disabled}
               name='tipo_poblacion_id'
@@ -348,7 +334,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasSeguridadSocial'
-              options={options}
+              options={SEGURIDAD_SOCIAL}
               variant='standard'
             />
             <MySelectField
@@ -368,11 +354,11 @@ const ParticipanteForm = (props) => {
               variant='standard'
             />
             <MySelectField
-              label='Vehiculo'
+              label='Vehículo'
               className={classes.myTextField}
               disabled={disabled}
               name='personasVehiculo'
-              options={options}
+              options={DATO_BOOLEAN}
               variant='standard'
             />
             <MyTextField
@@ -390,11 +376,11 @@ const ParticipanteForm = (props) => {
               name='personasFechaVinculacion'
               disabled={disabled}
               type='date'
-              inputProps={{
-                style: {
-                  fontSize: '14px',
-                },
-              }}
+              // inputProps={{
+              //   style: {
+              //     fontSize: '14px',
+              //   },
+              // }}
             />
             <MyAutocomplete
               label='Identificacion Familia'
@@ -420,7 +406,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasEstadoTramite'
-              options={options}
+              options={ESTADO_TRAMITE}
               variant='standard'
             />
             <MySelectField
@@ -428,7 +414,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasEstadoRegistro'
-              options={options}
+              options={ESTADO_REGISTRO}
               variant='standard'
             />
             {/* <MyRadioField
@@ -486,7 +472,7 @@ const ParticipanteForm = (props) => {
             />
             <MyTextField
               className={classes.myTextField}
-              label='Direccion'
+              label='Dirección'
               name='personasDireccion'
               disabled={disabled}
             />
@@ -495,7 +481,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasZona'
-              options={options}
+              options={ZONA}
               variant='standard'
             />
             <MySelectField
@@ -503,7 +489,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasEstrato'
-              options={options}
+              options={ESTRATO}
               variant='standard'
             />
             <MyTextField
@@ -531,12 +517,12 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasTipoPropiedad'
-              options={options}
+              options={TIPO_PROPIEDAD}
               variant='standard'
             />
             <MyTextField
               className={classes.myTextField}
-              label='Numero Escritura'
+              label='Número Escritura'
               name='personasNumeroEscritura'
               disabled={disabled}
             />
@@ -555,29 +541,29 @@ const ParticipanteForm = (props) => {
               name='personasFechaEscritura'
               disabled={disabled}
               type='date'
-              inputProps={{
-                style: {
-                  fontSize: '14px',
-                },
-              }}
+              // inputProps={{
+              //   style: {
+              //     fontSize: '14px',
+              //   },
+              // }}
             />
             <MySelectField
               label='Indicativo'
               className={classes.myTextField}
               disabled={disabled}
               name='personasIndicativoPC'
-              options={options}
+              options={INDICATIVO_PC}
               variant='standard'
             />
             <MyTextField
               className={classes.myTextField}
-              label='Numero Habitaciones'
+              label='Número Habitaciones'
               name='personasNumeroHabitaciones'
               disabled={disabled}
             />
             <MyTextField
               className={classes.myTextField}
-              label='Numero Baños'
+              label='Número Baños'
               name='personasNumeroBanos'
               disabled={disabled}
             />
@@ -610,7 +596,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasSala'
-              options={options}
+              options={DATO_BOOLEAN}
               variant='standard'
             />
             <MySelectField
@@ -618,7 +604,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasComedor'
-              options={options}
+              options={DATO_BOOLEAN}
               variant='standard'
             />
             <MySelectField
@@ -626,7 +612,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasCocina'
-              options={options}
+              options={DATO_BOOLEAN}
               variant='standard'
             />
             <MySelectField
@@ -634,7 +620,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasPatio'
-              options={options}
+              options={DATO_BOOLEAN}
               variant='standard'
             />
             <MySelectField
@@ -642,7 +628,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasTerraza'
-              options={options}
+              options={DATO_BOOLEAN}
               variant='standard'
             />
           </Box>
@@ -651,7 +637,7 @@ const ParticipanteForm = (props) => {
           </Box>
           <Box className={classes.inputs_4}>
             <MySelectField
-              label='Ocupacion'
+              label='Ocupación'
               className={classes.myTextField}
               disabled={disabled}
               name='ocupacion_id'
@@ -663,7 +649,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasTipoTrabajo'
-              options={options}
+              options={TIPO_TRABAJO}
               variant='standard'
             />
             <MySelectField
@@ -671,7 +657,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='personasTipoContrato'
-              options={options}
+              options={TIPO_CONTRATO}
               variant='standard'
             />
             <MyTextField
@@ -759,7 +745,7 @@ const ParticipanteForm = (props) => {
             />
             <MyTextField
               className={classes.myTextField}
-              label='Direccion'
+              label='Dirección'
               name='personasCorDireccion'
               disabled={disabled}
             />
@@ -774,43 +760,43 @@ const ParticipanteForm = (props) => {
             Ingresos:
           </Box>
           <Box className={classes.inputs_4}>
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Formales'
               name='personasIngresosFormales'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Informales'
               name='personasIngresosInformales'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Arriendo'
               name='personasIngresosArriendo'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Subsidios'
               name='personasIngresosSubsidios'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Paternidad'
               name='personasIngresosPaternidad'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Terceros'
               name='personasIngresosTerceros'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Otros'
               name='personasIngresosOtros'
@@ -821,43 +807,43 @@ const ParticipanteForm = (props) => {
             Aportes:
           </Box>
           <Box className={classes.inputs_4}>
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Formales'
               name='personasAportesFormales'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Informales'
               name='personasAportesInformales'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Arriendo'
               name='personasAportesArriendo'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Subsidios'
               name='personasAportesSubsidios'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Paternidad'
               name='personasAportesPaternidad'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Terceros'
               name='personasAportesTerceros'
               disabled={disabled}
             />
-            <MyTextField
+            <MyCurrencyField
               className={classes.myTextField}
               label='Otros'
               name='personasAportesOtros'
@@ -937,7 +923,7 @@ const ParticipanteForm = (props) => {
             <MyTextField
               className={classes.myTextField}
               label='Usuario Creción'
-              name='personasObservaciones'
+              name='usuario_creacion_nombre'
               InputLabelProps={{
                 shrink: true,
               }}
@@ -946,7 +932,7 @@ const ParticipanteForm = (props) => {
             <MyTextField
               className={classes.myTextField}
               label='Usuario Modificación'
-              name='personasObservaciones'
+              name='usuario_modificacion_nombre'
               InputLabelProps={{
                 shrink: true,
               }}

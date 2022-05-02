@@ -63,20 +63,11 @@ const HorUserInfo = ({bgType = 'colored'}) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  console.log('bgType', bgType);
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const getUserAvatar = () => {
-    if (user.displayName) {
-      return user.displayName.charAt(0).toUpperCase();
-    }
-    if (user.email) {
-      return user.email.charAt(0).toUpperCase();
-    }
-  };
   const classes = useStyles({themeMode, bgType});
 
   return (

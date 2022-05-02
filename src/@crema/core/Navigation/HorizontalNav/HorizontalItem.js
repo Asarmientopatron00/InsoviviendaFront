@@ -4,7 +4,6 @@ import {Badge, NavLink} from '../../../../@crema';
 import {withRouter} from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import IntlMessages from '../../../utility/IntlMessages';
 import useStyles from './HorizontalItem.style';
 import Box from '@material-ui/core/Box';
 

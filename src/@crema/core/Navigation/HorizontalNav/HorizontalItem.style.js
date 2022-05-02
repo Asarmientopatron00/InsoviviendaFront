@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     '&.active': {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.secondary.contrastText + '!important',
-      pointerEvents: 'none',
+      // pointerEvents: 'none',
       '& .list-item-text-primary': {
         color: 'inherit',
       },

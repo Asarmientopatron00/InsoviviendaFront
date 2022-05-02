@@ -14,7 +14,6 @@ import Hidden from '@material-ui/core/Hidden';
 import HorizontalNav from '../../Navigation/HorizontalNav';
 import Box from '@material-ui/core/Box';
 import useStyles from './AppHeader.style';
-import NotificationBar from './NotificationBar';
 import HeaderMessages from '../../HeaderMessages';
 import Notifications from '../../Notifications';
 import HorUserInfo from '../HorUserInfo';

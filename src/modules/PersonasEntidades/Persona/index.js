@@ -41,11 +41,18 @@ import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
 import {history} from 'redux/store';
 import {
-  SEXO,
-  ESTADO,
+  GENERO,
   ESTADO_TRAMITE,
   ESTADO_REGISTRO,
   CATEGORIA_APORTES,
+  DATO_BOOLEAN,
+  ZONA,
+  ESTRATO,
+  TIPO_PROPIEDAD,
+  INDICATIVO_PC,
+  TIPO_TRABAJO,
+  TIPO_CONTRATO,
+  SEGURIDAD_SOCIAL,
 } from 'shared/constants/ListaValores';
 import {
   UPDATE_TYPE,
@@ -56,6 +63,8 @@ import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import moment from 'moment';
 import MyCell from 'shared/components/MyCell';
+
+const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
 const cells = [
   {
@@ -70,7 +79,7 @@ const cells = [
     id: 'personasCategoriaAportes',
     typeHead: 'string',
     label: 'Categoria Aportes',
-    value: (value) => CATEGORIA_APORTES.map((sex) => (sex.id === value ? sex.nombre : '')),
+    value: (value) => CATEGORIA_APORTES.map((catAp) => (catAp.id === value ? catAp.nombre : '')),
     align: 'left',
     mostrarInicio: true,
   },
@@ -118,15 +127,15 @@ const cells = [
     id: 'personasEstadoTramite',
     typeHead: 'string',
     label: 'Est. Tramite',
-    value: (value) => ESTADO_TRAMITE.map((sex) => (sex.id === value ? sex.nombre : '')),
+    value: (value) => ESTADO_TRAMITE.map((estTra) => (estTra.id === value ? estTra.nombre : '')),
     align: 'left',
     mostrarInicio: true,
   },
   {
     id: 'personasEstadoRegistro',
     typeHead: 'string',
-    label: 'Est. Solicitud',
-    value: (value) => ESTADO_REGISTRO.map((sex) => (sex.id === value ? sex.nombre : '')),
+    label: 'Est. Registro',
+    value: (value) => ESTADO_REGISTRO.map((estReg) => (estReg.id === value ? estReg.nombre : '')),
     align: 'left',
     mostrarInicio: true,
   },
@@ -155,6 +164,14 @@ const cells = [
     mostrarInicio: false,
   },
   {
+    id: 'personasGenero',
+    typeHead: 'string',
+    label: 'Género',
+    value: (value) => GENERO.map((genero) => (genero.id === value ? genero.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
     id: 'estCivDescripcion',
     typeHead: 'string',
     label: 'Est. Civil',
@@ -179,6 +196,14 @@ const cells = [
     mostrarInicio: false,
   },
   {
+    id: 'personasSeguridadSocial',
+    typeHead: 'string',
+    label: 'Seg. Social',
+    value: (value) => SEGURIDAD_SOCIAL.map((segSoc) => (segSoc.id === value ? segSoc.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
     id: 'epsDescripcion',
     typeHead: 'string',
     label: 'EPS',
@@ -198,7 +223,7 @@ const cells = [
     id: 'personasVehiculo',
     typeHead: 'string',
     label: 'Vehiculo',
-    value: (value) => value,
+    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
     align: 'left',
     mostrarInicio: false,
   },
@@ -254,7 +279,7 @@ const cells = [
     id: 'personasZona',
     typeHead: 'string',
     label: 'Zona',
-    value: (value) => SEXO.map((sex) => (sex.id === value ? sex.nombre : '')),
+    value: (value) => ZONA.map((zona) => (zona.id === value ? zona.nombre : '')),
     align: 'left',
     mostrarInicio: false,
   },
@@ -262,7 +287,7 @@ const cells = [
     id: 'personasEstrato',
     typeHead: 'numeric',
     label: 'Estrato',
-    value: (value) => value,
+    value: (value) => ESTRATO.map((estrato) => (estrato.id === value ? estrato.nombre : '')),
     align: 'right',
     mostrarInicio: false,
   },
@@ -294,20 +319,372 @@ const cells = [
     id: 'personasTipoPropiedad',
     typeHead: 'string',
     label: 'Tipo Propiedad',
-    value: (value) => SEXO.map((sex) => (sex.id === value ? sex.nombre : '')),
+    value: (value) => TIPO_PROPIEDAD.map((tipPro) => (tipPro.id === value ? tipPro.nombre : '')),
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'telefono_contacto_familia',
+    id: 'personasNumeroEscritura',
+    typeHead: 'numeric',
+    label: 'Núm. Escritura',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasNotariaEscritura',
+    typeHead: 'numeric',
+    label: 'Notaria Escritura',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasFechaEscritura',
     typeHead: 'string',
-    label: 'Telefono Contacto Familia',
+    label: 'Fecha Escritura',
+    value: (value) => moment(value).format('YYYY-MM-DD'),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIndicativoPC',
+    typeHead: 'string',
+    label: 'Indicativo PC',
+    value: (value) => INDICATIVO_PC.map((IndPC) => (IndPC.id === value ? IndPC.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasNumeroHabitaciones',
+    typeHead: 'numeric',
+    label: 'Núm. Habitaciones',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasNumeroBanos',
+    typeHead: 'numeric',
+    label: 'Núm. Baños',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'tipTecDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Techo',
     value: (value) => value,
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'observaciones',
+    id: 'tipPisDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Piso',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'tipDivDescripcion',
+    typeHead: 'string',
+    label: 'Tipo División',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasSala',
+    typeHead: 'string',
+    label: 'Sala',
+    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasComedor',
+    typeHead: 'string',
+    label: 'Comedor',
+    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasCocina',
+    typeHead: 'string',
+    label: 'Cocina',
+    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasPatio',
+    typeHead: 'string',
+    label: 'Patio',
+    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasTerraza',
+    typeHead: 'string',
+    label: 'Terraza',
+    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'ocupacionesDescripcion',
+    typeHead: 'string',
+    label: 'Ocupación',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasTipoTrabajo',
+    typeHead: 'string',
+    label: 'Tipo Trabajo',
+    value: (value) => TIPO_TRABAJO.map((tipTra) => (tipTra.id === value ? tipTra.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasTipoContrato',
+    typeHead: 'string',
+    label: 'Tipo Contrato',
+    value: (value) => TIPO_CONTRATO.map((tipCon) => (tipCon.id === value ? tipCon.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasNombreEmpresa',
+    typeHead: 'string',
+    label: 'Empresa',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasTelefonoEmpresa',
+    typeHead: 'string',
+    label: 'Teléfono Empresa',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasPuntajeProcredito',
+    typeHead: 'numeric',
+    label: 'Punt. Procrédito',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasPuntajeDatacredito',
+    typeHead: 'numeric',
+    label: 'Punt. Datacrédito',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'depCorr',
+    typeHead: 'string',
+    label: 'Depto. Correspondencia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'ciuCorr',
+    typeHead: 'string',
+    label: 'Ciudad Correspondencia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'comCorr',
+    typeHead: 'string',
+    label: 'Comuna Correspondencia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'barCorr',
+    typeHead: 'string',
+    label: 'Barrio Correspondencia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasCorDireccion',
+    typeHead: 'string',
+    label: 'Dir. Correspondencia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasCorTelefono',
+    typeHead: 'string',
+    label: 'Tel. Correspondencia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIngresosFormales',
+    typeHead: 'numeric',
+    label: 'Ing. Formales',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIngresosInformales',
+    typeHead: 'numeric',
+    label: 'Ing. Informales',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIngresosArriendo',
+    typeHead: 'numeric',
+    label: 'Ing. Arriendo',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIngresosSubsidios',
+    typeHead: 'numeric',
+    label: 'Ing. Subsidio',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIngresosPaternidad',
+    typeHead: 'numeric',
+    label: 'Ing. Paternidad',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIngresosTerceros',
+    typeHead: 'numeric',
+    label: 'Ing. Terceros',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasIngresosOtros',
+    typeHead: 'numeric',
+    label: 'Ing. Otros',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasAportesFormales',
+    typeHead: 'numeric',
+    label: 'Apor. Formales',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasAportesInformales',
+    typeHead: 'numeric',
+    label: 'Apor. Informales',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasAportesArriendo',
+    typeHead: 'numeric',
+    label: 'Apor. Arriendo',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasAportesSubsidios',
+    typeHead: 'numeric',
+    label: 'Apor. Subsidio',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasAportesPaternidad',
+    typeHead: 'numeric',
+    label: 'Apor. Paternidad',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasAportesTerceros',
+    typeHead: 'numeric',
+    label: 'Apor. Terceros',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasAportesOtros',
+    typeHead: 'numeric',
+    label: 'Apor. Otros',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasRefNombre1',
+    typeHead: 'string',
+    label: 'Referencia 1',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasRefTelefono1',
+    typeHead: 'string',
+    label: 'Tel. Ref. 1',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasRefNombre2',
+    typeHead: 'string',
+    label: 'Referencia 2',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasRefTelefono2',
+    typeHead: 'string',
+    label: 'Tel. Ref. 2',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'personasObservaciones',
     typeHead: 'string',
     label: 'Observaciones',
     value: (value) => value,
@@ -523,7 +900,7 @@ const EnhancedTableToolbar = (props) => {
   const {
     numSelected,
     titulo,
-    onOpenAddParticipante,
+    onOpenAddPersona,
     handleOpenPopoverColumns,
     queryFilter,
     nombreFiltro,
@@ -567,19 +944,18 @@ const EnhancedTableToolbar = (props) => {
                       title='Exportar'
                       component='a'
                       className={classes.linkDocumento}
-                      // onClick={onOpenAddParticipante}
                       href={
                         defaultConfig.API_URL +
-                        '/participantes/informe-participantes' +
+                        '/personas/informe-personas' +
                         '?nombre=' +
                         nombreFiltro +
-                        '&documento=' +
+                        '&identificacion=' +
                         numeroDocumentoFiltro +
                         '&familia=' +
                         familiaFiltro +
-                        '&barrio=' +
+                        '&primerApellido=' +
                         primerApellidoFiltro +
-                        '&sexo=' +
+                        '&categoriaAp=' +
                         categoriaApFiltro +
                         '&estado=' +
                         estadoFiltro
@@ -607,8 +983,8 @@ const EnhancedTableToolbar = (props) => {
               </Tooltip>
               {permisos.indexOf('Crear') >= 0 && (
                 <Tooltip
-                  title='Crear Participante'
-                  onClick={onOpenAddParticipante}>
+                  title='Crear Persona'
+                  onClick={onOpenAddPersona}>
                   <IconButton
                     className={classes.createButton}
                     aria-label='filter list'>
@@ -633,7 +1009,7 @@ const EnhancedTableToolbar = (props) => {
               select={true}
               onChange={queryFilter}
               value={estadoFiltro}>
-              {ESTADO.map((estado) => {
+              {ESTADO_REGISTRO.map((estado) => {
                 return (
                   <MenuItem
                     value={estado.id}
@@ -652,7 +1028,7 @@ const EnhancedTableToolbar = (props) => {
               select={true}
               onChange={queryFilter}
               value={categoriaApFiltro}>
-              {SEXO.map((estado) => {
+              {CATEGORIA_APORTES.map((estado) => {
                 return (
                   <MenuItem
                     value={estado.id}
@@ -729,7 +1105,7 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onOpenAddParticipante: PropTypes.func.isRequired,
+  onOpenAddPersona: PropTypes.func.isRequired,
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
@@ -973,7 +1349,7 @@ const Participante = (props) => {
         orderByToSend,
       ),
     );
-  }, [
+  }, [ //eslint-disable-line
     dispatch,
     page,
     rowsPerPage,
@@ -1064,7 +1440,7 @@ const Participante = (props) => {
     }
   };
 
-  const onOpenEditParticipante = (id) => {
+  const onOpenEditPersona = (id) => {
     history.push(history.location.pathname + '/editar/' + id);
   };
 
@@ -1104,14 +1480,14 @@ const Participante = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewParticipante = (id) => {
+  const onOpenViewPersona = (id) => {
     history.push(history.location.pathname + '/ver/' + id);
   };
 
-  const onDeleteParticipante = (id) => {
+  const onDeletePersona = (id) => {
     Swal.fire({
       title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar El Participante?',
+      text: '¿Seguro Que Desea Eliminar La Persona?',
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -1126,7 +1502,7 @@ const Participante = (props) => {
     });
   };
 
-  const onOpenAddParticipante = () => {
+  const onOpenAddPersona = () => {
     history.push(history.location.pathname + '/crear');
   };
 
@@ -1148,9 +1524,9 @@ const Participante = (props) => {
     setPage(1);
   };
 
-  const onOpenParticipanteDatosAdicionales = (id) => {
-    history.push(history.location.pathname + '-datos-adicionales/' + id);
-  };
+  // const onOpenParticipanteDatosAdicionales = (id) => {
+  //   history.push(history.location.pathname + '-datos-adicionales/' + id);
+  // };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -1169,7 +1545,7 @@ const Participante = (props) => {
         {permisos && (
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onOpenAddParticipante={onOpenAddParticipante}
+            onOpenAddPersona={onOpenAddPersona}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
@@ -1249,14 +1625,14 @@ const Participante = (props) => {
                               <Tooltip
                                 title={<IntlMessages id='boton.editar' />}>
                                 <EditIcon
-                                  onClick={() => onOpenEditParticipante(row.id)}
+                                  onClick={() => onOpenEditPersona(row.id)}
                                   className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
                               </Tooltip>
                             )}
                             {permisos.indexOf('Listar') >= 0 && (
                               <Tooltip title={<IntlMessages id='boton.ver' />}>
                                 <VisibilityIcon
-                                  onClick={() => onOpenViewParticipante(row.id)}
+                                  onClick={() => onOpenViewPersona(row.id)}
                                   className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                               </Tooltip>
                             )}
@@ -1264,7 +1640,7 @@ const Participante = (props) => {
                               <Tooltip
                                 title={<IntlMessages id='boton.eliminar' />}>
                                 <DeleteIcon
-                                  onClick={() => onDeleteParticipante(row.id)}
+                                  onClick={() => onDeletePersona(row.id)}
                                   className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
                               </Tooltip>
                             )}

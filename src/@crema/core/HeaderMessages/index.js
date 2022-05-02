@@ -108,6 +108,7 @@ const HeaderMessages = (props) => {
         onClick={onClickMessagesButton}>
         <Badge
           className={classes.badgeStyle}
+          overlap='rectangular'
           badgeContent={messages.length}
           color='secondary'>
           <SmsIcon className={clsx(classes.smsIcon, 'smsIcon')} />

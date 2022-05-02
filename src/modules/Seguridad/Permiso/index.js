@@ -176,7 +176,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     boxShadow: '0px 0px 5px 5px rgb(0 0 0 / 10%)',
     borderRadius: '4px',
     display: 'grid',
-    gap: '20px',
+    // gap: '20px',
   },
   highlight:
     theme.palette.type === 'light'

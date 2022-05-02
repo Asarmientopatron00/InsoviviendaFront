@@ -106,6 +106,7 @@ const Notifications = (props) => {
         onClick={onClickNotificationButton}>
         <Badge
           className={classes.badge}
+          overlap='rectangular'
           badgeContent={notification.length}
           color='secondary'>
           <NotificationsActiveIcon

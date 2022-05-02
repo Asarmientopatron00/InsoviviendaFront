@@ -30,6 +30,7 @@ import {history} from 'redux/store';
 import GetUsuario from '../../../../shared/functions/GetUsuario';
 import {UPDATE_TYPE, CREATE_TYPE} from 'shared/constants/Constantes';
 import {MessageView} from '../../../../@crema';
+import moment from 'moment';
 
 const PersonaCreator = (props) => {
   const {accion, id} = useParams();
@@ -140,13 +141,13 @@ const PersonaCreator = (props) => {
       .required('Requerido'),
     eps_id: yup
       .number()
-      .required('Requerido'),
+      .nullable(),
     grado_escolaridad_id: yup
       .number()
       .required('Requerido'),
     personasVehiculo: yup
       .string()
-      .required('Requerido'),
+      .nullable(),
     personasCorreo: yup
       .string()
       .nullable(),
@@ -161,13 +162,13 @@ const PersonaCreator = (props) => {
       .required('Requerido'),
     comuna_id: yup
       .number()
-      .required('Requerido'),
+      .nullable(),
     barrio_id: yup
       .number()
-      .required('Requerido'),
+      .nullable(),
     personasDireccion: yup
       .string()
-      .nullable(),
+      .required('Requerido'),
     personasZona: yup
       .string()
       .required('Requerido'),
@@ -197,7 +198,15 @@ const PersonaCreator = (props) => {
         LONGITUD_MINIMA_TELEFONOS,
         mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
       )
-      .nullable(),
+      .when(['personasTelefonoCasa'], {
+        is: (fechaInicialFiltro) => fechaInicialFiltro,
+        then: yup.string().nullable(),
+        otherwise: yup
+          .string()
+          .required(
+            'Debe especificar un teléfono fijo o de celular',
+          )
+      }),
     tipo_vivienda_id: yup
       .number()
       .required('Requerido'),
@@ -206,23 +215,23 @@ const PersonaCreator = (props) => {
       .required('Requerido'),
     personasNumeroEscritura: yup
       .string()
-      .required('Requerido'),
+      .nullable(),
     personasNotariaEscritura: yup
       .string()
-      .required('Requerido'),
+      .nullable(),
     personasFechaEscritura: yup
       .date()
-      .required('Requerido'),
+      .nullable(),
     personasIndicativoPC: yup
       .string()
-      .required('Requerido'),
+      .nullable(),
     personasNumeroHabitaciones: yup
       .number()
-      .nullable()
+      .required('Requerido')
       .typeError(mensajeValidacion('numero')),
     personasNumeroBanos: yup
       .number()
-      .nullable()
+      .required('Requerido')
       .typeError(mensajeValidacion('numero')),
     tipo_techo_id: yup
       .number()
@@ -256,7 +265,7 @@ const PersonaCreator = (props) => {
       .required('Requerido'),
     personasTipoContrato: yup
       .string()
-      .required('Requerido'),
+      .nullable(),
     personasNombreEmpresa: yup
       .string()
       .nullable(),
@@ -274,24 +283,24 @@ const PersonaCreator = (props) => {
       .nullable(),
     personasPuntajeProcredito: yup
       .number()
-      .nullable()
+      .required('Requerido')
       .typeError(mensajeValidacion('numero')),
     personasPuntajeDatacredito: yup
       .number()
-      .nullable()
+      .required('Requerido')
       .typeError(mensajeValidacion('numero')),
     departamento_correspondencia_id: yup
       .number()
-      .required('Requerido'),
+      .nullable(),
     ciudad_correspondencia_id: yup
       .number()
-      .required('Requerido'),
+      .nullable(),
     comuna_correspondencia_id: yup
       .number()
-      .required('Requerido'),
+      .nullable(),
     barrio_correspondencia_id: yup
       .number()
-      .required('Requerido'),
+      .nullable(),
     personasCorDireccion: yup
       .string()
       .nullable(),
@@ -300,10 +309,10 @@ const PersonaCreator = (props) => {
       .nullable(),
     personasIngresosFormales: yup
       .number()
-      .nullable(),
+      .required('Requerido'),
     personasIngresosInformales: yup
       .number()
-      .nullable(),
+      .required('Requerido'),
     personasIngresosArriendo: yup
       .number()
       .nullable(),
@@ -321,10 +330,10 @@ const PersonaCreator = (props) => {
       .nullable(),
     personasAportesFormales: yup
       .number()
-      .nullable(),
+      .required('Requerido'),
     personasAportesInformales: yup
       .number()
-      .nullable(),
+      .required('Requerido'),
     personasAportesArriendo: yup
       .number()
       .nullable(),
@@ -516,7 +525,7 @@ const PersonaCreator = (props) => {
             : '',
           personasFechaVinculacion: selectedRow
             ? selectedRow.personasFechaVinculacion
-              ? selectedRow.personasFechaVinculacion
+              ?  moment(selectedRow.personasFechaVinculacion).format('YYYY-MM-DD')
               : ''
             : '',
           departamento_id: selectedRow
@@ -586,7 +595,7 @@ const PersonaCreator = (props) => {
             : '',
           personasFechaEscritura: selectedRow
             ? selectedRow.personasFechaEscritura
-              ? selectedRow.personasFechaEscritura
+              ? moment(selectedRow.personasFechaEscritura).format('YYYY-MM-DD')
               : ''
             : '',
           personasIndicativoPC: selectedRow
@@ -713,72 +722,72 @@ const PersonaCreator = (props) => {
             ? selectedRow.personasIngresosFormales
               ? selectedRow.personasIngresosFormales
               : ''
-            : '',
+            : 0,
           personasIngresosInformales: selectedRow
             ? selectedRow.personasIngresosInformales
               ? selectedRow.personasIngresosInformales
               : ''
-            : '',
+            : 0,
           personasIngresosArriendo: selectedRow
             ? selectedRow.personasIngresosArriendo
               ? selectedRow.personasIngresosArriendo
               : ''
-            : '',
+            : 0,
           personasIngresosSubsidios: selectedRow
             ? selectedRow.personasIngresosSubsidios
               ? selectedRow.personasIngresosSubsidios
               : ''
-            : '',
+            : 0,
           personasIngresosPaternidad: selectedRow
             ? selectedRow.personasIngresosPaternidad
               ? selectedRow.personasIngresosPaternidad
               : ''
-            : '',
+            : 0,
           personasIngresosTerceros: selectedRow
             ? selectedRow.personasIngresosTerceros
               ? selectedRow.personasIngresosTerceros
               : ''
-            : '',
+            : 0,
           personasIngresosOtros: selectedRow
             ? selectedRow.personasIngresosOtros
               ? selectedRow.personasIngresosOtros
               : ''
-            : '',
+            : 0,
           personasAportesFormales: selectedRow
             ? selectedRow.personasAportesFormales
               ? selectedRow.personasAportesFormales
               : ''
-            : '',
+            : 0,
           personasAportesInformales: selectedRow
             ? selectedRow.personasAportesInformales
               ? selectedRow.personasAportesInformales
               : ''
-            : '',
+            : 0,
           personasAportesArriendo: selectedRow
             ? selectedRow.personasAportesArriendo
               ? selectedRow.personasAportesArriendo
               : ''
-            : '',
+            : 0,
           personasAportesSubsidios: selectedRow
             ? selectedRow.personasAportesSubsidios
               ? selectedRow.personasAportesSubsidios
               : ''
-            : '',
+            : 0,
           personasAportesPaternidad: selectedRow
             ? selectedRow.personasAportesPaternidad
               ? selectedRow.personasAportesPaternidad
               : ''
-            : '',
+            : 0,
           personasAportesTerceros: selectedRow
             ? selectedRow.personasAportesTerceros
               ? selectedRow.personasAportesTerceros
               : ''
-            : '',
+            : 0,
           personasAportesOtros: selectedRow
             ? selectedRow.personasAportesOtros
               ? selectedRow.personasAportesOtros
               : ''
-            : '',
+            : 0,
           personasRefNombre1: selectedRow
             ? selectedRow.personasRefNombre1
               ? selectedRow.personasRefNombre1
@@ -814,19 +823,21 @@ const PersonaCreator = (props) => {
               ? selectedRow.personasEstadoRegistro
               : ''
             : '',
+          usuario_creacion_nombre: selectedRow
+            ? selectedRow.usuario_creacion_nombre
+              ? selectedRow.usuario_creacion_nombre
+              : ''
+            : usuario.displayName,
+          usuario_modificacion_nombre: selectedRow
+            ? selectedRow.usuario_modificacion_nombre
+              ? selectedRow.usuario_modificacion_nombre
+              : ''
+            : usuario.displayName,
           familia_id: selectedRow
             ? selectedRow.familia_id
               ? selectedRow.familia_id
               : ''
             : '',
-          sexo: selectedRow ? (selectedRow.sexo ? selectedRow.sexo : '') : '',
-          eps: selectedRow ? (selectedRow.eps ? selectedRow.eps : '') : '',
-          indicativo_discapacidad: selectedRow
-            ? selectedRow.indicativo_discapacidad
-              ? selectedRow.indicativo_discapacidad
-              : 'N'
-            : 'N',
-          estado: selectedRow ? (selectedRow.estado === 1 ? '1' : '0') : '1',
         }}
         validationSchema={validationSchema}
         onSubmit={(data, {setSubmitting, resetForm}) => {
