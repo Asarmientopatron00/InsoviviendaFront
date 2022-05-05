@@ -7,12 +7,14 @@ import {authRouteConfig} from './auth';
 import {initialUrl} from '../shared/constants/AppConst';
 import {seguridadConfigs} from './Seguridad';
 import {personasEntidadesConfigs} from './PersonasEntidades';
+import {parametrizacionConfigs} from './Parametrizacion';
 
 const routeConfigs = [
   ...authRouteConfig,
   ...errorPagesConfigs,
   ...seguridadConfigs,
-  ...personasEntidadesConfigs
+  ...personasEntidadesConfigs,
+  ...parametrizacionConfigs
 ];
 
 const routes = [

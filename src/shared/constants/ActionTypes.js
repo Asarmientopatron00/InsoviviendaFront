@@ -88,3 +88,11 @@ export const SHOW_FAMILIA = 'show_familia';
 export const UPDATE_FAMILIA = 'update_familia';
 export const CREATE_FAMILIA = 'create_familia';
 export const DELETE_FAMILIA = 'delete_familia';
+
+// TIPO IDENTIFICACION
+export const GET_COLECCION_TIPO_IDENTIFICACION = 'get_coleccion_tipo_identificacion';
+export const GET_COLECCION_LIGERA_TIPO_IDENTIFICACION = 'get_coleccion_ligera_tipo_identificacion';
+export const SHOW_TIPO_IDENTIFICACION = 'show_tipo_identificacion';
+export const UPDATE_TIPO_IDENTIFICACION = 'update_tipo_identificacion';
+export const CREATE_TIPO_IDENTIFICACION = 'create_tipo_identificacion';
+export const DELETE_TIPO_IDENTIFICACION = 'delete_tipo_identificacion';
