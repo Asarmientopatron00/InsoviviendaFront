@@ -13,6 +13,7 @@ import ConsultaAuditoriaReducer from './ConsultaAuditoriaReducer';
 import PermisoReducer from './PermisoReducer';
 // PersonasEntidades
 import PersonaReducer from './PersonaReducer';
+import FamiliaReducer from './FamiliaReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -28,5 +29,6 @@ const reducers = (history) =>
     permisoReducer: PermisoReducer,
     consultaAuditoriaReducer: ConsultaAuditoriaReducer,
     personaReducer: PersonaReducer,
+    familiaReducer: FamiliaReducer,
   });
 export default reducers;

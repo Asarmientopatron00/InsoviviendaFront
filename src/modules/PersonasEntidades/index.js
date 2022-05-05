@@ -20,6 +20,11 @@ export const personasEntidadesConfigs = [
         path: '/personas/:accion',
         component: React.lazy(() => import('./Persona/PersonaCreator')),
       },
+      {
+        exact: true,
+        path: '/familias',
+        component: React.lazy(() => import('./Familia')),
+      },
     ],
   },
 ];

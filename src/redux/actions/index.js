@@ -12,3 +12,4 @@ export * from './PermisoAction';
 export * from './ConsultaAuditoriaAction';
 // PersonasEntidades
 export * from './PersonaAction';
+export * from './FamiliaAction';

@@ -80,3 +80,11 @@ export const SHOW_PERSONA = 'show_persona';
 export const UPDATE_PERSONA = 'update_persona';
 export const CREATE_PERSONA = 'create_persona';
 export const DELETE_PERSONA = 'delete_persona';
+
+// FAMILIAS
+export const GET_COLECCION_FAMILIA = 'get_coleccion_familia';
+export const GET_COLECCION_LIGERA_FAMILIA = 'get_coleccion_ligera_familia';
+export const SHOW_FAMILIA = 'show_familia';
+export const UPDATE_FAMILIA = 'update_familia';
+export const CREATE_FAMILIA = 'create_familia';
+export const DELETE_FAMILIA = 'delete_familia';
