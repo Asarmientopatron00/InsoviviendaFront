@@ -13,3 +13,4 @@ export * from './ConsultaAuditoriaAction';
 // PersonasEntidades
 export * from './PersonaAction';
 export * from './FamiliaAction';
+export * from './TipoIdentificacionAction';
