@@ -8,7 +8,7 @@ import {
   onShow,
   onUpdate,
   onCreate,
-} from '../../../../redux/actions/AplicacionAction';
+} from '../../../../redux/actions/FamiliaAction';
 import Slide from '@material-ui/core/Slide';
 import FamiliaForm from './FamiliaForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
@@ -23,7 +23,7 @@ const validationSchema = yup.object({
 });
 
 const FamiliaCreador = (props) => {
-  const {aplicacion, handleOnClose, accion, updateColeccion, titulo} = props;
+  const {familia, personas, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -45,7 +45,7 @@ const FamiliaCreador = (props) => {
 
   let selectedRow = useRef();
   selectedRow = useSelector(
-    ({aplicacionReducer}) => aplicacionReducer.selectedRow,
+    ({familiaReducer}) => familiaReducer.selectedRow,
   );
 
   const initializeSelectedRow = () => {
@@ -71,9 +71,33 @@ const FamiliaCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(aplicacion));
+      dispatch(onShow(familia));
     }
-  }, [accion, dispatch, aplicacion]);
+  }, [accion, dispatch, familia]);
+
+  useEffect(() => {
+    if(selectedRow){
+      const egresos = [
+        selectedRow.familiasEgresosVivienda,
+        selectedRow.familiasEgresosAlimentacion,
+        selectedRow.familiasEgresosSerPublicos,
+        selectedRow.familiasEgresosTransporte,
+        selectedRow.familiasEgresosSalud,
+        selectedRow.familiasEgresosEducacion,
+        selectedRow.familiasEgresosDeudas,
+        selectedRow.familiasEgresosOtros,
+      ]
+      getTotalEgresos(egresos);
+    }
+  },[selectedRow])
+
+  const total = useRef(0);
+
+  const getTotalEgresos = (egresos) => {
+    egresos.forEach((egreso) => {
+      total.current = total.current + parseFloat(egreso??'0')
+    })
+  }
 
   return (
     showForm && (
@@ -85,7 +109,8 @@ const FamiliaCreador = (props) => {
         aria-describedby='simple-modal-description'
         className={classes.dialogBox}
         disableBackdropClick={true}
-        maxWidth={'sm'}>
+        fullWidth
+        maxWidth={'md'}>
         <Scrollbar>
           <Formik
             initialStatus={true}
@@ -93,7 +118,29 @@ const FamiliaCreador = (props) => {
             validateOnBlur={false}
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
-              nombre: selectedRow ? selectedRow.nombre : '',
+              identificacion_persona: selectedRow ? selectedRow.identificacion_persona : '',
+              nombre: selectedRow ? selectedRow.persona.nombre : '',
+              tipo_familia_id: selectedRow ? selectedRow.tipo_familia_id : '',
+              condicion_familia_id: selectedRow ? selectedRow.condicion_familia_id : '',
+              familiasFechaVisitaDomici: selectedRow ? selectedRow.familiasFechaVisitaDomici : '',
+              familiasEgresosVivienda: selectedRow ? selectedRow.familiasEgresosVivienda : 0,
+              familiasEgresosAlimentacion: selectedRow ? selectedRow.familiasEgresosAlimentacion : 0,
+              familiasEgresosSerPublicos: selectedRow ? selectedRow.familiasEgresosSerPublicos : 0,
+              familiasEgresosTransporte: selectedRow ? selectedRow.familiasEgresosTransporte : 0,
+              familiasEgresosSalud: selectedRow ? selectedRow.familiasEgresosSalud : 0,
+              familiasEgresosEducacion: selectedRow ? selectedRow.familiasEgresosEducacion : 0,
+              familiasEgresosDeudas: selectedRow ? selectedRow.familiasEgresosDeudas : 0,
+              familiasEgresosOtros: selectedRow ? selectedRow.familiasEgresosOtros : 0,
+              familiasTotalEgresos: selectedRow ? total.current : 0,
+              familiasAportesFormales: selectedRow ? selectedRow.familiasAportesFormales : 0,
+              familiasAportesInformales: selectedRow ? selectedRow.familiasAportesInformales : 0,
+              familiasAportesArriendo: selectedRow ? selectedRow.familiasAportesArriendo : 0,
+              familiasAportesSubsidios: selectedRow ? selectedRow.familiasAportesSubsidios : 0,
+              familiasAportesPaternidad: selectedRow ? selectedRow.familiasAportesPaternidad : 0,
+              familiasAportesTerceros: selectedRow ? selectedRow.familiasAportesTerceros : 0,
+              familiasAportesOtros: selectedRow ? selectedRow.familiasAportesOtros : 0,
+              familiasTotalAportes: selectedRow ? selectedRow.familiasTotalAportes : 0,
+              familiasObservaciones: selectedRow ? selectedRow.familiasObservaciones : '',
               estado: selectedRow
                 ? selectedRow.estado === 1
                   ? '1'
@@ -119,6 +166,7 @@ const FamiliaCreador = (props) => {
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
+                personas={personas}
                 initialValues={initialValues}
               />
             )}

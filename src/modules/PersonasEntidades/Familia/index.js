@@ -26,6 +26,7 @@ import {
   onGetColeccion,
   onDelete,
 } from '../../../redux/actions/FamiliaAction';
+import {onGetColeccionLigera as onGetColeccionLigeraPersona} from 'redux/actions/PersonaAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -411,7 +412,9 @@ const EnhancedTableToolbar = (props) => {
     onOpenAddFamilia,
     handleOpenPopoverColumns,
     queryFilter,
-    identificacionFiltro,
+    // identificacionFiltro,
+    setIdentificacionFiltro,
+    personas,
     tipos_familia,
     condiciones_familia,
     tipoFamiliaFiltro,
@@ -466,15 +469,15 @@ const EnhancedTableToolbar = (props) => {
           </Box>
           <Box className={classes.contenedorFiltros}>
             <Autocomplete
-              disablePortal
-              style={{
-                paddingRight: '10px'
-              }}
-              name='identificacionFiltro'
               id='identificacionFiltro'
+              // value={identificacionFiltro}
+              onChange={(event, newValue) => newValue&&setIdentificacionFiltro(newValue.personasIdentificacion)}
+              clearOnBlur
+              handleHomeEndKeys
+              selectOnFocus
+              options={personas}
+              // getOptionSelected={(option, value) =>  option.personasIdentificacion === value}
               getOptionLabel={(option) => option.nombre}
-              onChange={queryFilter}
-              options={tipos_familia}
               renderInput={(params) => <TextField {...params} label='Solicitante'/>}
             />
             <TextField
@@ -568,7 +571,7 @@ EnhancedTableToolbar.propTypes = {
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
-  identificacionFiltro: PropTypes.string.isRequired,
+  // identificacionFiltro: PropTypes.string.isRequired,
   // tipoFamiliaFiltro: PropTypes.string.isRequired,
   // condicionFamiliaFiltro: PropTypes.string.isRequired,
   // estadoFiltro: PropTypes.string.isRequired,
@@ -714,6 +717,7 @@ const Familias = (props) => {
 
   const tipos_familia = options;
   const condiciones_familia =  options;
+  const personas = useSelector(({personaReducer}) => personaReducer.ligera);
 
   let columnasMostradasInicial = [];
 
@@ -775,6 +779,10 @@ const Familias = (props) => {
     setPage(1);
   }, [debouncedId, tipoFamiliaFiltro, condicionFamiliaFiltro, estadoFiltro, orderByToSend]);
 
+  useEffect(() => {
+    dispatch(onGetColeccionLigeraPersona());
+  },[]) //eslint-disable-line
+
   const queryFilter = (e) => {
     switch (e.target.name) {
       case 'identificacionFiltro':
@@ -788,6 +796,8 @@ const Familias = (props) => {
         break;
       case 'estadoFiltro':
         setEstadoFiltro(e.target.value);
+        break;
+      default:
         break;
     }
   };
@@ -933,7 +943,9 @@ const Familias = (props) => {
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
             identificacionFiltro={identificacionFiltro}
+            setIdentificacionFiltro={setIdentificacionFiltro}
             estadoFiltro={estadoFiltro}
+            personas={personas}
             tipoFamiliaFiltro={tipoFamiliaFiltro}
             condicionFamiliaFiltro={condicionFamiliaFiltro}
             permisos={permisos}
@@ -1101,7 +1113,8 @@ const Familias = (props) => {
       {showForm ? (
         <FamiliaCreador
           showForm={showForm}
-          aplicacion={familiaSeleccionada}
+          familia={familiaSeleccionada}
+          personas={personas}
           accion={accion}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}

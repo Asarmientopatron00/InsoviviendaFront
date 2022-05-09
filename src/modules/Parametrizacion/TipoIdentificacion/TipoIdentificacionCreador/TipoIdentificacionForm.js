@@ -102,7 +102,7 @@ const TipoIdentificacionForm = (props) => {
               label='Estado'
               name='tipIdeEstado'
               required
-              // disabled={disabled}
+              disabled={accion === 'ver'}
               options={options}
             />
           </Box>
