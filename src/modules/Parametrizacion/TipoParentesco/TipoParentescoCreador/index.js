@@ -8,9 +8,9 @@ import {
   onShow,
   onUpdate,
   onCreate,
-} from '../../../../redux/actions/TipoIdentificacionAction';
+} from '../../../../redux/actions/TipoParentescoAction';
 import Slide from '@material-ui/core/Slide';
-import TipoIdentificacionForm from './TipoIdentificacionForm';
+import TipoParentescoForm from './TipoParentescoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
 
@@ -22,8 +22,8 @@ const validationSchema = yup.object({
   tipIdeDescripcion: yup.string().required('Requerido'),
 });
 
-const TipoIdentificacionCreador = (props) => {
-  const {tipoIdentificacion, handleOnClose, accion, updateColeccion, titulo} = props;
+const TipoParentescoCreador = (props) => {
+  const {tipoParentesco, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -45,7 +45,7 @@ const TipoIdentificacionCreador = (props) => {
 
   let selectedRow = useRef();
   selectedRow = useSelector(
-    ({tipoIdentificacionReducer}) => tipoIdentificacionReducer.selectedRow,
+    ({tipoParentescoReducer}) => tipoParentescoReducer.selectedRow,
   );
 
   const initializeSelectedRow = () => {
@@ -71,9 +71,9 @@ const TipoIdentificacionCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(tipoIdentificacion));
+      dispatch(onShow(tipoParentesco));
     }
-  }, [accion, dispatch, tipoIdentificacion]);
+  }, [accion, dispatch, tipoParentesco]);
 
   return (
     showForm && (
@@ -113,7 +113,7 @@ const TipoIdentificacionCreador = (props) => {
               setSubmitting(false);
             }}>
             {({initialValues}) => (
-              <TipoIdentificacionForm
+              <TipoParentescoForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
@@ -127,4 +127,4 @@ const TipoIdentificacionCreador = (props) => {
   );
 };
 
-export default TipoIdentificacionCreador;
+export default TipoParentescoCreador;

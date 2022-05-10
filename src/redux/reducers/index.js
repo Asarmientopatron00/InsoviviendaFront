@@ -16,6 +16,8 @@ import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
+import TipoParentescoReducer from './TipoParentescoReducer';
+import TipoDiscapacidadReducer from './TipoDiscapacidadReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -33,5 +35,7 @@ const reducers = (history) =>
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
+    tipoParentescoReducer: TipoParentescoReducer,
+    tipoDiscapacidadReducer: TipoDiscapacidadReducer,
   });
 export default reducers;

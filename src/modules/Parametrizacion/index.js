@@ -10,6 +10,17 @@ export const parametrizacionConfigs = [
         path: '/tipos-identificacion',
         component: React.lazy(() => import('./TipoIdentificacion')),
       },
+      {
+        exact: true,
+        path: '/tipos-parentesco',
+        component: React.lazy(() => import('./TipoParentesco')),
+      },
+      {
+        exact: true,
+        path: '/tipos-discapacidad',
+        component: React.lazy(() => import('./TipoDiscapacidad')),
+      },
     ],
+
   },
 ];

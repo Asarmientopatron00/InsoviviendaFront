@@ -96,3 +96,19 @@ export const SHOW_TIPO_IDENTIFICACION = 'show_tipo_identificacion';
 export const UPDATE_TIPO_IDENTIFICACION = 'update_tipo_identificacion';
 export const CREATE_TIPO_IDENTIFICACION = 'create_tipo_identificacion';
 export const DELETE_TIPO_IDENTIFICACION = 'delete_tipo_identificacion';
+
+// TIPO PARENTESCO
+export const GET_COLECCION_TIPO_PARENTESCO = 'get_coleccion_tipo_parentesco';
+export const GET_COLECCION_LIGERA_TIPO_PARENTESCO = 'get_coleccion_ligera_tipo_parentesco';
+export const SHOW_TIPO_PARENTESCO = 'show_tipo_parentesco';
+export const UPDATE_TIPO_PARENTESCO = 'update_tipo_parentesco';
+export const CREATE_TIPO_PARENTESCO = 'create_tipo_parentesco';
+export const DELETE_TIPO_PARENTESCO = 'delete_tipo_parentesco';
+
+// TIPO DISCAPACIDAD
+export const GET_COLECCION_TIPO_DISCAPACIDAD = 'get_coleccion_tipo_discapacidad';
+export const GET_COLECCION_LIGERA_TIPO_DISCAPACIDAD = 'get_coleccion_ligera_tipo_discapacidad';
+export const SHOW_TIPO_DISCAPACIDAD = 'show_tipo_discapacidad';
+export const UPDATE_TIPO_DISCAPACIDAD = 'update_tipo_discapacidad';
+export const CREATE_TIPO_DISCAPACIDAD = 'create_tipo_discapacidad';
+export const DELETE_TIPO_DISCAPACIDAD = 'delete_tipo_discapacidad';

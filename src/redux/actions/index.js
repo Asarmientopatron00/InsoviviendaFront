@@ -14,3 +14,5 @@ export * from './ConsultaAuditoriaAction';
 export * from './PersonaAction';
 export * from './FamiliaAction';
 export * from './TipoIdentificacionAction';
+export * from './TipoParentescoAction';
+export * from './TipoParentescoAction';
