@@ -73,6 +73,10 @@ export const DELETE_PERMISO = 'delete_permiso';
 export const GET_COLECCION_CONSULTA_AUDITORIA =
   'get_coleccion_consulta_auditoria';
 
+// AUDITORÍA PROCESOs
+export const GET_COLECCION_AUDITORIA_PROCESO =
+  'get_coleccion_auditoria_proceso';
+
 // PERSONAS
 export const GET_COLECCION_PERSONA = 'get_coleccion_persona';
 export const GET_COLECCION_LIGERA_PERSONA = 'get_coleccion_ligera_persona';

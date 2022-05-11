@@ -120,7 +120,7 @@ const cells = [
     typeHead: 'numeric',
     label: 'Familia Id',
     value: (value) => value,
-    align: 'left',
+    align: 'right',
     mostrarInicio: true,
   },
   {

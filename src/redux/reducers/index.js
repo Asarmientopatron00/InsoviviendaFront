@@ -11,6 +11,7 @@ import UsuarioReducer from './UsuarioReducer';
 import OpcionSistemaReducer from './OpcionSistemaReducer';
 import ConsultaAuditoriaReducer from './ConsultaAuditoriaReducer';
 import PermisoReducer from './PermisoReducer';
+import AuditoriaProcesoReducer from './AuditoriaProcesoReducer';
 // PersonasEntidades
 import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
@@ -30,6 +31,7 @@ const reducers = (history) =>
     opcionSistemaReducer: OpcionSistemaReducer,
     permisoReducer: PermisoReducer,
     consultaAuditoriaReducer: ConsultaAuditoriaReducer,
+    auditoriaProcesoReducer: AuditoriaProcesoReducer,
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
