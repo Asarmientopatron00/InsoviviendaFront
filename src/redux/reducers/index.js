@@ -16,6 +16,13 @@ import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
+import BancoReducer from './BancoReducer';
+import FormaPagoReducer from './FormaPagoReducer';
+import TipoDocumentoProyectoReducer from './TipoDocumentoProyectoReducer';
+import TipoGastoReducer from './TipoGastoReducer';
+import TipoBenefactorReducer from './TipoBenefactorReducer';
+import TipoDonacionReducer from './TipoDonacionReducer';
+import ParametroCorreoReducer from './ParametroCorreoReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -33,5 +40,13 @@ const reducers = (history) =>
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
-  });
-export default reducers;
+    bancoReducer: BancoReducer,
+    formaPagoReducer: FormaPagoReducer,
+    parametroCorreoReducer: ParametroCorreoReducer,
+    tipoBenefactorReducer: TipoBenefactorReducer,
+    tipoDocumentoProyectoReducer: TipoDocumentoProyectoReducer,
+    tipoDonacionReducer: TipoDonacionReducer,
+    tipoGastoReducer: TipoGastoReducer,
+    });
+
+  export default reducers;
