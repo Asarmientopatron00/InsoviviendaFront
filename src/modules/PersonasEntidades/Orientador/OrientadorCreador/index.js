@@ -8,9 +8,9 @@ import {
   onShow,
   onUpdate,
   onCreate,
-} from '../../../../redux/actions/TipoIdentificacionAction';
+} from '../../../../redux/actions/OrientadorAction';
 import Slide from '@material-ui/core/Slide';
-import TipoIdentificacionForm from './TipoIdentificacionForm';
+import OrientadorForm from './OrientadorForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
 
@@ -19,11 +19,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const validationSchema = yup.object({
-  tipIdeDescripcion: yup.string().required('Requerido'),
+  orientadoresIdentificacion: yup.string().required('Requerido'),
+  orientadoresNombre: yup.string().required('Requerido'),
 });
 
-const TipoIdentificacionCreador = (props) => {
-  const {tipoIdentificacion, handleOnClose, accion, updateColeccion, titulo} = props;
+const OrientadorCreador = (props) => {
+  const {orientador, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -45,7 +46,7 @@ const TipoIdentificacionCreador = (props) => {
 
   let selectedRow = useRef();
   selectedRow = useSelector(
-    ({tipoIdentificacionReducer}) => tipoIdentificacionReducer.selectedRow,
+    ({orientadorReducer}) => orientadorReducer.selectedRow,
   );
 
   const initializeSelectedRow = () => {
@@ -71,9 +72,9 @@ const TipoIdentificacionCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(tipoIdentificacion));
+      dispatch(onShow(orientador));
     }
-  }, [accion, dispatch, tipoIdentificacion]);
+  }, [accion, dispatch, orientador]);
 
   return (
     showForm && (
@@ -93,8 +94,9 @@ const TipoIdentificacionCreador = (props) => {
             validateOnBlur={false}
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
-              tipIdeDescripcion: selectedRow ? selectedRow.nombre : '',
-              tipIdeEstado: selectedRow
+              orientadoresIdentificacion: selectedRow ? selectedRow.identificacion : '', 
+              orientadoresNombre: selectedRow ? selectedRow.nombre : '',
+              orientadoresEstado: selectedRow
                 ? selectedRow.estado === 1
                   ? '1'
                   : '0'
@@ -113,7 +115,7 @@ const TipoIdentificacionCreador = (props) => {
               setSubmitting(false);
             }}>
             {({initialValues}) => (
-              <TipoIdentificacionForm
+              <OrientadorForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
@@ -127,4 +129,4 @@ const TipoIdentificacionCreador = (props) => {
   );
 };
 
-export default TipoIdentificacionCreador;
+export default OrientadorCreador;

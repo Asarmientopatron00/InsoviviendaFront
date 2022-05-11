@@ -8,9 +8,9 @@ import {
   onShow,
   onUpdate,
   onCreate,
-} from '../../../../redux/actions/TipoIdentificacionAction';
+} from '../../../../redux/actions/TipoAsesoriaAction';
 import Slide from '@material-ui/core/Slide';
-import TipoIdentificacionForm from './TipoIdentificacionForm';
+import TipoAsesoriaForm from './TipoAsesoriaForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
 
@@ -19,11 +19,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const validationSchema = yup.object({
-  tipIdeDescripcion: yup.string().required('Requerido'),
+  tipOriDescripcion: yup.string().required('Requerido'),
 });
 
-const TipoIdentificacionCreador = (props) => {
-  const {tipoIdentificacion, handleOnClose, accion, updateColeccion, titulo} = props;
+const TipoAsesoriaCreador = (props) => {
+  const {tipoAsesoria, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -45,7 +45,7 @@ const TipoIdentificacionCreador = (props) => {
 
   let selectedRow = useRef();
   selectedRow = useSelector(
-    ({tipoIdentificacionReducer}) => tipoIdentificacionReducer.selectedRow,
+    ({tipoAsesoriaReducer}) => tipoAsesoriaReducer.selectedRow,
   );
 
   const initializeSelectedRow = () => {
@@ -71,9 +71,9 @@ const TipoIdentificacionCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(tipoIdentificacion));
+      dispatch(onShow(tipoAsesoria));
     }
-  }, [accion, dispatch, tipoIdentificacion]);
+  }, [accion, dispatch, tipoAsesoria]);
 
   return (
     showForm && (
@@ -93,8 +93,8 @@ const TipoIdentificacionCreador = (props) => {
             validateOnBlur={false}
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
-              tipIdeDescripcion: selectedRow ? selectedRow.nombre : '',
-              tipIdeEstado: selectedRow
+              tipOriDescripcion: selectedRow ? selectedRow.nombre : '',
+              tipOriEstado: selectedRow
                 ? selectedRow.estado === 1
                   ? '1'
                   : '0'
@@ -113,7 +113,7 @@ const TipoIdentificacionCreador = (props) => {
               setSubmitting(false);
             }}>
             {({initialValues}) => (
-              <TipoIdentificacionForm
+              <TipoAsesoriaForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
@@ -127,4 +127,4 @@ const TipoIdentificacionCreador = (props) => {
   );
 };
 
-export default TipoIdentificacionCreador;
+export default TipoAsesoriaCreador;

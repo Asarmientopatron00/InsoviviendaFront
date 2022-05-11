@@ -112,3 +112,19 @@ export const SHOW_TIPO_DISCAPACIDAD = 'show_tipo_discapacidad';
 export const UPDATE_TIPO_DISCAPACIDAD = 'update_tipo_discapacidad';
 export const CREATE_TIPO_DISCAPACIDAD = 'create_tipo_discapacidad';
 export const DELETE_TIPO_DISCAPACIDAD = 'delete_tipo_discapacidad';
+
+// TIPO ASESORIA
+export const GET_COLECCION_TIPO_ASESORIA = 'get_coleccion_tipo_asesoria';
+export const GET_COLECCION_LIGERA_TIPO_ASESORIA = 'get_coleccion_ligera_tipo_asesoria';
+export const SHOW_TIPO_ASESORIA = 'show_tipo_asesoria';
+export const UPDATE_TIPO_ASESORIA = 'update_tipo_asesoria';
+export const CREATE_TIPO_ASESORIA = 'create_tipo_asesoria';
+export const DELETE_TIPO_ASESORIA = 'delete_tipo_asesoria';
+
+// ORIENTADORES
+export const GET_COLECCION_ORIENTADOR = 'get_coleccion_orientador';
+export const GET_COLECCION_LIGERA_ORIENTADOR = 'get_coleccion_ligera_orientador';
+export const SHOW_ORIENTADOR = 'show_orientador';
+export const UPDATE_ORIENTADOR = 'update_orientador';
+export const CREATE_ORIENTADOR = 'create_orientador';
+export const DELETE_ORIENTADOR = 'delete_orientador';

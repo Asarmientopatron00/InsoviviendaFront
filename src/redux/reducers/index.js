@@ -14,10 +14,12 @@ import PermisoReducer from './PermisoReducer';
 // PersonasEntidades
 import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
+import OrientadorReducer from './OrientadorReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import TipoParentescoReducer from './TipoParentescoReducer';
 import TipoDiscapacidadReducer from './TipoDiscapacidadReducer';
+import TipoAsesoriaReducer from './TipoAsesoriaReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -34,8 +36,10 @@ const reducers = (history) =>
     consultaAuditoriaReducer: ConsultaAuditoriaReducer,
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
+    orientadorReducer: OrientadorReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
     tipoParentescoReducer: TipoParentescoReducer,
     tipoDiscapacidadReducer: TipoDiscapacidadReducer,
+    tipoAsesoriaReducer: TipoAsesoriaReducer,
   });
 export default reducers;

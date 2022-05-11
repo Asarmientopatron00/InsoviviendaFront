@@ -20,6 +20,11 @@ export const parametrizacionConfigs = [
         path: '/tipos-discapacidad',
         component: React.lazy(() => import('./TipoDiscapacidad')),
       },
+      {
+        exact: true,
+        path: '/tipos-orientacion',
+        component: React.lazy(() => import('./TipoAsesoria')),
+      },
     ],
 
   },
