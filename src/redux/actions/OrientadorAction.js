@@ -28,7 +28,7 @@ export const onGetColeccion = (
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .get('orientador', {
+      .get('orientadores', {
         params: {
           page: page,
           limite: rowsPerPage,
@@ -58,7 +58,7 @@ export const onGetColeccionLigera = () => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .get('orientador', {
+      .get('orientadores', {
         params: {
           ligera: true,
         },
@@ -86,7 +86,7 @@ export const onShow = (id) => {
     if (id !== 0) {
       dispatch({type: FETCH_START});
       jwtAxios
-        .get('orientador/' + id)
+        .get('orientadores/' + id)
         .then((data) => {
           if (data.status === 200) {
             dispatch({type: FETCH_SUCCESS});
@@ -109,7 +109,7 @@ export const onUpdate = (params, handleOnClose, updateColeccion) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .put('orientador/' + params.id, params)
+      .put('orientadores/' + params.id, params)
       .then((data) => {
         if (data.status === 200) {
           dispatch({type: FETCH_SUCCESS});
@@ -140,7 +140,7 @@ export const onDelete = (id) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .delete('orientador/' + id)
+      .delete('orientadores/' + id)
       .then((data) => {
         if (data.status === 200) {
           dispatch({type: FETCH_SUCCESS});
@@ -170,7 +170,7 @@ export const onCreate = (params, handleOnClose, updateColeccion) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .post('orientador', params)
+      .post('orientadores', params)
       .then((data) => {
         if (data.status === 201) {
           dispatch({type: FETCH_SUCCESS});

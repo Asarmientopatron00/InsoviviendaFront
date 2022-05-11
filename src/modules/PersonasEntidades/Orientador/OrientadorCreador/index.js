@@ -24,7 +24,7 @@ const validationSchema = yup.object({
 });
 
 const OrientadorCreador = (props) => {
-  const {orientador, handleOnClose, accion, updateColeccion, titulo} = props;
+  const {Orientador, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -72,9 +72,9 @@ const OrientadorCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(orientador));
+      dispatch(onShow(Orientador));
     }
-  }, [accion, dispatch, orientador]);
+  }, [accion, dispatch, Orientador]);
 
   return (
     showForm && (

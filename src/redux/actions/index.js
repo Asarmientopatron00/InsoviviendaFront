@@ -17,3 +17,4 @@ export * from './TipoIdentificacionAction';
 export * from './TipoParentescoAction';
 export * from './TipoDiscapacidadAction';
 export * from './TipoAsesoriaAction';
+export * from './OrientadorAction';

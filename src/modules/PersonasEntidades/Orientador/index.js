@@ -51,7 +51,7 @@ const {
 
 const cells = [
   {
-    id: 'Identificacion',
+    id: 'identificacion',
     typeHead: 'string',
     label: 'Identificacion',
     value: (value) => value,
@@ -464,7 +464,7 @@ const Orientador = (props) => {
   const [accion, setAccion] = useState('ver');
   const [OrientadorSeleccionado, setOrientadorSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({OrientadorReducer}) => OrientadorReducer,
+    ({orientadorReducer}) => orientadorReducer,
   );
 
   const {message, error, messageType} = useSelector(({common}) => common);
