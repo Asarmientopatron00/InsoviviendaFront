@@ -100,3 +100,11 @@ export const SHOW_TIPO_IDENTIFICACION = 'show_tipo_identificacion';
 export const UPDATE_TIPO_IDENTIFICACION = 'update_tipo_identificacion';
 export const CREATE_TIPO_IDENTIFICACION = 'create_tipo_identificacion';
 export const DELETE_TIPO_IDENTIFICACION = 'delete_tipo_identificacion';
+
+// PROYECTOS
+export const GET_COLECCION_PROYECTO = 'get_coleccion_proyecto';
+export const GET_COLECCION_LIGERA_PROYECTO = 'get_coleccion_ligera_proyecto';
+export const SHOW_PROYECTO = 'show_proyecto';
+export const UPDATE_PROYECTO = 'update_proyecto';
+export const CREATE_PROYECTO = 'create_proyecto';
+export const DELETE_PROYECTO = 'delete_proyecto';

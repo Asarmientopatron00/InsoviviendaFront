@@ -20,7 +20,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {onGetColeccion} from '../../../redux/actions/AuditoriaProcesoAction';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import Popover from '@material-ui/core/Popover';
 import TuneIcon from '@material-ui/icons/Tune';

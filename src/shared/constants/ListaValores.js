@@ -91,3 +91,34 @@ export const ESTADO_TRAMITE = [
   {id: 'AP', nombre: 'Aprobado', estado: 1},
   {id: 'RE', nombre: 'Rechazado', estado: 1},
 ];
+
+export const ESTADOS_PROYECTO = [
+  {id: 'SOL', nombre: 'Solicitud', estado: 1},
+  {id: 'EST', nombre: 'Estudio', estado: 1},
+  {id: 'APR', nombre: 'Aprobado', estado: 1},
+  {id: 'REC', nombre: 'Rechazado', estado: 1},
+  {id: 'FOR', nombre: 'Formalización', estado: 1},
+  {id: 'DES', nombre: 'Desembolsado', estado: 1},
+  {id: 'CAN', nombre: 'Cancelado', estado: 1},
+  {id: 'CON', nombre: 'Congelado', estado: 1},
+];
+
+export const TIPOS_PROYECTO = [
+  {id: 'NOR', nombre: 'Normalización', estado: 1},
+  {id: 'MEJ', nombre: 'Mejora', estado: 1},
+  {id: 'CON', nombre: 'Construcción', estado: 1},
+  {id: 'COM', nombre: 'Compra', estado: 1},
+];
+
+export const ESTADOS_FORMALIZACION = [
+  {id: 'AN', nombre: 'Autorización Notaria', estado: 1},
+  {id: 'FI', nombre: 'Firma', estado: 1},
+  {id: 'IR', nombre: 'Ingreso Reg.', estado: 1},
+  {id: 'SR', nombre: 'Salida Reg.', estado: 1},
+  {id: 'PA', nombre: 'Pagaré', estado: 1},
+];
+
+export const TIPOS_CUENTA_RECAUDO = [
+  {id: 'AH', nombre: 'Ahorros', estado: 1},
+  {id: 'CO', nombre: 'Corriente', estado: 1},
+];
