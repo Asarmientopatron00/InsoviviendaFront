@@ -86,16 +86,29 @@ const FamiliaCreador = (props) => {
         selectedRow.familiasEgresosEducacion,
         selectedRow.familiasEgresosDeudas,
         selectedRow.familiasEgresosOtros,
-      ]
-      getTotalEgresos(egresos);
+      ];
+      const aportes = [
+        selectedRow.familiasAportesFormales,
+        selectedRow.familiasAportesInformales,
+        selectedRow.familiasAportesArriendo,
+        selectedRow.familiasAportesSubsidios,
+        selectedRow.familiasAportesPaternidad,
+        selectedRow.familiasAportesTerceros,
+        selectedRow.familiasAportesOtros,
+      ];
+      getTotales(egresos, aportes);
     }
   },[selectedRow])
 
   const total = useRef(0);
+  const totalAportes = useRef(0);
 
-  const getTotalEgresos = (egresos) => {
+  const getTotales = (egresos, aportes) => {
     egresos.forEach((egreso) => {
       total.current = total.current + parseFloat(egreso??'0')
+    })
+    aportes.forEach((aporte) => {
+      totalAportes.current = totalAportes.current + parseFloat(aporte??'0')
     })
   }
 
@@ -139,7 +152,7 @@ const FamiliaCreador = (props) => {
               familiasAportesPaternidad: selectedRow ? selectedRow.familiasAportesPaternidad : 0,
               familiasAportesTerceros: selectedRow ? selectedRow.familiasAportesTerceros : 0,
               familiasAportesOtros: selectedRow ? selectedRow.familiasAportesOtros : 0,
-              familiasTotalAportes: selectedRow ? selectedRow.familiasTotalAportes : 0,
+              familiasTotalAportes: selectedRow ? totalAportes.current : 0,
               familiasObservaciones: selectedRow ? selectedRow.familiasObservaciones : '',
               estado: selectedRow
                 ? selectedRow.estado === 1
