@@ -102,7 +102,7 @@ const TipoDiscapacidadForm = (props) => {
               label='Estado'
               name='tipDisEstado'
               required
-              // disabled={disabled}
+              disabled={accion === 'ver'}
               options={options}
             />
           </Box>

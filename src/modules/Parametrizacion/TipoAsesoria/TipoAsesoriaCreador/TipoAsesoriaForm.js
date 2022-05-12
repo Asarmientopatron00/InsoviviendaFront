@@ -102,7 +102,7 @@ const TipoAsesoriaForm = (props) => {
               label='Estado'
               name='tipOriEstado'
               required
-              // disabled={disabled}
+              disabled={accion === 'ver'}
               options={options}
             />
           </Box>

@@ -19,7 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const validationSchema = yup.object({
-  tipIdeDescripcion: yup.string().required('Requerido'),
+  tipParDescripcion: yup.string().required('Requerido'),
 });
 
 const TipoParentescoCreador = (props) => {

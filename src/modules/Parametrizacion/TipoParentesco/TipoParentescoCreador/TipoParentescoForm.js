@@ -102,7 +102,7 @@ const TipoParentescoForm = (props) => {
               label='Estado'
               name='tipParEstado'
               required
-              // disabled={disabled}
+              disabled={accion === 'ver'}
               options={options}
             />
           </Box>

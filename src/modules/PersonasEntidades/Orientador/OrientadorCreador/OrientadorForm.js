@@ -108,7 +108,7 @@ const OrientadorForm = (props) => {
               label='Estado'
               name='orientadoresEstado'
               required
-              // disabled={disabled}
+              disabled={accion === 'ver'}
               options={options}
             />
           </Box>
