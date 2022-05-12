@@ -19,6 +19,12 @@ import FamiliaReducer from './FamiliaReducer';
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
+import OrientadorReducer from './OrientadorReducer';
+//Parametrizacion
+import TipoIdentificacionReducer from './TipoIdentificacionReducer';
+import TipoParentescoReducer from './TipoParentescoReducer';
+import TipoDiscapacidadReducer from './TipoDiscapacidadReducer';
+import TipoAsesoriaReducer from './TipoAsesoriaReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -36,7 +42,11 @@ const reducers = (history) =>
     auditoriaProcesoReducer: AuditoriaProcesoReducer,
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
+    orientadorReducer: OrientadorReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
     proyectoReducer: ProyectoReducer,
+    tipoParentescoReducer: TipoParentescoReducer,
+    tipoDiscapacidadReducer: TipoDiscapacidadReducer,
+    tipoAsesoriaReducer: TipoAsesoriaReducer,
   });
 export default reducers;

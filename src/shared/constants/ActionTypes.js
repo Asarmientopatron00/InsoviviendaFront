@@ -108,3 +108,34 @@ export const SHOW_PROYECTO = 'show_proyecto';
 export const UPDATE_PROYECTO = 'update_proyecto';
 export const CREATE_PROYECTO = 'create_proyecto';
 export const DELETE_PROYECTO = 'delete_proyecto';
+// TIPO PARENTESCO
+export const GET_COLECCION_TIPO_PARENTESCO = 'get_coleccion_tipo_parentesco';
+export const GET_COLECCION_LIGERA_TIPO_PARENTESCO = 'get_coleccion_ligera_tipo_parentesco';
+export const SHOW_TIPO_PARENTESCO = 'show_tipo_parentesco';
+export const UPDATE_TIPO_PARENTESCO = 'update_tipo_parentesco';
+export const CREATE_TIPO_PARENTESCO = 'create_tipo_parentesco';
+export const DELETE_TIPO_PARENTESCO = 'delete_tipo_parentesco';
+
+// TIPO DISCAPACIDAD
+export const GET_COLECCION_TIPO_DISCAPACIDAD = 'get_coleccion_tipo_discapacidad';
+export const GET_COLECCION_LIGERA_TIPO_DISCAPACIDAD = 'get_coleccion_ligera_tipo_discapacidad';
+export const SHOW_TIPO_DISCAPACIDAD = 'show_tipo_discapacidad';
+export const UPDATE_TIPO_DISCAPACIDAD = 'update_tipo_discapacidad';
+export const CREATE_TIPO_DISCAPACIDAD = 'create_tipo_discapacidad';
+export const DELETE_TIPO_DISCAPACIDAD = 'delete_tipo_discapacidad';
+
+// TIPO ASESORIA
+export const GET_COLECCION_TIPO_ASESORIA = 'get_coleccion_tipo_asesoria';
+export const GET_COLECCION_LIGERA_TIPO_ASESORIA = 'get_coleccion_ligera_tipo_asesoria';
+export const SHOW_TIPO_ASESORIA = 'show_tipo_asesoria';
+export const UPDATE_TIPO_ASESORIA = 'update_tipo_asesoria';
+export const CREATE_TIPO_ASESORIA = 'create_tipo_asesoria';
+export const DELETE_TIPO_ASESORIA = 'delete_tipo_asesoria';
+
+// ORIENTADORES
+export const GET_COLECCION_ORIENTADOR = 'get_coleccion_orientador';
+export const GET_COLECCION_LIGERA_ORIENTADOR = 'get_coleccion_ligera_orientador';
+export const SHOW_ORIENTADOR = 'show_orientador';
+export const UPDATE_ORIENTADOR = 'update_orientador';
+export const CREATE_ORIENTADOR = 'create_orientador';
+export const DELETE_ORIENTADOR = 'delete_orientador';

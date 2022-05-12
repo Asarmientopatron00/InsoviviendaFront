@@ -25,6 +25,11 @@ export const personasEntidadesConfigs = [
         path: '/familias',
         component: React.lazy(() => import('./Familia')),
       },
+      {
+        exact: true,
+        path: '/orientadores',
+        component: React.lazy(() => import('./Orientador')),
+      },
     ],
   },
 ];
