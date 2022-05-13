@@ -16,6 +16,76 @@ const options = [
   {value: '0', label: 'Inactivo'},
 ];
 
+const useStyles = makeStyles((theme) => ({
+  bottomsGroup: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingBottom: '20px',
+    gap: '10px',
+    backgroundColor: 'white',
+    paddingRight: '20px',
+    position: 'sticky',
+    left: 0,
+    bottom: 0,
+  },
+  myTextField: {
+    width: '100%',
+    marginBottom: 5,
+    [theme.breakpoints.up('xl')]: {
+      marginBottom: 5,
+    },
+    height: '60px',
+  },
+  MySelectField: {
+    width: 'auto',
+    marginBottom: 16,
+    [theme.breakpoints.up('xl')]: {
+      marginBottom: 24,
+    },
+    color: theme.palette.primary.main,
+    '&:target': {
+      color: theme.palette.primary.main,
+    },
+  },
+  btnRoot: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.colorHover,
+      cursor: 'pointer',
+    },
+  },
+  btnPrymary: {
+    backgroundColor: theme.palette.secondary.main,
+  },
+  btnSecundary: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  widthFull: {
+    width: '100%',
+  },
+  pointer: {
+    cursor: 'pointer',
+  },
+  inputs_2: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2,1fr)',
+  },
+  inputs_3: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '1fr 3fr 3fr',
+  },
+  inputs_4: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4,1fr)',
+    gap: '10px'
+  },
+}));
+
 const FamiliaForm = (props) => {
   const {handleOnClose, accion, values, initialValues, titulo, setFieldValue, personas} = props;
 
@@ -29,10 +99,9 @@ const FamiliaForm = (props) => {
 
   useEffect(() => {
     if(values.identificacion_persona){
-      const persona = personas.find((persona) => persona.personasIdentificacion == values.identificacion_persona); //eslint-disable-line
+      const persona = personas.find((persona) => persona.identificacion == values.identificacion_persona); //eslint-disable-line
       if(persona){
         setFieldValue('nombre', persona.nombre);
-        console.log(values.identificacion_persona);
       }
     } else {
       setFieldValue('nombre', '');
@@ -65,76 +134,6 @@ const FamiliaForm = (props) => {
     values.familiasEgresosDeudas,
     values.familiasEgresosOtros,
   ])
-
-  const useStyles = makeStyles((theme) => ({
-    bottomsGroup: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      paddingBottom: '20px',
-      gap: '10px',
-      backgroundColor: 'white',
-      paddingRight: '20px',
-      position: 'sticky',
-      left: 0,
-      bottom: 0,
-    },
-    myTextField: {
-      width: '100%',
-      marginBottom: 5,
-      [theme.breakpoints.up('xl')]: {
-        marginBottom: 5,
-      },
-      height: '60px',
-    },
-    MySelectField: {
-      width: 'auto',
-      marginBottom: 16,
-      [theme.breakpoints.up('xl')]: {
-        marginBottom: 24,
-      },
-      color: theme.palette.primary.main,
-      '&:target': {
-        color: theme.palette.primary.main,
-      },
-    },
-    btnRoot: {
-      paddingLeft: 15,
-      paddingRight: 15,
-      color: 'white',
-      '&:hover': {
-        backgroundColor: theme.palette.colorHover,
-        cursor: 'pointer',
-      },
-    },
-    btnPrymary: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-    btnSecundary: {
-      backgroundColor: theme.palette.primary.main,
-    },
-    widthFull: {
-      width: '100%',
-    },
-    pointer: {
-      cursor: 'pointer',
-    },
-    inputs_2: {
-      width: '100%',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2,1fr)',
-    },
-    inputs_3: {
-      width: '100%',
-      display: 'grid',
-      gridTemplateColumns: '1fr 3fr 3fr',
-    },
-    inputs_4: {
-      width: '100%',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(4,1fr)',
-      gap: '10px'
-    },
-  }));
 
   const classes = useStyles(props);
 

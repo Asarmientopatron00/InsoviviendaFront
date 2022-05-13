@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button} from '@material-ui/core';
+import {Box, Button, InputAdornment} from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -28,7 +28,6 @@ import {
   onDelete,
 } from '../../../redux/actions/ProyectoAction';
 import {useDispatch, useSelector} from 'react-redux';
-// import {onGetColeccionLigera as onGetColeccionLigeraBarrio} from 'redux/actions/BarrioAction';
 // import {onGetColeccionLigera as onGetColeccionLigeraFamilia} from 'redux/actions/FamiliaAction';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -39,10 +38,9 @@ import TextField from '@material-ui/core/TextField';
 import Swal from 'sweetalert2';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
+import Search from '@material-ui/icons/Search';
 import {history} from 'redux/store';
 import {
-  ESTADO_REGISTRO,
-  CATEGORIA_APORTES,
   DATO_BOOLEAN,
   ZONA,
   ESTADOS_PROYECTO,
@@ -59,6 +57,7 @@ import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import moment from 'moment';
 import MyCell from 'shared/components/MyCell';
+import MySearcher from 'shared/components/MySearcher';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
@@ -91,7 +90,7 @@ const cells = [
     id: 'proyectosFechaSolicitud',
     typeHead: 'string',
     label: 'Fecha Solicitud',
-    value: (value) => value,
+    value: (value) => moment(value).format('DD-MM-YYYY'),
     align: 'left',
     mostrarInicio: true,
   },
@@ -624,7 +623,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '4fr 4fr 4fr 1fr',
+    gridTemplateColumns: '4fr 4fr 4fr 4fr 1fr',
     gap: '20px',
   },
   pairFilters: {
@@ -643,15 +642,16 @@ const EnhancedTableToolbar = (props) => {
     onOpenAddProyecto,
     handleOpenPopoverColumns,
     queryFilter,
-    nombreFiltro,
-    numeroDocumentoFiltro,
-    familiaFiltro,
-    primerApellidoFiltro,
-    categoriaApFiltro,
+    solicitanteFiltro,
+    tipoFiltro,
+    fechaFiltro,
     estadoFiltro,
     limpiarFiltros,
     permisos,
-    familias,
+    handleOnClose,
+    handleOnOpen,
+    showSearch,
+    setSelectePersona
   } = props;
   return (
     <Toolbar
@@ -688,15 +688,11 @@ const EnhancedTableToolbar = (props) => {
                         defaultConfig.API_URL +
                         '/personas/informe-personas' +
                         '?nombre=' +
-                        nombreFiltro +
-                        '&identificacion=' +
-                        numeroDocumentoFiltro +
-                        '&familia=' +
-                        familiaFiltro +
-                        '&primerApellido=' +
-                        primerApellidoFiltro +
-                        '&categoriaAp=' +
-                        categoriaApFiltro +
+                        solicitanteFiltro +
+                        '&tipo=' +
+                        tipoFiltro +
+                        '&fecha=' +
+                        fechaFiltro +
                         '&estado=' +
                         estadoFiltro
                       }>
@@ -736,20 +732,30 @@ const EnhancedTableToolbar = (props) => {
           </Box>
           <Box className={classes.contenedorFiltros}>
             <TextField
-              label='Identificacion'
-              name='numeroDocumentoFiltro'
-              id='numeroDocumentoFiltro'
+              label='Solicitante'
+              name='solicitanteFiltro'
+              id='solicitanteFiltro'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleOnOpen}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
               onChange={queryFilter}
-              value={numeroDocumentoFiltro}
+              value={solicitanteFiltro}
             />
+            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
             <TextField
-              label='Estado'
+              label='Estado Proyecto'
               name='estadoFiltro'
               id='estadoFiltro'
               select={true}
               onChange={queryFilter}
               value={estadoFiltro}>
-              {ESTADO_REGISTRO.map((estado) => {
+              {ESTADOS_PROYECTO.map((estado) => {
                 return (
                   <MenuItem
                     value={estado.id}
@@ -762,58 +768,34 @@ const EnhancedTableToolbar = (props) => {
               })}
             </TextField>
             <TextField
-              label='Categoria Aportes'
-              name='categoriaApFiltro'
-              id='categoriaApFiltro'
-              select={true}
+              label='Tipo Proyecto'
+              name='tipoFiltro'
+              id='tipoFiltro'
+              select
               onChange={queryFilter}
-              value={categoriaApFiltro}>
-              {CATEGORIA_APORTES.map((estado) => {
-                return (
-                  <MenuItem
-                    value={estado.id}
-                    key={estado.id}
-                    id={estado.id}
-                    className={classes.pointer}>
-                    {estado.nombre}
-                  </MenuItem>
-                );
-              })}
+              value={tipoFiltro}>
+              {TIPOS_PROYECTO.map((tipo) => {
+              return (
+                <MenuItem
+                  value={tipo.id}
+                  key={tipo.id}
+                  id={tipo.id}
+                  className={classes.pointer}>
+                  {tipo.nombre}
+                </MenuItem>
+              );
+            })}
             </TextField>
-          </Box>
-          <Box className={classes.contenedorFiltros}>
             <TextField
-              label='Nombres'
-              name='nombreFiltro'
-              id='nombreFiltro'
+              label='Fecha Solicitud'
+              name='fechaFiltro'
+              id='fechaFiltro'
+              type={'date'}
+              InputLabelProps={{
+                shrink: true
+              }}
               onChange={queryFilter}
-              value={nombreFiltro}
-            />
-            <TextField
-              label='Primer Apellido'
-              name='primerApellidoFiltro'
-              id='primerApellidoFiltro'
-              onChange={queryFilter}
-              value={primerApellidoFiltro}
-            />
-            <TextField
-              label='Familia'
-              name='familiaFiltro'
-              id='familiaFiltro'
-              select={true}
-              onChange={queryFilter}
-              value={familiaFiltro}>
-              {familias.map((familia) => {
-                return (
-                  <MenuItem
-                    value={familia.id}
-                    key={familia.id}
-                    id={familia.id}
-                    className={classes.pointer}>
-                    {familia.nombre}
-                  </MenuItem>
-                );
-              })}
+              value={fechaFiltro}>
             </TextField>
             <Box display='grid'>
               <Box display='flex' mb={2}>
@@ -826,6 +808,8 @@ const EnhancedTableToolbar = (props) => {
                 </Tooltip>
               </Box>
             </Box>
+          </Box>
+          <Box className={classes.contenedorFiltros}>
           </Box>
         </>
       )}
@@ -849,11 +833,9 @@ EnhancedTableToolbar.propTypes = {
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
-  nombreFiltro: PropTypes.string.isRequired,
-  numeroDocumentoFiltro: PropTypes.string.isRequired,
-  familiaFiltro: PropTypes.string.isRequired,
-  primerApellidoFiltro: PropTypes.string.isRequired,
-  categoriaApFiltro: PropTypes.string.isRequired,
+  solicitanteFiltro: PropTypes.string.isRequired,
+  tipoFiltro: PropTypes.string.isRequired,
+  fechaFiltro: PropTypes.string.isRequired,
   estadoFiltro: PropTypes.string.isRequired,
 };
 
@@ -985,15 +967,11 @@ const Proyecto = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
+  const [showSearch, setShowSearch] = useState(false);
 
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
     ({proyectoReducer}) => proyectoReducer,
   );
-
-  // const familias = useSelector(({familiaReducer}) => familiaReducer.ligera);
-  const familias = [
-    {id: 1, nombre: 'Hola'}
-  ]
 
   const {message, error, messageType} = useSelector(({common}) => common);
   useEffect(() => {
@@ -1006,18 +984,14 @@ const Proyecto = (props) => {
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-  const [nombreFiltro, setNombreFiltro] = useState('');
-  const [numeroDocumentoFiltro, setNumeroDocumentoFiltro] = useState('');
-  const [familiaFiltro, setFamiliaFiltro] = useState('');
-  const [primerApellidoFiltro, setPrimerApellidoFiltro] = useState('');
-  const [categoriaApFiltro, setCategoriaApFiltro] = useState('');
+  const [solicitanteFiltro, setSolicitanteFiltro] = useState('');
+  const [tipoFiltro, setTipoFiltro] = useState('');
+  const [fechaFiltro, setFechaFiltro] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
 
-  const debouncedName = useDebounce(nombreFiltro, 800);
-  const debouncedId = useDebounce(numeroDocumentoFiltro, 800);
-  const debouncedFamily = useDebounce(familiaFiltro, 800);
-  const debouncedLastName = useDebounce(primerApellidoFiltro, 800);
-  const debouncedApCategory = useDebounce(categoriaApFiltro, 800);
+  const debouncedName = useDebounce(solicitanteFiltro, 800);
+  const debouncedFamily = useDebounce(tipoFiltro, 800);
+  const debouncedApCategory = useDebounce(fechaFiltro, 800);
   const debouncedStatus = useDebounce(estadoFiltro, 800);
 
   const [openPopOver, setOpenPopOver] = useState(false);
@@ -1049,10 +1023,6 @@ const Proyecto = (props) => {
   const classes = useStyles({vp: vp});
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    // dispatch(onGetColeccionLigeraFamilia());
-  }, [dispatch]);
-
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
   const [titulo, setTitulo] = useState('');
@@ -1081,12 +1051,10 @@ const Proyecto = (props) => {
         page,
         rowsPerPage,
         orderByToSend,
-        nombreFiltro,
-        numeroDocumentoFiltro,
-        familiaFiltro,
-        primerApellidoFiltro,
-        categoriaApFiltro,
+        solicitanteFiltro,
+        tipoFiltro,
         estadoFiltro,
+        fechaFiltro,
       ),
     );
   }, [ //eslint-disable-line
@@ -1094,9 +1062,7 @@ const Proyecto = (props) => {
     page,
     rowsPerPage,
     debouncedName,
-    debouncedId,
     debouncedFamily,
-    debouncedLastName,
     debouncedApCategory,
     debouncedStatus,
     orderByToSend,
@@ -1108,13 +1074,11 @@ const Proyecto = (props) => {
       onGetColeccion(
         page,
         rowsPerPage,
-        nombreFiltro,
         orderByToSend,
-        numeroDocumentoFiltro,
-        familiaFiltro,
-        primerApellidoFiltro,
-        categoriaApFiltro,
+        solicitanteFiltro,
+        tipoFiltro,
         estadoFiltro,
+        fechaFiltro,
       ),
     );
   };
@@ -1123,29 +1087,21 @@ const Proyecto = (props) => {
   }, [
     debouncedName,
     orderByToSend,
-    debouncedId,
     debouncedFamily,
-    debouncedLastName,
     debouncedApCategory,
     debouncedStatus,
   ]);
 
   const queryFilter = (e) => {
     switch (e.target.name) {
-      case 'nombreFiltro':
-        setNombreFiltro(e.target.value);
+      case 'solicitanteFiltro':
+        setSolicitanteFiltro(e.target.value);
         break;
-      case 'numeroDocumentoFiltro':
-        setNumeroDocumentoFiltro(e.target.value);
+      case 'tipoFiltro':
+        setTipoFiltro(e.target.value);
         break;
-      case 'familiaFiltro':
-        setFamiliaFiltro(e.target.value);
-        break;
-      case 'primerApellidoFiltro':
-        setPrimerApellidoFiltro(e.target.value);
-        break;
-      case 'categoriaApFiltro':
-        setCategoriaApFiltro(e.target.value);
+      case 'fechaFiltro':
+        setFechaFiltro(e.target.value);
         break;
       case 'estadoFiltro':
         setEstadoFiltro(e.target.value);
@@ -1156,11 +1112,9 @@ const Proyecto = (props) => {
   };
 
   const limpiarFiltros = () => {
-    setNombreFiltro('');
-    setNumeroDocumentoFiltro('');
-    setFamiliaFiltro('');
-    setPrimerApellidoFiltro('');
-    setCategoriaApFiltro('');
+    setSolicitanteFiltro('');
+    setTipoFiltro('');
+    setFechaFiltro('');
     setEstadoFiltro('');
   };
 
@@ -1227,7 +1181,7 @@ const Proyecto = (props) => {
   const onDeleteProyecto = (id) => {
     Swal.fire({
       title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar La Persona?',
+      text: '¿Seguro Que Desea Eliminar El Proyecto?',
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -1264,9 +1218,13 @@ const Proyecto = (props) => {
     setPage(1);
   };
 
-  // const onOpenParticipanteDatosAdicionales = (id) => {
-  //   history.push(history.location.pathname + '-datos-adicionales/' + id);
-  // };
+  const handleCloseSearcher = () => {
+    setShowSearch(false);
+  }
+
+  const handleOpenSearcher = () => {
+    setShowSearch(true);
+  }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -1279,6 +1237,10 @@ const Proyecto = (props) => {
     }
   }, [rows]);
 
+  const setSelectePersona = (id) => {
+    setSolicitanteFiltro(id);
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -1289,15 +1251,16 @@ const Proyecto = (props) => {
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
-            nombreFiltro={nombreFiltro}
-            numeroDocumentoFiltro={numeroDocumentoFiltro}
-            familiaFiltro={familiaFiltro}
-            primerApellidoFiltro={primerApellidoFiltro}
-            categoriaApFiltro={categoriaApFiltro}
+            solicitanteFiltro={solicitanteFiltro}
+            tipoFiltro={tipoFiltro}
+            fechaFiltro={fechaFiltro}
             estadoFiltro={estadoFiltro}
-            familias={familias}
             permisos={permisos}
             titulo={titulo}
+            handleOnClose={handleCloseSearcher}
+            handleOnOpen={handleOpenSearcher}
+            showSearch={showSearch}
+            setSelectePersona={setSelectePersona}
           />
         )}
         {showTable && permisos ? (

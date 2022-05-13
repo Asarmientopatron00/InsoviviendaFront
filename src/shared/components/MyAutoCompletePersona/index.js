@@ -10,7 +10,7 @@ const MyAutocompletePersona = (props) => {
   if (field.value !== '') {
     props.options.forEach((option) => {
       if (option.id === field.value) {
-        myvalueAux = option.personasIdentificacion;
+        myvalueAux = option.identificacion;
       }
     });
   }
@@ -35,15 +35,15 @@ const MyAutocompletePersona = (props) => {
       }}
       {...props}
       onChange={(event, newValue, reasons, details, trial) =>
-        newValue ? form.setValue(newValue.personasIdentificacion) : form.setValue('')
+        newValue ? form.setValue(newValue.identificacion) : form.setValue('')
       }
       inputValue={myvalue}
       renderOption={(option) => {
-        if (option.estado === 'AC') {
+        if (option.estado === 'AC' || option.estado === 1) {
           return (
             <React.Fragment>
               {props.completeid
-                ? (option.personasIdentificacion ? option.personasIdentificacion : '0') +
+                ? (option.identificacion ? option.identificacion : '0') +
                   ' - ' +
                   option.nombre
                 : option.nombre}
@@ -51,7 +51,7 @@ const MyAutocompletePersona = (props) => {
           );
         }
       }}
-      getOptionLabel={(option) => (option.estado === 'AC' ? option.personasIdentificacion : '')}
+      getOptionLabel={(option) => (option.estado === 'AC' || option.estado === 1 ? option.identificacion : '')}
       renderInput={(params) => {
         return (
           <TextField

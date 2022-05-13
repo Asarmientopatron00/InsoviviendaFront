@@ -16,6 +16,98 @@ const options = [
   {id: 4, nombre: 'Cuatro', estado: 1},
 ];
 
+const useStyles = makeStyles((theme) => ({
+  bottomsGroup: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingBottom: '20px',
+    gap: '10px',
+    backgroundColor: 'white',
+    paddingRight: '20px',
+    position: 'sticky',
+    left: 0,
+    bottom: 0,
+  },
+  myTextField: {
+    width: '100%',
+    marginBottom: 5,
+    [theme.breakpoints.up('xl')]: {
+      marginBottom: 5,
+    },
+    height: '60px',
+    paddingRight: '20px',
+  },
+  MyRadioField: {
+    width: '100%',
+    marginBottom: 0,
+    [theme.breakpoints.up('xl')]: {
+      marginBottom: 0,
+    },
+  },
+  MySelectField: {
+    width: 'auto',
+    marginBottom: 16,
+    [theme.breakpoints.up('xl')]: {
+      marginBottom: 24,
+    },
+    color: theme.palette.primary.main,
+    '&:target': {
+      color: theme.palette.primary.main,
+    },
+  },
+  btnRoot: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.colorHover,
+      cursor: 'pointer',
+    },
+  },
+  btnPrymary: {
+    backgroundColor: theme.palette.secondary.main,
+  },
+  btnSecundary: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  widthFull: {
+    width: '100%',
+  },
+  pointer: {
+    cursor: 'pointer',
+  },
+  inputs_2: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2,1fr)',
+  },
+  inputs_3: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '1fr 3fr 3fr',
+  },
+  inputs_4: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4,1fr)',
+  },
+  marco: {
+    padding: '20px',
+    backgroundColor: 'white',
+    boxShadow: '0px 0px 5px 5px rgb(0 0 0 / 10%)',
+    borderRadius: '4px',
+  },
+  root: {
+    padding: '20px',
+    // backgroundColor: theme.palette.gray[200],
+  },
+  actividad_eca: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '1fr 3fr',
+  },
+}));
+
 const ParticipanteForm = (props) => {
   const {
     accion,
@@ -40,7 +132,7 @@ const ParticipanteForm = (props) => {
     if (accion === 'ver' || initialValues.personasEstadoRegistro === 'IN') {
       setDisabled(true);
     }
-  }, [initialValues.estado, accion]); //eslint-disable-line
+  }, [initialValues.personasEstadoRegistro, accion]); //eslint-disable-line
 
   // let onChangeDepartamento1 = useRef();
   // onChangeDepartamento1 = (id) => {
@@ -88,98 +180,6 @@ const ParticipanteForm = (props) => {
   //     onChangeComuna1(0);
   //   }
   // }, [values.comuna_id]);
-
-  const useStyles = makeStyles((theme) => ({
-    bottomsGroup: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      paddingBottom: '20px',
-      gap: '10px',
-      backgroundColor: 'white',
-      paddingRight: '20px',
-      position: 'sticky',
-      left: 0,
-      bottom: 0,
-    },
-    myTextField: {
-      width: '100%',
-      marginBottom: 5,
-      [theme.breakpoints.up('xl')]: {
-        marginBottom: 5,
-      },
-      height: '60px',
-      paddingRight: '20px',
-    },
-    MyRadioField: {
-      width: '100%',
-      marginBottom: 0,
-      [theme.breakpoints.up('xl')]: {
-        marginBottom: 0,
-      },
-    },
-    MySelectField: {
-      width: 'auto',
-      marginBottom: 16,
-      [theme.breakpoints.up('xl')]: {
-        marginBottom: 24,
-      },
-      color: theme.palette.primary.main,
-      '&:target': {
-        color: theme.palette.primary.main,
-      },
-    },
-    btnRoot: {
-      paddingLeft: 15,
-      paddingRight: 15,
-      color: 'white',
-      '&:hover': {
-        backgroundColor: theme.palette.colorHover,
-        cursor: 'pointer',
-      },
-    },
-    btnPrymary: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-    btnSecundary: {
-      backgroundColor: theme.palette.primary.main,
-    },
-    widthFull: {
-      width: '100%',
-    },
-    pointer: {
-      cursor: 'pointer',
-    },
-    inputs_2: {
-      width: '100%',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2,1fr)',
-    },
-    inputs_3: {
-      width: '100%',
-      display: 'grid',
-      gridTemplateColumns: '1fr 3fr 3fr',
-    },
-    inputs_4: {
-      width: '100%',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(4,1fr)',
-    },
-    marco: {
-      padding: '20px',
-      backgroundColor: 'white',
-      boxShadow: '0px 0px 5px 5px rgb(0 0 0 / 10%)',
-      borderRadius: '4px',
-    },
-    root: {
-      padding: '20px',
-      // backgroundColor: theme.palette.gray[200],
-    },
-    actividad_eca: {
-      width: '100%',
-      display: 'grid',
-      gridTemplateColumns: '1fr 3fr',
-    },
-  }));
 
   const classes = useStyles(props);
   return (

@@ -35,6 +35,11 @@ export const DATO_BOOLEAN = [
   {id: 'N', nombre: 'No', estado: 1},
 ];
 
+export const DATO_BOOLEAN_RADIO = [
+  {value: 'S', label: 'Sí', estado: 1},
+  {value: 'N', label: 'No', estado: 1},
+]
+
 export const ZONA = [
   {id: 'UR', nombre: 'Urbana', estado: 1},
   {id: 'RU', nombre: 'Rural', estado: 1},

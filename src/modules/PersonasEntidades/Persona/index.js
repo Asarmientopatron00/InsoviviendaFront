@@ -23,6 +23,7 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
+import { Check } from '@material-ui/icons';
 import {
   onGetColeccion,
   onDelete,
@@ -65,6 +66,49 @@ import moment from 'moment';
 import MyCell from 'shared/components/MyCell';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
+
+const cells2 = [
+  {
+    id: 'personasIdentificacion',
+    typeHead: 'numeric',
+    label: 'Identificacion',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'nombre',
+    typeHead: 'string',
+    label: 'Nombre',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'personasCategoriaAportes',
+    typeHead: 'string',
+    label: 'Categoria Aportes',
+    value: (value) => CATEGORIA_APORTES.map((catAp) => (catAp.id === value ? catAp.nombre : '')),
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'identificacion_persona',
+    typeHead: 'numeric',
+    label: 'Familia Id',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'personasEstadoRegistro',
+    typeHead: 'string',
+    label: 'Est. Registro',
+    value: (value) => ESTADO_REGISTRO.map((estReg) => (estReg.id === value ? estReg.nombre : '')),
+    align: 'left',
+    mostrarInicio: true,
+  },
+];
 
 const cells = [
   {
@@ -911,6 +955,7 @@ const EnhancedTableToolbar = (props) => {
     estadoFiltro,
     limpiarFiltros,
     permisos,
+    buscador,
     familias,
   } = props;
   return (
@@ -936,6 +981,7 @@ const EnhancedTableToolbar = (props) => {
               component='div'>
               {titulo}
             </Typography>
+            { buscador ? (''): (
             <Box className={classes.horizontalBottoms}>
               <Formik>
                 <Form>
@@ -993,6 +1039,7 @@ const EnhancedTableToolbar = (props) => {
                 </Tooltip>
               )}
             </Box>
+            )}
           </Box>
           <Box className={classes.contenedorFiltros}>
             <TextField
@@ -1235,6 +1282,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Participante = (props) => {
+  const {buscador, onSelectPersona} = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [orderByToSend, setOrderByToSend] = React.useState(
@@ -1285,18 +1333,33 @@ const Participante = (props) => {
 
   let columnasMostradasInicial = [];
 
-  cells.forEach((cell) => {
-    columnasMostradasInicial.push({
-      id: cell.id,
-      mostrar: cell.mostrarInicio,
-      typeHead: cell.typeHead,
-      label: cell.label,
-      value: cell.value,
-      align: cell.align,
-      width: cell.width,
-      cellColor: cell.cellColor,
+  if(buscador){
+    cells2.forEach((cell) => {
+      columnasMostradasInicial.push({
+        id: cell.id,
+        mostrar: cell.mostrarInicio,
+        typeHead: cell.typeHead,
+        label: cell.label,
+        value: cell.value,
+        align: cell.align,
+        width: cell.width,
+        cellColor: cell.cellColor,
+      });
     });
-  });
+  } else {
+    cells.forEach((cell) => {
+      columnasMostradasInicial.push({
+        id: cell.id,
+        mostrar: cell.mostrarInicio,
+        typeHead: cell.typeHead,
+        label: cell.label,
+        value: cell.value,
+        align: cell.align,
+        width: cell.width,
+        cellColor: cell.cellColor,
+      });
+    });
+  }
 
   const [columnasMostradas, setColumnasMostradas] = useState(
     columnasMostradasInicial,
@@ -1558,6 +1621,7 @@ const Participante = (props) => {
             familias={familias}
             permisos={permisos}
             titulo={titulo}
+            buscador={buscador}
           />
         )}
         {showTable && permisos ? (
@@ -1621,28 +1685,39 @@ const Participante = (props) => {
                           <TableCell
                             align='center'
                             className={classes.acciones}>
-                            {permisos.indexOf('Modificar') >= 0 && (
+                            { buscador ? (
                               <Tooltip
-                                title={<IntlMessages id='boton.editar' />}>
-                                <EditIcon
-                                  onClick={() => onOpenEditPersona(row.id)}
-                                  className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                                title={'Seleccionar'}>
+                                <Check
+                                  onClick={() => onSelectPersona(row.personasIdentificacion)}
+                                  className={`${classes.generalIcons} ${classes.editIcon}`}></Check>
                               </Tooltip>
-                            )}
-                            {permisos.indexOf('Listar') >= 0 && (
-                              <Tooltip title={<IntlMessages id='boton.ver' />}>
-                                <VisibilityIcon
-                                  onClick={() => onOpenViewPersona(row.id)}
-                                  className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                              </Tooltip>
-                            )}
-                            {permisos.indexOf('Eliminar') >= 0 && (
-                              <Tooltip
-                                title={<IntlMessages id='boton.eliminar' />}>
-                                <DeleteIcon
-                                  onClick={() => onDeletePersona(row.id)}
-                                  className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
-                              </Tooltip>
+                            ) : ( 
+                              <>
+                                {permisos.indexOf('Modificar') >= 0 && (
+                                  <Tooltip
+                                    title={<IntlMessages id='boton.editar' />}>
+                                    <EditIcon
+                                      onClick={() => onOpenEditPersona(row.id)}
+                                      className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                                  </Tooltip>
+                                )}
+                                {permisos.indexOf('Listar') >= 0 && (
+                                  <Tooltip title={<IntlMessages id='boton.ver' />}>
+                                    <VisibilityIcon
+                                      onClick={() => onOpenViewPersona(row.id)}
+                                      className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
+                                  </Tooltip>
+                                )}
+                                {permisos.indexOf('Eliminar') >= 0 && (
+                                  <Tooltip
+                                    title={<IntlMessages id='boton.eliminar' />}>
+                                    <DeleteIcon
+                                      onClick={() => onDeletePersona(row.id)}
+                                      className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
+                                  </Tooltip>
+                                )}
+                            </>
                             )}
                           </TableCell>
 

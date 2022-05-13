@@ -3,13 +3,13 @@ import {Box, Button, InputAdornment, IconButton} from '@material-ui/core';
 import {Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
+import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
 import MyTextField from 'shared/components/MyTextField';
 import MySelectField from 'shared/components/MySelectField';
 import { DATO_BOOLEAN_RADIO, ESTADOS_PROYECTO, TIPOS_PROYECTO, ZONA } from 'shared/constants/ListaValores';
 import MySearcher from 'shared/components/MySearcher';
 import Search from '@material-ui/icons/Search';
 import MyRadioField from 'shared/components/MyRadioField';
-import MyAutocompletePersona from 'shared/components/MyAutoCompletePersona';
 
 const options = [
   {id: 1, nombre: 'Uno', estado: 1},
@@ -116,15 +116,22 @@ const ProyectoForm = (props) => {
     values,
     initialValues,
     setFieldValue,
-    personas,
-    orientadores
+    // tiposDocumentos,
+    // onChangeDepartamento,
+    // departamentos,
+    // ciudades,
+    // comunas,
+    // barrios,
+    // gruposPoblacionales,
+    // nivelesEscolaridad,
+    // familias,
+    // estadosSociopoliticos,
+    // onChangeCity,
+    // onChangeComuna,
   } = props;
 
   const [disabled, setDisabled] = useState(false);
-  const [showSearch, setShowSearch] = useState({
-    persona: false,
-    remitente: false
-  });
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     if (accion === 'ver' || initialValues.personasEstadoRegistro === 'IN') {
@@ -132,50 +139,66 @@ const ProyectoForm = (props) => {
     }
   }, [initialValues.estado, accion]); //eslint-disable-line
 
+  // let onChangeDepartamento1 = useRef();
+  // onChangeDepartamento1 = (id) => {
+  //   onChangeDepartamento(id);
+  //   if (!initialValues.departamento_id) {
+  //     values.ciudad_id = '';
+  //   }
+  // };
+  // let onChangeCiudad1 = useRef();
+  // onChangeCiudad1 = (id) => {
+  //   onChangeCity(id);
+  //   if (!initialValues.ciudad_id) {
+  //     values.comuna_id = '';
+  //   }
+  // };
+  // let onChangeComuna1 = useRef();
+  // onChangeComuna1 = (id) => {
+  //   onChangeComuna(id);
+  //   // initialValues.barrio_id='';
+  //   if (!initialValues.comuna_id) {
+  //     values.barrio_id = '';
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (values.departamento_id !== '') {
+  //     onChangeDepartamento1(values.departamento_id);
+  //   } else {
+  //     onChangeDepartamento1(0);
+  //   }
+  // }, [values.departamento_id]);
+
+  // useEffect(() => {
+  //   if (values.ciudad_id !== '') {
+  //     onChangeCiudad1(values.ciudad_id);
+  //   } else {
+  //     onChangeCiudad1(0);
+  //   }
+  // }, [values.ciudad_id]);
+
+  // useEffect(() => {
+  //   if (values.comuna_id !== '') {
+  //     onChangeComuna1(values.comuna_id);
+  //   } else {
+  //     onChangeComuna1(0);
+  //   }
+  // }, [values.comuna_id]);
+
   const classes = useStyles(props);
 
   const handleCloseSearcher = () => {
-    setShowSearch({persona: false, remitente: false});
+    setShowSearch(false);
   }
 
-  const handleOpenPersonaSearcher = () => {
-    setShowSearch({persona: true, remitente: false});
-  }
-  const handleOpenRemitenteSearcher = () => {
-    setShowSearch({persona: false, remitente: true});
+  const handleOpenSearcher = () => {
+    setShowSearch(true);
   }
 
   const setSelectePersona = (id) => {
-    setFieldValue('persona_identificacion',id);
+    setFieldValue('persona_id',id);
   }
-
-  const setSelecteRemitente = (id) => {
-    setFieldValue('remitente_identificacion',id);
-  }
-
-  useEffect(() => {
-    if(values.persona_identificacion){
-      const persona = personas.find((persona) => persona.identificacion == values.persona_identificacion) //eslint-disable-line
-      setFieldValue('nombrePersona', persona?.nombre??'');
-      setFieldValue('persona_id', persona?.id??'');
-    }
-  },[values.persona_identificacion]) //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.remitente_identificacion){
-      const persona = personas.find((persona) => persona.identificacion == values.remitente_identificacion) //eslint-disable-line
-      setFieldValue('nombreRemitente', persona?.nombre??'');
-      setFieldValue('remitido_id', persona?.id??'');
-    }
-  },[values.remitente_identificacion]) //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.orientador_identificacion){
-      const orientador = orientadores.find((orientador) => orientador.identificacion == values.orientador_identificacion) //eslint-disable-line
-      setFieldValue('nombreOrientador', orientador?.nombre??'');
-      setFieldValue('orientador_id', orientador?.id??'');
-    }
-  },[values.orientador_identificacion]) //eslint-disable-line
 
   return (
     <Form noValidate autoComplete='off' className={classes.root}>
@@ -191,11 +214,11 @@ const ProyectoForm = (props) => {
           <Box className={classes.inputs_4}>
             <MyTextField
               label='Solicitante'
-              name='persona_identificacion'
+              name='persona_id'
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <IconButton onClick={handleOpenPersonaSearcher}>
+                    <IconButton onClick={handleOpenSearcher}>
                       <Search/>
                     </IconButton>
                   </InputAdornment>
@@ -203,11 +226,11 @@ const ProyectoForm = (props) => {
               }}
               className={classes.myTextField}
             />
-            { showSearch.persona && <MySearcher showForm={showSearch.persona} handleOnClose={handleCloseSearcher} getValue={setSelectePersona}/> }
+            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleCloseSearcher} getValue={setSelectePersona}/> }
             <MyTextField
               className={classes.myTextField}
               label='Nombre Solicitante'
-              name='nombrePersona'
+              name='nombre'
               disabled
             />
             <MySelectField
@@ -266,11 +289,11 @@ const ProyectoForm = (props) => {
               <>
                 <MyTextField
                   label='Remitente'
-                  name='remitente_identificacion'
+                  name='remitente_id'
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <IconButton onClick={handleOpenRemitenteSearcher}>
+                        <IconButton onClick={handleOpenSearcher}>
                           <Search/>
                         </IconButton>
                       </InputAdornment>
@@ -278,32 +301,31 @@ const ProyectoForm = (props) => {
                   }}
                   className={classes.myTextField}
                 />
-                { showSearch.remitente && <MySearcher showForm={showSearch.remitente} handleOnClose={handleCloseSearcher} getValue={setSelecteRemitente}/> }
+                { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleCloseSearcher} getValue={setSelectePersona}/> }
                 <MyTextField
                   className={classes.myTextField}
                   label='Nombre Remitente'
-                  name='nombreRemitente'
+                  name='remitenteNombre'
                   disabled
                 />
               </>
               )}
           </Box>
           <Box className={classes.inputs_4}>
-            <MyAutocompletePersona
+            <MyAutocomplete
               label='Identificacion Asesor'
-              completeid={'true'}
               style={{
                 paddingRight: '10px'
               }}
               className={classes.myTextField}
-              name='orientador_identificacion'
+              name='orientador_id'
               disabled={disabled}
-              options={orientadores}
+              options={options}
             />
             <MyTextField
               className={classes.myTextField}
               label='Nombre Asesor'
-              name='nombreOrientador'
+              name='asesorNombre'
               disabled
             />
           </Box>
