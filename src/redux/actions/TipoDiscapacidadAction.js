@@ -58,7 +58,7 @@ import {
     return (dispatch) => {
       dispatch({type: FETCH_START});
       jwtAxios
-        .get('ttipos-discapacidad', {
+        .get('tipos-discapacidad', {
           params: {
             ligera: true,
           },

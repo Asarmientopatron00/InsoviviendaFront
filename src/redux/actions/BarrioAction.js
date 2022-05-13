@@ -53,14 +53,16 @@ export const onGetColeccion = (
   };
 };
 
-export const onGetColeccionLigera = () => {
+export const onGetColeccionLigera = (comuna_id) => {
   const {messages} = appIntl();
+  const comunaAux = comuna_id??'';
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
       .get('barrios', {
         params: {
           ligera: true,
+          comuna_id: comunaAux
         },
       })
       .then((data) => {

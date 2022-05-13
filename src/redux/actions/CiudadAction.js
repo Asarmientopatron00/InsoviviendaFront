@@ -53,14 +53,16 @@ export const onGetColeccion = (
   };
 };
 
-export const onGetColeccionLigera = () => {
+export const onGetColeccionLigera = (departamento_id) => {
   const {messages} = appIntl();
+  const departamentoAux = departamento_id??'';
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
       .get('ciudades', {
         params: {
           ligera: true,
+          departamento_id: departamentoAux
         },
       })
       .then((data) => {

@@ -6,7 +6,7 @@ import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
 import MyTextField from 'shared/components/MyTextField';
 import MySelectField from 'shared/components/MySelectField';
-import { CATEGORIA_APORTES, DATO_BOOLEAN, ESTADO_REGISTRO, ESTADO_TRAMITE, ESTRATO, GENERO, INDICATIVO_PC, PARENTESCO, SEGURIDAD_SOCIAL, TIPO_CONTRATO, TIPO_PROPIEDAD, TIPO_TRABAJO, ZONA } from 'shared/constants/ListaValores';
+import { CATEGORIA_APORTES, DATO_BOOLEAN, ESTADO_REGISTRO, ESTADO_TRAMITE, ESTRATO, GENERO, INDICATIVO_PC, SEGURIDAD_SOCIAL, TIPO_CONTRATO, TIPO_PROPIEDAD, TIPO_TRABAJO, ZONA } from 'shared/constants/ListaValores';
 import MyCurrencyField from 'shared/components/MyCurrencyField';
 
 const options = [
@@ -111,18 +111,20 @@ const useStyles = makeStyles((theme) => ({
 const ParticipanteForm = (props) => {
   const {
     accion,
-    // values,
+    values,
     initialValues,
-    // tiposDocumentos,
-    // onChangeDepartamento,
-    // departamentos,
-    // ciudades,
-    // comunas,
-    // barrios,
-    // gruposPoblacionales,
+    tiposIdentificacion,
+    paises,
+    departamentos,
+    ciudades,
+    comunas,
+    barrios,
+    tiposDiscapacidad,
     // nivelesEscolaridad,
-    // familias,
-    // estadosSociopoliticos,
+    familias,
+    tiposParentesco,
+    onChangePais,
+    onChangeDepartamento,
     // onChangeCity,
     // onChangeComuna,
   } = props;
@@ -133,6 +135,38 @@ const ParticipanteForm = (props) => {
       setDisabled(true);
     }
   }, [initialValues.personasEstadoRegistro, accion]); //eslint-disable-line
+
+  useEffect(() => {
+    if(values.pais_nacimiento_id){
+      onChangePais(values.pais_nacimiento_id)
+    } else {
+      onChangePais()
+    }
+  },[values.pais_nacimiento_id]) //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.departamento_nacimiento_id){
+      onChangeDepartamento(values.departamento_nacimiento_id)
+    } else {
+      onChangeDepartamento()
+    }
+  },[values.departamento_nacimiento_id]) //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.departamento_nacimiento_id){
+      onChangeDepartamento(values.departamento_nacimiento_id)
+    } else {
+      onChangeDepartamento()
+    }
+  },[values.departamento_nacimiento_id]) //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.departamento_nacimiento_id){
+      onChangeDepartamento(values.departamento_nacimiento_id)
+    } else {
+      onChangeDepartamento()
+    }
+  },[values.departamento_nacimiento_id]) //eslint-disable-line
 
   // let onChangeDepartamento1 = useRef();
   // onChangeDepartamento1 = (id) => {
@@ -205,7 +239,7 @@ const ParticipanteForm = (props) => {
               required
             />
             <MyAutocomplete
-              options={options}
+              options={tiposIdentificacion}
               style={{
                 paddingRight: '10px'
               }}
@@ -267,7 +301,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='pais_nacimiento_id'
               disabled={disabled}
-              options={options}
+              options={paises}
             />
             <MyAutocomplete
               label='Departamento Nacimiento'
@@ -277,7 +311,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='departamento_nacimiento_id'
               disabled={disabled}
-              options={options}
+              options={departamentos}
             />
             <MyAutocomplete
               label='Ciudad Nacimiento'
@@ -287,7 +321,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='ciudad_nacimiento_id'
               disabled={disabled}
-              options={options}
+              options={ciudades}
             />
             <MySelectField
               label='Género'
@@ -309,8 +343,8 @@ const ParticipanteForm = (props) => {
               label='Tipo Parentesco'
               className={classes.myTextField}
               disabled={disabled}
-              name='personasParentesco'
-              options={PARENTESCO}
+              name='tipo_parentesco_id'
+              options={tiposParentesco}
               variant='standard'
             />
             <MySelectField
@@ -326,7 +360,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='tipo_discapacidad_id'
-              options={options}
+              options={tiposDiscapacidad}
               variant='standard'
             />
             <MySelectField
@@ -390,7 +424,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='familia_id'
               disabled={disabled}
-              options={options}
+              options={familias}
             />
             <MyTextField
               className={classes.myTextField}
@@ -438,7 +472,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='departamento_id'
               disabled={disabled}
-              options={options}
+              options={departamentos}
             />
             <MyAutocomplete
               label='Ciudad'
@@ -448,7 +482,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='ciudad_id'
               disabled={disabled}
-              options={options}
+              options={ciudades}
             />
             <MyAutocomplete
               label='Comuna'
@@ -458,7 +492,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='comuna_id'
               disabled={disabled}
-              options={options}
+              options={comunas}
             />
             <MyAutocomplete
               label='Barrio'
@@ -468,7 +502,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='barrio_id'
               disabled={disabled}
-              options={options}
+              options={barrios}
             />
             <MyTextField
               className={classes.myTextField}
@@ -711,7 +745,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='departamento_correspondencia_id'
               disabled={disabled}
-              options={options}
+              options={departamentos}
             />
             <MyAutocomplete
               label='Ciudad'
@@ -721,7 +755,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='ciudad_correspondencia_id'
               disabled={disabled}
-              options={options}
+              options={ciudades}
             />
             <MyAutocomplete
               label='Comuna'
@@ -731,7 +765,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='comuna_correspondencia_id'
               disabled={disabled}
-              options={options}
+              options={comunas}
             />
             <MyAutocomplete
               label='Barrio'
@@ -741,7 +775,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='barrio_correspondencia_id'
               disabled={disabled}
-              options={options}
+              options={barrios}
             />
             <MyTextField
               className={classes.myTextField}

@@ -8,15 +8,16 @@ import {
   onUpdate,
   onCreate,
 } from '../../../../redux/actions/PersonaAction';
-// import {onGetColeccionLigera as onGetColeccionLigeraCiudad} from '../../../../redux/actions/CiudadAction';
-// import {onGetColeccionLigera as onGetColeccionLigeraComuna} from '../../../../redux/actions/ComunaAction';
-// import {onGetColeccionLigera as onGetColeccionLigeraBarrio} from '../../../../redux/actions/BarrioAction';
+import {onGetColeccionLigera as onGetColeccionLigeraPais} from '../../../../redux/actions/PaisAction';
+import {onGetColeccionLigera as onGetColeccionLigeraDepartamento} from '../../../../redux/actions/DepartamentoAction';
+import {onGetColeccionLigera as onGetColeccionLigeraCiudad} from '../../../../redux/actions/CiudadAction';
+import {onGetColeccionLigera as onGetColeccionLigeraComuna} from '../../../../redux/actions/ComunaAction';
+import {onGetColeccionLigera as onGetColeccionLigeraBarrio} from '../../../../redux/actions/BarrioAction';
+import {onGetColeccionLigera as onGetColeccionLigeraTipoIdentificacion} from '../../../../redux/actions/TipoIdentificacionAction';
+import {onGetColeccionLigera as onGetColeccionLigeraTipoParentesco} from '../../../../redux/actions/TipoParentescoAction';
+import {onGetColeccionLigera as onGetColeccionLigeraTipoDiscapacidad} from '../../../../redux/actions/TipoDiscapacidadAction';
+import {onGetColeccionLigera as onGetColeccionLigeraFamilia} from '../../../../redux/actions/FamiliaAction';
 import ParticipanteForm from './PersonaForm';
-// import {onGetColeccionLigera as tipoDocumentoColeccionLigera} from '../../../../redux/actions/TipoDocumentoAction';
-// import {onGetColeccionLigera as departamentosColeccionLigera} from '../../../../redux/actions/DepartamentoAction';
-// import {onGetColeccionLigera as gruposPoblacionalesColeccionLigera} from '../../../../redux/actions/GrupoPoblacionalAction';
-// import {onGetColeccionLigera as nivelesEscolaridadColeccionLigera} from '../../../../redux/actions/NivelEscolaridadAction';
-// import {onGetColeccionLigera as estadosSociopoliticosColeccionLigera} from '../../../../redux/actions/EstadoSociopoliticoAction';
 import {
   LONGITUD_MAXIMA_DOCUMENTOS_PERSONA_NATURAL,
   LONGITUD_MAXIMA_TELEFONOS,
@@ -32,6 +33,297 @@ import {UPDATE_TYPE, CREATE_TYPE} from 'shared/constants/Constantes';
 import {MessageView} from '../../../../@crema';
 import moment from 'moment';
 
+const validationSchema = yup.object({
+  personasIdentificacion: yup
+    .string()
+    .matches(VALIDACION_REGEX_NUMEROS, mensajeValidacion('numero'))
+    .max(
+      LONGITUD_MAXIMA_DOCUMENTOS_PERSONA_NATURAL,
+      mensajeValidacion('max', LONGITUD_MAXIMA_DOCUMENTOS_PERSONA_NATURAL),
+    )
+    .required('Requerido')
+    .typeError(mensajeValidacion('numero')),
+  tipo_identificacion_id: yup
+    .number()
+    .required('Requerido'),
+  personasCategoriaAportes: yup
+    .string()
+    .required('Requerido'),
+  personasNombres: yup
+    .string()
+    .required('Requerido'),
+  personasPrimerApellido: yup
+    .string()
+    .required('Requerido'),
+  personasSegundoApellido: yup
+    .string()
+    .nullable(),
+  personasFechaNacimiento: yup
+    .date()
+    .required('Requerido'),
+  pais_nacimiento_id: yup
+    .number()
+    .required('Requerido'),
+  departamento_nacimiento_id: yup
+    .number()
+    .required('Requerido'),
+  ciudad_nacimiento_id: yup
+    .number()
+    .required('Requerido'),
+  personasGenero: yup
+    .string()
+    .required('Requerido'),
+  estado_civil_id: yup
+    .number()
+    .required('Requerido'),
+  tipo_parentesco_id: yup
+    .number()
+    .required('Requerido'),
+  tipo_poblacion_id: yup
+    .number()
+    .required('Requerido'),
+  tipo_discapacidad_id: yup
+    .number()
+    .required('Requerido'),
+  personasSeguridadSocial: yup
+    .string()
+    .required('Requerido'),
+  eps_id: yup
+    .number()
+    .nullable(),
+  grado_escolaridad_id: yup
+    .number()
+    .required('Requerido'),
+  personasVehiculo: yup
+    .string()
+    .nullable(),
+  personasCorreo: yup
+    .string()
+    .nullable(),
+  personasFechaVinculacion: yup
+    .date()
+    .required('Requerido'),
+  departamento_id: yup
+    .number()
+    .required('Requerido'),
+  ciudad_id: yup
+    .number()
+    .required('Requerido'),
+  comuna_id: yup
+    .number()
+    .nullable(),
+  barrio_id: yup
+    .number()
+    .nullable(),
+  personasDireccion: yup
+    .string()
+    .required('Requerido'),
+  personasZona: yup
+    .string()
+    .required('Requerido'),
+  personasEstrato: yup
+    .string()
+    .required('Requerido'),
+  personasTelefonoCasa: yup
+    .string()
+    .matches(VALIDACION_REGEX_TELEFONOS, mensajeValidacion('telefono'))
+    .max(
+      LONGITUD_MAXIMA_TELEFONOS,
+      mensajeValidacion('max', LONGITUD_MAXIMA_TELEFONOS),
+    )
+    .min(
+      LONGITUD_MINIMA_TELEFONOS,
+      mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
+    )
+    .nullable(),
+  personasTelefonoCelular: yup
+    .string()
+    .matches(VALIDACION_REGEX_TELEFONOS, mensajeValidacion('telefono'))
+    .max(
+      LONGITUD_MAXIMA_TELEFONOS,
+      mensajeValidacion('max', LONGITUD_MAXIMA_TELEFONOS),
+    )
+    .min(
+      LONGITUD_MINIMA_TELEFONOS,
+      mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
+    )
+    .when(['personasTelefonoCasa'], {
+      is: (fechaInicialFiltro) => fechaInicialFiltro,
+      then: yup.string().nullable(),
+      otherwise: yup
+        .string()
+        .required(
+          'Debe especificar un teléfono fijo o de celular',
+        )
+    }),
+  tipo_vivienda_id: yup
+    .number()
+    .required('Requerido'),
+  personasTipoPropiedad: yup
+    .string()
+    .required('Requerido'),
+  personasNumeroEscritura: yup
+    .string()
+    .nullable(),
+  personasNotariaEscritura: yup
+    .string()
+    .nullable(),
+  personasFechaEscritura: yup
+    .date()
+    .nullable(),
+  personasIndicativoPC: yup
+    .string()
+    .nullable(),
+  personasNumeroHabitaciones: yup
+    .number()
+    .required('Requerido')
+    .typeError(mensajeValidacion('numero')),
+  personasNumeroBanos: yup
+    .number()
+    .required('Requerido')
+    .typeError(mensajeValidacion('numero')),
+  tipo_techo_id: yup
+    .number()
+    .required('Requerido'),
+  tipo_piso_id: yup
+    .number()
+    .required('Requerido'),
+  tipo_division_id: yup
+    .number()
+    .required('Requerido'),
+  personasSala: yup
+    .string()
+    .required('Requerido'),
+  personasComedor: yup
+    .string()
+    .required('Requerido'),
+  personasCocina: yup
+    .string()
+    .required('Requerido'),
+  personasPatio: yup
+    .string()
+    .required('Requerido'),
+  personasTerraza: yup
+    .string()
+    .required('Requerido'),
+  ocupacion_id: yup
+    .number()
+    .required('Requerido'),
+  personasTipoTrabajo: yup
+    .string()
+    .required('Requerido'),
+  personasTipoContrato: yup
+    .string()
+    .nullable(),
+  personasNombreEmpresa: yup
+    .string()
+    .nullable(),
+  personasTelefonoEmpresa: yup
+    .string()
+    .matches(VALIDACION_REGEX_TELEFONOS, mensajeValidacion('telefono'))
+    .max(
+      LONGITUD_MAXIMA_TELEFONOS,
+      mensajeValidacion('max', LONGITUD_MAXIMA_TELEFONOS),
+    )
+    .min(
+      LONGITUD_MINIMA_TELEFONOS,
+      mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
+    )
+    .nullable(),
+  personasPuntajeProcredito: yup
+    .number()
+    .required('Requerido')
+    .typeError(mensajeValidacion('numero')),
+  personasPuntajeDatacredito: yup
+    .number()
+    .required('Requerido')
+    .typeError(mensajeValidacion('numero')),
+  departamento_correspondencia_id: yup
+    .number()
+    .nullable(),
+  ciudad_correspondencia_id: yup
+    .number()
+    .nullable(),
+  comuna_correspondencia_id: yup
+    .number()
+    .nullable(),
+  barrio_correspondencia_id: yup
+    .number()
+    .nullable(),
+  personasCorDireccion: yup
+    .string()
+    .nullable(),
+  personasCorTelefono: yup
+    .string()
+    .nullable(),
+  personasIngresosFormales: yup
+    .number()
+    .required('Requerido'),
+  personasIngresosInformales: yup
+    .number()
+    .required('Requerido'),
+  personasIngresosArriendo: yup
+    .number()
+    .nullable(),
+  personasIngresosSubsidios: yup
+    .number()
+    .nullable(),
+  personasIngresosPaternidad: yup
+    .number()
+    .nullable(),
+  personasIngresosTerceros: yup
+    .number()
+    .nullable(),
+  personasIngresosOtros: yup
+    .number()
+    .nullable(),
+  personasAportesFormales: yup
+    .number()
+    .required('Requerido'),
+  personasAportesInformales: yup
+    .number()
+    .required('Requerido'),
+  personasAportesArriendo: yup
+    .number()
+    .nullable(),
+  personasAportesSubsidios: yup
+    .number()
+    .nullable(),
+  personasAportesPaternidad: yup
+    .number()
+    .nullable(),
+  personasAportesTerceros: yup
+    .number()
+    .nullable(),
+  personasAportesOtros: yup
+    .number()
+    .nullable(),
+  personasRefNombre1: yup
+    .string()
+    .nullable(),
+  personasRefTelefono1: yup
+    .string()
+    .nullable(),
+  personasRefNombre2: yup
+    .string()
+    .nullable(),
+  personasRefTelefono2: yup
+    .string()
+    .nullable(),
+  personasObservaciones: yup
+    .string()
+    .nullable(),
+  personasEstadoTramite: yup
+    .string()
+    .required('Requerido'),
+  personasEstadoRegistro: yup
+    .string()
+    .required('Requerido'),
+  familia_id: yup
+    .string()
+    .nullable(),
+});
+
 const PersonaCreator = (props) => {
   const {accion, id} = useParams();
   const handleOnClose = () => {
@@ -42,354 +334,56 @@ const PersonaCreator = (props) => {
 
   const dispatch = useDispatch();
 
-  // const tiposDocumentos = useSelector(
-  //   ({tipoDocumentoReducer}) => tipoDocumentoReducer.ligera,
-  // );
-  // const departamentos = useSelector(
-  //   ({departamentoReducer}) => departamentoReducer.ligera,
-  // );
-  // const ciudades = useSelector(({ciudadReducer}) => ciudadReducer.ligera);
-  // const comunas = useSelector(({comunaReducer}) => comunaReducer.ligera);
-  // const barrios = useSelector(({barrioReducer}) => barrioReducer.ligera);
-  // const familias = useSelector(({familiaReducer}) => familiaReducer.ligera);
-  // const gruposPoblacionales = useSelector(
-  //   ({grupoPoblacionalReducer}) => grupoPoblacionalReducer.ligera,
-  // );
+  const tiposIdentificacion = useSelector(
+    ({tipoIdentificacionReducer}) => tipoIdentificacionReducer.ligera,
+  );
+  const tiposParentesco = useSelector(
+    ({tipoParentescoReducer}) => tipoParentescoReducer.ligera,
+  );
+  const tiposDiscapacidad = useSelector(
+    ({tipoDiscapacidadReducer}) => tipoDiscapacidadReducer.ligera,
+  );
+  const paises = useSelector(({paisReducer}) => paisReducer.ligera);
+  const departamentos = useSelector(
+    ({departamentoReducer}) => departamentoReducer.ligera,
+  );
+  const ciudades = useSelector(({ciudadReducer}) => ciudadReducer.ligera);
+  const comunas = useSelector(({comunaReducer}) => comunaReducer.ligera);
+  const barrios = useSelector(({barrioReducer}) => barrioReducer.ligera);
+  const familias = useSelector(({familiaReducer}) => familiaReducer.ligera);
   // const nivelesEscolaridad = useSelector(
   //   ({nivelEscolaridadReducer}) => nivelEscolaridadReducer.ligera,
-  // );
-  // const estadosSociopoliticos = useSelector(
-  //   ({estadoSociopoliticoReducer}) => estadoSociopoliticoReducer.ligera,
   // );
 
   const {message, error, messageType} = useSelector(({common}) => common);
 
-  // useEffect(() => {
-  //   dispatch(tipoDocumentoColeccionLigera());
-  //   dispatch(gruposPoblacionalesColeccionLigera());
-  //   dispatch(nivelesEscolaridadColeccionLigera());
-  //   dispatch(departamentosColeccionLigera());
-  //   dispatch(estadosSociopoliticosColeccionLigera());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(onGetColeccionLigeraPais());
+    dispatch(onGetColeccionLigeraDepartamento());
+    dispatch(onGetColeccionLigeraCiudad());
+    dispatch(onGetColeccionLigeraComuna());
+    dispatch(onGetColeccionLigeraBarrio());
+    dispatch(onGetColeccionLigeraTipoIdentificacion());
+    dispatch(onGetColeccionLigeraTipoParentesco());
+    dispatch(onGetColeccionLigeraTipoDiscapacidad());
+    dispatch(onGetColeccionLigeraFamilia());
+  }, []); //eslint-disable-line
 
-  // const onChangeDepartamento = (id) => {
-  //   dispatch(onGetColeccionLigeraCiudad(id));
-  // };
+  const onChangePais = (id) => {
+    dispatch(onGetColeccionLigeraDepartamento(id));
+  }
 
-  // const onChangeCity = (id) => {
-  //   dispatch(onGetColeccionLigeraComuna(id));
-  // };
+  const onChangeDepartamento = (id) => {
+    dispatch(onGetColeccionLigeraCiudad(id));
+  };
 
-  // const onChangeComuna = (id) => {
-  //   dispatch(onGetColeccionLigeraBarrio(id));
-  // };
+  const onChangeCity = (id) => {
+    dispatch(onGetColeccionLigeraComuna(id));
+  };
 
-  let validationSchema = yup.object({
-    personasIdentificacion: yup
-      .string()
-      .matches(VALIDACION_REGEX_NUMEROS, mensajeValidacion('numero'))
-      .max(
-        LONGITUD_MAXIMA_DOCUMENTOS_PERSONA_NATURAL,
-        mensajeValidacion('max', LONGITUD_MAXIMA_DOCUMENTOS_PERSONA_NATURAL),
-      )
-      .required('Requerido')
-      .typeError(mensajeValidacion('numero')),
-    tipo_identificacion_id: yup
-      .number()
-      .required('Requerido'),
-    personasCategoriaAportes: yup
-      .string()
-      .required('Requerido'),
-    personasNombres: yup
-      .string()
-      .required('Requerido'),
-    personasPrimerApellido: yup
-      .string()
-      .required('Requerido'),
-    personasSegundoApellido: yup
-      .string()
-      .nullable(),
-    personasFechaNacimiento: yup
-      .date()
-      .required('Requerido'),
-    pais_nacimiento_id: yup
-      .number()
-      .required('Requerido'),
-    departamento_nacimiento_id: yup
-      .number()
-      .required('Requerido'),
-    ciudad_nacimiento_id: yup
-      .number()
-      .required('Requerido'),
-    personasGenero: yup
-      .string()
-      .required('Requerido'),
-    estado_civil_id: yup
-      .number()
-      .required('Requerido'),
-    personasParentesco: yup
-      .string()
-      .required('Requerido'),
-    tipo_poblacion_id: yup
-      .number()
-      .required('Requerido'),
-    tipo_discapacidad_id: yup
-      .number()
-      .required('Requerido'),
-    personasSeguridadSocial: yup
-      .string()
-      .required('Requerido'),
-    eps_id: yup
-      .number()
-      .nullable(),
-    grado_escolaridad_id: yup
-      .number()
-      .required('Requerido'),
-    personasVehiculo: yup
-      .string()
-      .nullable(),
-    personasCorreo: yup
-      .string()
-      .nullable(),
-    personasFechaVinculacion: yup
-      .date()
-      .required('Requerido'),
-    departamento_id: yup
-      .number()
-      .required('Requerido'),
-    ciudad_id: yup
-      .number()
-      .required('Requerido'),
-    comuna_id: yup
-      .number()
-      .nullable(),
-    barrio_id: yup
-      .number()
-      .nullable(),
-    personasDireccion: yup
-      .string()
-      .required('Requerido'),
-    personasZona: yup
-      .string()
-      .required('Requerido'),
-    personasEstrato: yup
-      .string()
-      .required('Requerido'),
-    personasTelefonoCasa: yup
-      .string()
-      .matches(VALIDACION_REGEX_TELEFONOS, mensajeValidacion('telefono'))
-      .max(
-        LONGITUD_MAXIMA_TELEFONOS,
-        mensajeValidacion('max', LONGITUD_MAXIMA_TELEFONOS),
-      )
-      .min(
-        LONGITUD_MINIMA_TELEFONOS,
-        mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
-      )
-      .nullable(),
-    personasTelefonoCelular: yup
-      .string()
-      .matches(VALIDACION_REGEX_TELEFONOS, mensajeValidacion('telefono'))
-      .max(
-        LONGITUD_MAXIMA_TELEFONOS,
-        mensajeValidacion('max', LONGITUD_MAXIMA_TELEFONOS),
-      )
-      .min(
-        LONGITUD_MINIMA_TELEFONOS,
-        mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
-      )
-      .when(['personasTelefonoCasa'], {
-        is: (fechaInicialFiltro) => fechaInicialFiltro,
-        then: yup.string().nullable(),
-        otherwise: yup
-          .string()
-          .required(
-            'Debe especificar un teléfono fijo o de celular',
-          )
-      }),
-    tipo_vivienda_id: yup
-      .number()
-      .required('Requerido'),
-    personasTipoPropiedad: yup
-      .string()
-      .required('Requerido'),
-    personasNumeroEscritura: yup
-      .string()
-      .nullable(),
-    personasNotariaEscritura: yup
-      .string()
-      .nullable(),
-    personasFechaEscritura: yup
-      .date()
-      .nullable(),
-    personasIndicativoPC: yup
-      .string()
-      .nullable(),
-    personasNumeroHabitaciones: yup
-      .number()
-      .required('Requerido')
-      .typeError(mensajeValidacion('numero')),
-    personasNumeroBanos: yup
-      .number()
-      .required('Requerido')
-      .typeError(mensajeValidacion('numero')),
-    tipo_techo_id: yup
-      .number()
-      .required('Requerido'),
-    tipo_piso_id: yup
-      .number()
-      .required('Requerido'),
-    tipo_division_id: yup
-      .number()
-      .required('Requerido'),
-    personasSala: yup
-      .string()
-      .required('Requerido'),
-    personasComedor: yup
-      .string()
-      .required('Requerido'),
-    personasCocina: yup
-      .string()
-      .required('Requerido'),
-    personasPatio: yup
-      .string()
-      .required('Requerido'),
-    personasTerraza: yup
-      .string()
-      .required('Requerido'),
-    ocupacion_id: yup
-      .number()
-      .required('Requerido'),
-    personasTipoTrabajo: yup
-      .string()
-      .required('Requerido'),
-    personasTipoContrato: yup
-      .string()
-      .nullable(),
-    personasNombreEmpresa: yup
-      .string()
-      .nullable(),
-    personasTelefonoEmpresa: yup
-      .string()
-      .matches(VALIDACION_REGEX_TELEFONOS, mensajeValidacion('telefono'))
-      .max(
-        LONGITUD_MAXIMA_TELEFONOS,
-        mensajeValidacion('max', LONGITUD_MAXIMA_TELEFONOS),
-      )
-      .min(
-        LONGITUD_MINIMA_TELEFONOS,
-        mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
-      )
-      .nullable(),
-    personasPuntajeProcredito: yup
-      .number()
-      .required('Requerido')
-      .typeError(mensajeValidacion('numero')),
-    personasPuntajeDatacredito: yup
-      .number()
-      .required('Requerido')
-      .typeError(mensajeValidacion('numero')),
-    departamento_correspondencia_id: yup
-      .number()
-      .nullable(),
-    ciudad_correspondencia_id: yup
-      .number()
-      .nullable(),
-    comuna_correspondencia_id: yup
-      .number()
-      .nullable(),
-    barrio_correspondencia_id: yup
-      .number()
-      .nullable(),
-    personasCorDireccion: yup
-      .string()
-      .nullable(),
-    personasCorTelefono: yup
-      .string()
-      .nullable(),
-    personasIngresosFormales: yup
-      .number()
-      .required('Requerido'),
-    personasIngresosInformales: yup
-      .number()
-      .required('Requerido'),
-    personasIngresosArriendo: yup
-      .number()
-      .nullable(),
-    personasIngresosSubsidios: yup
-      .number()
-      .nullable(),
-    personasIngresosPaternidad: yup
-      .number()
-      .nullable(),
-    personasIngresosTerceros: yup
-      .number()
-      .nullable(),
-    personasIngresosOtros: yup
-      .number()
-      .nullable(),
-    personasAportesFormales: yup
-      .number()
-      .required('Requerido'),
-    personasAportesInformales: yup
-      .number()
-      .required('Requerido'),
-    personasAportesArriendo: yup
-      .number()
-      .nullable(),
-    personasAportesSubsidios: yup
-      .number()
-      .nullable(),
-    personasAportesPaternidad: yup
-      .number()
-      .nullable(),
-    personasAportesTerceros: yup
-      .number()
-      .nullable(),
-    personasAportesOtros: yup
-      .number()
-      .nullable(),
-    personasRefNombre1: yup
-      .string()
-      .nullable(),
-    personasRefTelefono1: yup
-      .string()
-      .nullable(),
-    personasRefNombre2: yup
-      .string()
-      .nullable(),
-    personasRefTelefono2: yup
-      .string()
-      .nullable(),
-    personasObservaciones: yup
-      .string()
-      .nullable(),
-    personasEstadoTramite: yup
-      .string()
-      .required('Requerido'),
-    personasEstadoRegistro: yup
-      .string()
-      .required('Requerido'),
-    familia_id: yup
-      .string()
-      .nullable('Requerido'),
-    // telefono: yup
-    //   .string()
-    //   .nullable()
-    //   .matches(VALIDACION_REGEX_TELEFONOS, mensajeValidacion('telefono'))
-    //   .max(
-    //     LONGITUD_MAXIMA_TELEFONOS,
-    //     mensajeValidacion('max', LONGITUD_MAXIMA_TELEFONOS),
-    //   )
-    //   .min(
-    //     LONGITUD_MINIMA_TELEFONOS,
-    //     mensajeValidacion('min', LONGITUD_MINIMA_TELEFONOS),
-    //   )
-    //   .when('celular', {
-    //     is: null || '',
-    //     then: yup.string().required('Requerido'),
-    //   }),
-  });
+  const onChangeComuna = (id) => {
+    dispatch(onGetColeccionLigeraBarrio(id));
+  };
 
   let selectedRow = useRef();
   selectedRow = useSelector(
@@ -483,9 +477,9 @@ const PersonaCreator = (props) => {
               ? selectedRow.estado_civil_id
               : ''
             : '',
-          personasParentesco: selectedRow
-            ? selectedRow.personasParentesco
-              ? selectedRow.personasParentesco
+          tipo_parentesco_id: selectedRow
+            ? selectedRow.tipo_parentesco_id
+              ? selectedRow.tipo_parentesco_id
               : ''
             : '',
           tipo_poblacion_id: selectedRow
@@ -861,18 +855,20 @@ const PersonaCreator = (props) => {
             setFieldValue={setFieldValue}
             accion={accion}
             initialValues={initialValues}
-            // tiposDocumentos={tiposDocumentos}
-            // departamentos={departamentos}
-            // ciudades={ciudades}
-            // comunas={comunas}
-            // barrios={barrios}
-            // familias={familias}
-            // estadosSociopoliticos={estadosSociopoliticos}
-            // gruposPoblacionales={gruposPoblacionales}
+            tiposIdentificacion={tiposIdentificacion}
+            paises={paises}
+            departamentos={departamentos}
+            ciudades={ciudades}
+            comunas={comunas}
+            barrios={barrios}
+            familias={familias}
+            tiposParentesco={tiposParentesco}
+            tiposDiscapacidad={tiposDiscapacidad}
             // nivelesEscolaridad={nivelesEscolaridad}
-            // onChangeDepartamento={onChangeDepartamento}
-            // onChangeCity={onChangeCity}
-            // onChangeComuna={onChangeComuna}
+            onChangeDepartamento={onChangeDepartamento}
+            onChangeCity={onChangeCity}
+            onChangeComuna={onChangeComuna}
+            onChangePais={onChangePais}
           />
         )}
       </Formik>

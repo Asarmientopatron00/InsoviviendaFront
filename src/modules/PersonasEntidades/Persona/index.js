@@ -224,6 +224,14 @@ const cells = [
     mostrarInicio: false,
   },
   {
+    id: 'tipParDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Parentesco',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
     id: 'tipPobDescripcion',
     typeHead: 'string',
     label: 'Tipo Poblacion',
