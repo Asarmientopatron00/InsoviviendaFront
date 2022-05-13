@@ -178,7 +178,7 @@ export const onCreate = (params, handleOnClose, updateColeccion) => {
             type: CREATE_TIPO_IDENTIFICACION,
             payload: data.data,
           });
-          updateColeccion();
+          updateColeccion(  );
           handleOnClose();
           dispatch({
             type: SHOW_MESSAGE,

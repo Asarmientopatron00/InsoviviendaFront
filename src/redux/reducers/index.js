@@ -16,6 +16,11 @@ import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
+import EstadoCivilReducer from './EstadoCivilReducer';
+import OcupacionReducer from './OcupacionReducer';
+import GradosescolaridadReducer from './GradosescolaridadReducer';
+import EpsReducer from './EpsReducer';
+import TipofamiliaReducer from './TipofamiliaReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -33,5 +38,10 @@ const reducers = (history) =>
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
+    estadocivilReducer:EstadoCivilReducer,
+    ocupacionReducer:OcupacionReducer,
+    gradosEscolaridadReducer:GradosescolaridadReducer,
+    epsReducer:EpsReducer,
+    tipofamiliaReducer:TipofamiliaReducer,
   });
 export default reducers;
