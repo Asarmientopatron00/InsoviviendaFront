@@ -16,6 +16,13 @@ import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
+import TipoProgramaReducer from './TipoProgramaReducer';
+import PaisReducer from './PaisReducer';
+import DepartamentoReducer from './DepartamentoReducer';
+import CiudadReducer from './CiudadReducer';
+import ComunaReducer from './ComunaReducer';
+import BarrioReducer from './BarrioReducer';
+
 
 const reducers = (history) =>
   combineReducers({
@@ -33,5 +40,11 @@ const reducers = (history) =>
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
+    tipoProgramaReducer: TipoProgramaReducer,
+    paisReducer: PaisReducer,
+    departamentoReducer: DepartamentoReducer,
+    ciudadReducer: CiudadReducer,
+    comunaReducer: ComunaReducer,
+    barrioReducer: BarrioReducer,
   });
 export default reducers;

@@ -96,3 +96,55 @@ export const SHOW_TIPO_IDENTIFICACION = 'show_tipo_identificacion';
 export const UPDATE_TIPO_IDENTIFICACION = 'update_tipo_identificacion';
 export const CREATE_TIPO_IDENTIFICACION = 'create_tipo_identificacion';
 export const DELETE_TIPO_IDENTIFICACION = 'delete_tipo_identificacion';
+
+// TIPO PROGRAMA
+export const GET_COLECCION_TIPO_PROGRAMA = 'get_coleccion_tipo_programa';
+export const GET_COLECCION_LIGERA_TIPO_PROGRAMA = 'get_coleccion_ligera_tipo_programa';
+export const SHOW_TIPO_PROGRAMA = 'show_tipo_programa';
+export const UPDATE_TIPO_PROGRAMA = 'update_tipo_programa';
+export const CREATE_TIPO_PROGRAMA = 'create_tipo_programa';
+export const DELETE_TIPO_PROGRAMA = 'delete_tipo_programa';
+
+// PAIS
+export const GET_COLECCION_PAIS = 'get_coleccion_pais';
+export const GET_COLECCION_LIGERA_PAIS = 'get_coleccion_ligera_pais';
+export const SHOW_PAIS = 'show_pais';
+export const UPDATE_PAIS = 'update_pais';
+export const CREATE_PAIS = 'create_pais';
+export const DELETE_PAIS = 'delete_pais';
+
+// DEPARTAMENTO
+export const GET_COLECCION_DEPARTAMENTO = 'get_coleccion_departamento';
+export const GET_COLECCION_LIGERA_DEPARTAMENTO = 'get_coleccion_ligera_departamento';
+export const SHOW_DEPARTAMENTO = 'show_departamento';
+export const UPDATE_DEPARTAMENTO = 'update_departamento';
+export const CREATE_DEPARTAMENTO = 'create_departamento';
+export const DELETE_DEPARTAMENTO = 'delete_departamento';
+
+
+// CIUDAD
+export const GET_COLECCION_CIUDAD = 'get_coleccion_ciudad';
+export const GET_COLECCION_LIGERA_CIUDAD = 'get_coleccion_ligera_ciudad';
+export const SHOW_CIUDAD = 'show_ciudad';
+export const UPDATE_CIUDAD = 'update_ciudad';
+export const CREATE_CIUDAD = 'create_ciudad';
+export const DELETE_CIUDAD = 'delete_ciudad';
+
+// COMUNA
+export const GET_COLECCION_COMUNA = 'get_coleccion_comuna';
+export const GET_COLECCION_LIGERA_COMUNA = 'get_coleccion_ligera_comuna';
+export const SHOW_COMUNA = 'show_comuna';
+export const UPDATE_COMUNA = 'update_comuna';
+export const CREATE_COMUNA = 'create_comuna';
+export const DELETE_COMUNA = 'delete_comuna';
+
+// BARRIO
+export const GET_COLECCION_BARRIO = 'get_coleccion_barrio';
+export const GET_COLECCION_LIGERA_BARRIO = 'get_coleccion_ligera_barrio';
+export const SHOW_BARRIO = 'show_barrio';
+export const UPDATE_BARRIO = 'update_barrio';
+export const CREATE_BARRIO = 'create_barrio';
+export const DELETE_BARRIO = 'delete_barrio';
+
+
+
