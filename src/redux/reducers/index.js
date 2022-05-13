@@ -29,7 +29,11 @@ import DepartamentoReducer from './DepartamentoReducer';
 import CiudadReducer from './CiudadReducer';
 import ComunaReducer from './ComunaReducer';
 import BarrioReducer from './BarrioReducer';
-
+import EstadoCivilReducer from './EstadoCivilReducer';
+import OcupacionReducer from './OcupacionReducer';
+import GradosescolaridadReducer from './GradosescolaridadReducer';
+import EpsReducer from './EpsReducer';
+import TipofamiliaReducer from './TipofamiliaReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -59,5 +63,10 @@ const reducers = (history) =>
     ciudadReducer: CiudadReducer,
     comunaReducer: ComunaReducer,
     barrioReducer: BarrioReducer,
+    estadocivilReducer:EstadoCivilReducer,
+    ocupacionReducer:OcupacionReducer,
+    gradosEscolaridadReducer:GradosescolaridadReducer,
+    epsReducer:EpsReducer,
+    tipofamiliaReducer:TipofamiliaReducer,
   });
 export default reducers;

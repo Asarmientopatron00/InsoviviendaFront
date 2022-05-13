@@ -140,6 +140,7 @@ export const SHOW_ORIENTADOR = 'show_orientador';
 export const UPDATE_ORIENTADOR = 'update_orientador';
 export const CREATE_ORIENTADOR = 'create_orientador';
 export const DELETE_ORIENTADOR = 'delete_orientador';
+
 // TIPO PROGRAMA
 export const GET_COLECCION_TIPO_PROGRAMA = 'get_coleccion_tipo_programa';
 export const GET_COLECCION_LIGERA_TIPO_PROGRAMA = 'get_coleccion_ligera_tipo_programa';
@@ -163,7 +164,6 @@ export const SHOW_DEPARTAMENTO = 'show_departamento';
 export const UPDATE_DEPARTAMENTO = 'update_departamento';
 export const CREATE_DEPARTAMENTO = 'create_departamento';
 export const DELETE_DEPARTAMENTO = 'delete_departamento';
-
 
 // CIUDAD
 export const GET_COLECCION_CIUDAD = 'get_coleccion_ciudad';
@@ -189,5 +189,42 @@ export const UPDATE_BARRIO = 'update_barrio';
 export const CREATE_BARRIO = 'create_barrio';
 export const DELETE_BARRIO = 'delete_barrio';
 
+// ESTADO CIVIL
+export const GET_COLECCION_ESTADO_CIVIL = 'get_coleccion_estado_civil';
+export const GET_COLECCION_LIGERA_ESTADO_CIVIL = 'get_coleccion_ligera_estado_civil';
+export const SHOW_ESTADO_CIVIL = 'show_estado_civil';
+export const UPDATE_ESTADO_CIVIL = 'update_estado_civil';
+export const CREATE_ESTADO_CIVIL = 'create_estado_civil';
+export const DELETE_ESTADO_CIVIL = 'delete_estado_civil';
 
+// OCUPACION
+export const GET_COLECCION_OCUPACION = 'get_coleccion_ocupacion';
+export const GET_COLECCION_LIGERA_OCUPACION = 'get_coleccion_ligera_ocupacion';
+export const SHOW_OCUPACION = 'show_ocupacion';
+export const UPDATE_OCUPACION = 'update_ocupacion';
+export const CREATE_OCUPACION = 'create_ocupacion';
+export const DELETE_OCUPACION = 'delete_ocupacion';
 
+// GRADOS ESCOLARIDAD
+export const GET_COLECCION_GRADOS_ESCOLARIDAD = 'get_coleccion_grados_escolaridad';
+export const GET_COLECCION_LIGERA_GRADOS_ESCOLARIDAD = 'get_coleccion_ligera_grados_escolaridad';
+export const SHOW_GRADOS_ESCOLARIDAD = 'show_grados_escolaridad';
+export const UPDATE_GRADOS_ESCOLARIDAD = 'update_grados_escolaridad';
+export const CREATE_GRADOS_ESCOLARIDAD = 'create_grados_escolaridad';
+export const DELETE_GRADOS_ESCOLARIDAD = 'delete_grados_escolaridad';
+
+// EPS
+export const GET_COLECCION_EPS = 'get_coleccion_eps';
+export const GET_COLECCION_LIGERA_EPS = 'get_coleccion_ligera_eps';
+export const SHOW_EPS = 'show_eps';
+export const UPDATE_EPS = 'update_eps';
+export const CREATE_EPS = 'create_eps';
+export const DELETE_EPS = 'delete_eps';
+
+// TIPO-FAMILIA
+export const GET_COLECCION_TIPO_FAMILIA = 'get_coleccion_tipo_familia';
+export const GET_COLECCION_LIGERA_TIPO_FAMILIA = 'get_coleccion_ligera_tipo_familia';
+export const SHOW_TIPO_FAMILIA = 'show_tipo_familia';
+export const UPDATE_TIPO_FAMILIA = 'update_tipo_familia';
+export const CREATE_TIPO_FAMILIA = 'create_tipo_familia';
+export const DELETE_TIPO_FAMILIA = 'delete_tipo_familia';
