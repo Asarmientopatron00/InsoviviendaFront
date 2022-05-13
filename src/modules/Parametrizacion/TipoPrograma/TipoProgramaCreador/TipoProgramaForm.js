@@ -102,7 +102,7 @@ const TipoProgramaForm = (props) => {
               label='Estado'
               name='tipProEstado'
               required
-              disabled={disabled}
+              disabled={accion==='ver'}
               options={options}
             />
           </Box>
