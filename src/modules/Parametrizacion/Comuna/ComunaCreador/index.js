@@ -59,7 +59,7 @@ const ComunaCreador = (props) => {
   useEffect(() => {
     initializeSelectedRow();
     dispatch(onGetColeccionLigera())
-  }, []);
+  }, []); //eslint-disable-line
 
   if (accion === 'crear') {
     initializeSelectedRow();
