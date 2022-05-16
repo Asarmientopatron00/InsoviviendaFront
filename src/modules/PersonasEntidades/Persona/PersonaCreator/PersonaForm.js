@@ -9,13 +9,6 @@ import MySelectField from 'shared/components/MySelectField';
 import { CATEGORIA_APORTES, DATO_BOOLEAN, ESTADO_REGISTRO, ESTADO_TRAMITE, ESTRATO, GENERO, INDICATIVO_PC, SEGURIDAD_SOCIAL, TIPO_CONTRATO, TIPO_PROPIEDAD, TIPO_TRABAJO, ZONA } from 'shared/constants/ListaValores';
 import MyCurrencyField from 'shared/components/MyCurrencyField';
 
-const options = [
-  {id: 1, nombre: 'Uno', estado: 1},
-  {id: 2, nombre: 'Dos', estado: 1},
-  {id: 3, nombre: 'Tres', estado: 1},
-  {id: 4, nombre: 'Cuatro', estado: 1},
-];
-
 const useStyles = makeStyles((theme) => ({
   bottomsGroup: {
     display: 'flex',
@@ -134,7 +127,12 @@ const PersonaForm = (props) => {
     epses,
     estadosCiviles,
     gradosEscolaridad,
-    ocupaciones
+    ocupaciones,
+    tiposDivision,
+    tiposPiso,
+    tiposPoblacion,
+    tiposTecho,
+    tiposVivienda
   } = props;
 
   const [disabled, setDisabled] = useState(false);
@@ -329,7 +327,7 @@ const PersonaForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='tipo_poblacion_id'
-              options={options}
+              options={tiposPoblacion}
               variant='standard'
             />
             <MySelectField
@@ -520,7 +518,7 @@ const PersonaForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='tipo_vivienda_id'
-              options={options}
+              options={tiposVivienda}
               variant='standard'
             />
             <MySelectField
@@ -583,7 +581,7 @@ const PersonaForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='tipo_techo_id'
-              options={options}
+              options={tiposTecho}
               variant='standard'
             />
             <MySelectField
@@ -591,7 +589,7 @@ const PersonaForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='tipo_piso_id'
-              options={options}
+              options={tiposPiso}
               variant='standard'
             />
             <MySelectField
@@ -599,7 +597,7 @@ const PersonaForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='tipo_division_id'
-              options={options}
+              options={tiposDivision}
               variant='standard'
             />
             <MySelectField

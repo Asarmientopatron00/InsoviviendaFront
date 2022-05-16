@@ -337,7 +337,12 @@ const PersonaCreator = (props) => {
     epses,
     estadosCiviles,
     gradosEscolaridad,
-    ocupaciones
+    ocupaciones,
+    tiposDivision,
+    tiposPiso,
+    tiposPoblacion,
+    tiposTecho,
+    tiposVivienda
   } = usePersonaFormData();
   const usuario = GetUsuario();
 
@@ -804,9 +809,7 @@ const PersonaCreator = (props) => {
               dispatch(onUpdate(data, handleOnClose));
             }
           }
-          // resetForm();
           setSubmitting(false);
-          // updateColeccion();
         }}>
         {({values, initialValues, setFieldValue}) => (
           <>
@@ -840,6 +843,11 @@ const PersonaCreator = (props) => {
               estadosCiviles={estadosCiviles}
               gradosEscolaridad={gradosEscolaridad}
               ocupaciones={ocupaciones}
+              tiposDivision={tiposDivision}
+              tiposPiso={tiposPiso}
+              tiposPoblacion={tiposPoblacion}
+              tiposTecho={tiposTecho}
+              tiposVivienda={tiposVivienda}
             />
             )}
           </>

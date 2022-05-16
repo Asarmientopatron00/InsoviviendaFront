@@ -28,6 +28,7 @@ import {
 } from '../../../redux/actions/FamiliaAction';
 import {onGetColeccionLigera as onGetColeccionLigeraPersona} from 'redux/actions/PersonaAction';
 import {onGetColeccionLigera as onGetColeccionLigeraTiposFamilia} from 'redux/actions/TipofamiliaAction';
+import {onGetColeccionLigera as onGetColeccionLigeraCondicionFamilia} from 'redux/actions/CondicionFamiliaAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -93,7 +94,7 @@ const cells = [
     id: 'familiasFechaVisitaDomici',
     typeHead: 'string',
     label: 'Fecha Visita Dom.',
-    value: (value) => value ? moment(value).format('DD-MM-YYYY HH:mm:ss') : '',
+    value: (value) => value ? moment(value).format('DD-MM-YYYY') : '',
     align: 'left',
     mostrarInicio: true,
   },
@@ -718,15 +719,8 @@ const Familias = (props) => {
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
 
-  const options = [
-    {id: 1, nombre: 'Uno', estado: 1},
-    {id: 2, nombre: 'Dos', estado: 1},
-    {id: 3, nombre: 'Tres', estado: 1},
-    {id: 4, nombre: 'Cuatro', estado: 1},
-  ];
-
   const tipos_familia = useSelector(({tipofamiliaReducer}) => tipofamiliaReducer.ligera);
-  const condiciones_familia =  options;
+  const condiciones_familia =  useSelector(({condicionFamiliaReducer}) => condicionFamiliaReducer.ligera);
   const personas = useSelector(({personaReducer}) => personaReducer.ligera);
 
   let columnasMostradasInicial = [];
@@ -792,6 +786,7 @@ const Familias = (props) => {
   useEffect(() => {
     dispatch(onGetColeccionLigeraPersona());
     dispatch(onGetColeccionLigeraTiposFamilia());
+    dispatch(onGetColeccionLigeraCondicionFamilia());
   },[]) //eslint-disable-line
 
   const queryFilter = (e) => {

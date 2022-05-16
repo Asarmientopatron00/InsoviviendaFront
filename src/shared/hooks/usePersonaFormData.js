@@ -17,6 +17,11 @@ export const usePersonaFormData = () => {
     epses: [],
     gradosEscolaridad: [],
     ocupaciones: [],
+    tiposPoblacion: [],
+    tiposVivienda: [],
+    tiposTecho: [],
+    tiposPiso: [],
+    tiposDivision: [],
   });
 
   const getPersonaFormData = async () => {
@@ -33,6 +38,11 @@ export const usePersonaFormData = () => {
     const epsesPromise = jwtAxios.get('eps', {params: {ligera: true}});
     const gradosEscolaridadPromise = jwtAxios.get('grado-escolaridad', {params: {ligera: true}});
     const ocupacionesPromise = jwtAxios.get('ocupaciones', {params: {ligera: true}});
+    const tiposPoblacionPromise = jwtAxios.get('tipos-poblacion', {params: {ligera: true}});
+    const tiposViviendaPromise = jwtAxios.get('tipos-vivienda', {params: {ligera: true}});
+    const tiposTechoPromise = jwtAxios.get('tipos-techo', {params: {ligera: true}});
+    const tiposPisoPromise = jwtAxios.get('tipos-piso', {params: {ligera: true}});
+    const tiposDivisionPromise = jwtAxios.get('tipos-division', {params: {ligera: true}});
 
     const [
       tiposIdentificacionResp,
@@ -48,6 +58,11 @@ export const usePersonaFormData = () => {
       epsesResp,
       gradosEscolaridadResp,
       ocupacionesResp,
+      tiposPoblacionResp,
+      tiposViviendaResp,
+      tiposTechoResp,
+      tiposPisoResp,
+      tiposDivisionResp,
     ] = await Promise.all([
       tiposIdentificacionPromise,
       paisesPromise,
@@ -62,6 +77,11 @@ export const usePersonaFormData = () => {
       epsesPromise,
       gradosEscolaridadPromise,
       ocupacionesPromise,
+      tiposPoblacionPromise,
+      tiposViviendaPromise,
+      tiposTechoPromise,
+      tiposPisoPromise,
+      tiposDivisionPromise,
     ]);
 
     setState({
@@ -79,6 +99,11 @@ export const usePersonaFormData = () => {
       epses: epsesResp.data,
       gradosEscolaridad: gradosEscolaridadResp.data,
       ocupaciones: ocupacionesResp.data,
+      tiposPoblacion: tiposPoblacionResp.data,
+      tiposVivienda: tiposViviendaResp.data,
+      tiposTecho: tiposTechoResp.data,
+      tiposPiso: tiposPisoResp.data,
+      tiposDivision: tiposDivisionResp.data,
     })
   };
 

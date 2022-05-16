@@ -23,7 +23,16 @@ const validationSchema = yup.object({
 });
 
 const FamiliaCreador = (props) => {
-  const {familia, personas, handleOnClose, accion, updateColeccion, titulo, tiposFamilia, condicionesFamilia} = props;
+  const {
+    familia, 
+    personas, 
+    handleOnClose, 
+    accion, 
+    updateColeccion, 
+    titulo, 
+    tiposFamilia, 
+    condicionesFamilia
+  } = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -154,7 +163,7 @@ const FamiliaCreador = (props) => {
               familiasAportesOtros: selectedRow ? selectedRow.familiasAportesOtros : 0,
               familiasTotalAportes: selectedRow ? totalAportes.current : 0,
               familiasObservaciones: selectedRow ? selectedRow.familiasObservaciones : '',
-              estado: selectedRow
+              familiasEstado: selectedRow
                 ? selectedRow.estado === 1
                   ? '1'
                   : '0'

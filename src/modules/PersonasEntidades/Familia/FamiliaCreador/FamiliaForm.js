@@ -350,7 +350,7 @@ const FamiliaForm = (props) => {
             <Box className={classes.inputs_2}>
               <MyRadioField
                 label='Estado'
-                name='estado'
+                name='familiasEstado'
                 required
                 disabled={accion === 'ver'}
                 options={options}
