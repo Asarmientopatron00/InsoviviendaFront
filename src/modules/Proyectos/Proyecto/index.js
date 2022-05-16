@@ -1137,7 +1137,7 @@ const Proyecto = (props) => {
   };
 
   const onOpenEditProyecto = (id) => {
-    history.push(history.location.pathname + '/editar/' + id);
+    history.push(history.location.pathname + '/editar/' + id, {state: true});
   };
 
   const handleClosePopover = () => {
@@ -1177,7 +1177,7 @@ const Proyecto = (props) => {
   };
 
   const onOpenViewProyecto = (id) => {
-    history.push(history.location.pathname + '/ver/' + id);
+    history.push(history.location.pathname + '/ver/' + id, {state: true});
   };
 
   const onDeleteProyecto = (id) => {

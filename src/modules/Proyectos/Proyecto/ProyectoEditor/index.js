@@ -6,25 +6,22 @@ import {Scrollbar} from '../../../../@crema';
 import {
   onShow,
   onUpdate,
-  onCreate,
 } from '../../../../redux/actions/ProyectoAction';
-// import {onGetColeccionLigera as onGetColeccionLigeraCiudad} from '../../../../redux/actions/CiudadAction';
-// import {onGetColeccionLigera as onGetColeccionLigeraComuna} from '../../../../redux/actions/ComunaAction';
-// import {onGetColeccionLigera as onGetColeccionLigeraBarrio} from '../../../../redux/actions/BarrioAction';
 import ProyectoForm from './ProyectoForm';
-// import {onGetColeccionLigera as tipoDocumentoColeccionLigera} from '../../../../redux/actions/TipoDocumentoAction';
-// import {onGetColeccionLigera as departamentosColeccionLigera} from '../../../../redux/actions/DepartamentoAction';
-// import {onGetColeccionLigera as gruposPoblacionalesColeccionLigera} from '../../../../redux/actions/GrupoPoblacionalAction';
-// import {onGetColeccionLigera as nivelesEscolaridadColeccionLigera} from '../../../../redux/actions/NivelEscolaridadAction';
-// import {onGetColeccionLigera as estadosSociopoliticosColeccionLigera} from '../../../../redux/actions/EstadoSociopoliticoAction';
-import {useParams} from 'react-router-dom';
+import {useParams, useLocation} from 'react-router-dom';
 import {history} from 'redux/store';
 import GetUsuario from '../../../../shared/functions/GetUsuario';
 import {UPDATE_TYPE, CREATE_TYPE} from 'shared/constants/Constantes';
 import {MessageView} from '../../../../@crema';
+import moment from 'moment';
+import { useProyectoFormData } from 'shared/hooks/useProyectoFormData';
+import {Box, CircularProgress} from '@material-ui/core';
 
 const validationSchema = yup.object({
   persona_id: yup
+    .number()
+    .required('Requerido'),
+  persona_identificacion: yup
     .number()
     .required('Requerido'),
   proyectosEstadoProyecto: yup
@@ -45,6 +42,13 @@ const validationSchema = yup.object({
   remitido_id: yup
     .number()
     .nullable(),
+  remitente_identificacion: yup
+    .number()
+    .nullable()
+    .when('proyectosRemitido', {
+      is: 'S',
+      then: yup.number().required('Debe especificar un remitente')
+    }),
   departamento_id: yup
     .number()
     .nullable(),
@@ -153,6 +157,9 @@ const validationSchema = yup.object({
   orientador_id: yup
     .number()
     .nullable(),
+  orientador_identificacion: yup
+    .number()
+    .nullable(),
   proyectosObservaciones: yup
     .string()
     .nullable(),
@@ -160,55 +167,27 @@ const validationSchema = yup.object({
 
 const ProyectoCreador = (props) => {
   const {accion, id} = useParams();
+  const {state} = useLocation().state;
+  const {
+    bancos,
+    barrios, 
+    ciudades,
+    comunas,
+    departamentos,
+    isLoading,
+    orientadores,
+    paises,
+    personas,
+    tiposPrograma
+  } = useProyectoFormData();
+
   const handleOnClose = () => {
     history.goBack();
   };
 
   const usuario = GetUsuario();
-
   const dispatch = useDispatch();
-
-  // const tiposDocumentos = useSelector(
-  //   ({tipoDocumentoReducer}) => tipoDocumentoReducer.ligera,
-  // );
-  // const departamentos = useSelector(
-  //   ({departamentoReducer}) => departamentoReducer.ligera,
-  // );
-  // const ciudades = useSelector(({ciudadReducer}) => ciudadReducer.ligera);
-  // const comunas = useSelector(({comunaReducer}) => comunaReducer.ligera);
-  // const barrios = useSelector(({barrioReducer}) => barrioReducer.ligera);
-  // const familias = useSelector(({familiaReducer}) => familiaReducer.ligera);
-  // const gruposPoblacionales = useSelector(
-  //   ({grupoPoblacionalReducer}) => grupoPoblacionalReducer.ligera,
-  // );
-  // const nivelesEscolaridad = useSelector(
-  //   ({nivelEscolaridadReducer}) => nivelEscolaridadReducer.ligera,
-  // );
-  // const estadosSociopoliticos = useSelector(
-  //   ({estadoSociopoliticoReducer}) => estadoSociopoliticoReducer.ligera,
-  // );
-
   const {message, error, messageType} = useSelector(({common}) => common);
-
-  // useEffect(() => {
-  //   dispatch(tipoDocumentoColeccionLigera());
-  //   dispatch(gruposPoblacionalesColeccionLigera());
-  //   dispatch(nivelesEscolaridadColeccionLigera());
-  //   dispatch(departamentosColeccionLigera());
-  //   dispatch(estadosSociopoliticosColeccionLigera());
-  // }, [dispatch]);
-
-  // const onChangeDepartamento = (id) => {
-  //   dispatch(onGetColeccionLigeraCiudad(id));
-  // };
-
-  // const onChangeCity = (id) => {
-  //   dispatch(onGetColeccionLigeraComuna(id));
-  // };
-
-  // const onChangeComuna = (id) => {
-  //   dispatch(onGetColeccionLigeraBarrio(id));
-  // };
 
   let selectedRow = useRef();
   selectedRow = useSelector(
@@ -247,9 +226,34 @@ const ProyectoCreador = (props) => {
                 ? selectedRow.persona_id 
                 : '') 
             : '',
-          nombre: selectedRow 
-            ? (selectedRow.nombre 
-                ? selectedRow.nombre 
+          persona_identificacion: selectedRow 
+            ? (selectedRow?.solicitante?.identificacion 
+                ? selectedRow.solicitante.identificacion 
+                : '') 
+            : '',
+          remitente_identificacion: selectedRow 
+            ? (selectedRow?.remitente?.identificacion 
+                ? selectedRow.remitente.identificacion 
+                : '') 
+            : '',
+          orientador_identificacion: selectedRow 
+            ? (selectedRow?.orientador?.identificacion 
+                ? selectedRow.orientador.identificacion
+                : '') 
+            : '',
+          nombrePersona: selectedRow 
+            ? (selectedRow?.solicitante?.nombre 
+                ? selectedRow.solicitante.nombre 
+                : '') 
+            : '',
+          nombreRemitente: selectedRow 
+            ? (selectedRow?.remitente?.nombre 
+                ? selectedRow.remitente.nombre 
+                : '') 
+            : '',
+          nombreOrientador: selectedRow 
+            ? (selectedRow?.orientador?.nombre 
+                ? selectedRow.orientador.nombre
                 : '') 
             : '',
           proyectosEstadoProyecto: selectedRow 
@@ -259,7 +263,7 @@ const ProyectoCreador = (props) => {
             : '',
           proyectosFechaSolicitud: selectedRow 
             ? (selectedRow.proyectosFechaSolicitud 
-                ? selectedRow.proyectosFechaSolicitud 
+                ? moment(selectedRow.proyectosFechaSolicitud).format('YYYY-MM-DD') 
                 : '') 
             : '',
           proyectosTipoProyecto: selectedRow 
@@ -484,13 +488,9 @@ const ProyectoCreador = (props) => {
             : usuario.displayName,
         }}
         validationSchema={validationSchema}
-        onSubmit={(data, {setSubmitting, resetForm}) => {
+        onSubmit={(data, {setSubmitting}) => {
           setSubmitting(true);
-          if (accion === 'crear') {
-            data['hola'] = 'Come on';
-            console.log(data);
-            // dispatch(onCreate(data, handleOnClose));
-          } else if (accion === 'editar') {
+          if (accion === 'editar') {
             if (selectedRow) {
               dispatch(onUpdate(data, handleOnClose));
             }
@@ -498,25 +498,36 @@ const ProyectoCreador = (props) => {
           setSubmitting(false);
         }}>
         {({values, initialValues, setFieldValue}) => (
-          <ProyectoForm
-            usuario={usuario}
-            values={values}
-            setFieldValue={setFieldValue}
-            accion={accion}
-            initialValues={initialValues}
-            // tiposDocumentos={tiposDocumentos}
-            // departamentos={departamentos}
-            // ciudades={ciudades}
-            // comunas={comunas}
-            // barrios={barrios}
-            // familias={familias}
-            // estadosSociopoliticos={estadosSociopoliticos}
-            // gruposPoblacionales={gruposPoblacionales}
-            // nivelesEscolaridad={nivelesEscolaridad}
-            // onChangeDepartamento={onChangeDepartamento}
-            // onChangeCity={onChangeCity}
-            // onChangeComuna={onChangeComuna}
-          />
+          <>
+            { isLoading ? (
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginTop: '40px'
+                }}
+              >
+                <CircularProgress size={60}/>
+              </Box>
+              ) : ( 
+              <ProyectoForm
+                usuario={usuario}
+                values={values}
+                setFieldValue={setFieldValue}
+                accion={accion}
+                initialValues={initialValues}
+                bancos={bancos}
+                barrios={barrios}
+                ciudades={ciudades}
+                comunas={comunas}
+                departamentos={departamentos}
+                orientadores={orientadores}
+                paises={paises}
+                personas={personas}
+                tiposPrograma={tiposPrograma}
+              />
+            )}
+          </>
         )}
       </Formik>
       <MessageView
