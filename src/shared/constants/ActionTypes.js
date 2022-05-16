@@ -96,3 +96,51 @@ export const SHOW_TIPO_IDENTIFICACION = 'show_tipo_identificacion';
 export const UPDATE_TIPO_IDENTIFICACION = 'update_tipo_identificacion';
 export const CREATE_TIPO_IDENTIFICACION = 'create_tipo_identificacion';
 export const DELETE_TIPO_IDENTIFICACION = 'delete_tipo_identificacion';
+
+// Condiciones familia
+export const GET_COLECCION_CONDICION_FAMILIA = 'get_condicion_familia';
+export const GET_COLECCION_LIGERA_CONDICION_FAMILIA = 'get_coleccion_ligera_condicion_familia';
+export const SHOW_CONDICION_FAMILIA = 'show_condicion_familia';
+export const UPDATE_CONDICION_FAMILIA = 'update_condicion_familia';
+export const CREATE_CONDICION_FAMILIA = 'create_condicion_familia';
+export const DELETE_CONDICION_FAMILIA = 'delete_condicion_familia';
+
+// TIPOS POBLACION TIPOS_POBLACION
+export const GET_COLECCION_TIPOS_POBLACION = 'get_tipos_poblacion';
+export const GET_COLECCION_LIGERA_TIPOS_POBLACION = 'get_coleccion_ligera_tipos_poblacion';
+export const SHOW_TIPOS_POBLACION = 'show_tipos_poblacion';
+export const UPDATE_TIPOS_POBLACION = 'update_tipos_poblacion';
+export const CREATE_TIPOS_POBLACION = 'create_tipos_poblacion';
+export const DELETE_TIPOS_POBLACION = 'delete_tipos_poblacion';
+
+// TIPOS POBLACION TIPOS_VIVIENDA
+export const GET_COLECCION_TIPOS_VIVIENDA = 'get_coleccion_tipos_vivienda';
+export const GET_COLECCION_LIGERA_TIPOS_VIVIENDA = 'get_coleccion_ligera_tipos_vivienda';
+export const SHOW_TIPOS_VIVIENDA = 'show_tipos_vivienda';
+export const UPDATE_TIPOS_VIVIENDA = 'update_tipos_vivienda';
+export const CREATE_TIPOS_VIVIENDA = 'create_tipos_vivienda';
+export const DELETE_TIPOS_VIVIENDA = 'delete_tipos_vivienda';
+
+// TIPOS POBLACION TIPOS_TECHO
+export const GET_COLECCION_TIPOS_TECHO = 'get_coleccion_tipos_techo';
+export const GET_COLECCION_LIGERA_TIPOS_TECHO = 'get_coleccion_ligera_tipos_techo';
+export const SHOW_TIPOS_TECHO = 'show_tipos_techo';
+export const UPDATE_TIPOS_TECHO = 'update_tipos_techo';
+export const CREATE_TIPOS_TECHO = 'create_tipos_techo';
+export const DELETE_TIPOS_TECHO = 'delete_tipos_techo';
+
+// TIPOS POBLACION TIPOS_PISO
+export const GET_COLECCION_TIPOS_PISO = 'get_coleccion_tipos_piso';
+export const GET_COLECCION_LIGERA_TIPOS_PISO = 'get_coleccion_ligera_tipos_piso';
+export const SHOW_TIPOS_PISO = 'show_tipos_piso';
+export const UPDATE_TIPOS_PISO = 'update_tipos_piso';
+export const CREATE_TIPOS_PISO = 'create_tipos_piso';
+export const DELETE_TIPOS_PISO = 'delete_tipos_piso';
+
+// TIPOS POBLACION TIPOS_DIVISION
+export const GET_COLECCION_TIPOS_DIVISION = 'get_coleccion_tipos_division';
+export const GET_COLECCION_LIGERA_TIPOS_DIVISION = 'get_coleccion_ligera_tipos_division';
+export const SHOW_TIPOS_DIVISION = 'show_tipos_division';
+export const UPDATE_TIPOS_DIVISION = 'update_tipos_division';
+export const CREATE_TIPOS_DIVISION = 'create_tipos_division';
+export const DELETE_TIPOS_DIVISION = 'delete_tipos_division';
