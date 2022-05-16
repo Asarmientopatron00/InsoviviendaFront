@@ -20,7 +20,6 @@ export const onGetColeccion = (
   nombre,
   identificacion,
   familia,
-  primerApellido,
   categoria,
   estado,
   orderByToSend,
@@ -30,7 +29,6 @@ export const onGetColeccion = (
   const nombreAux = nombre ? nombre : '';
   const identificacionAux = identificacion ? identificacion : '';
   const familiaAux = familia ? familia : '';
-  const primerApellidoAux = primerApellido ? primerApellido : '';
   const categoriaAux = categoria ? categoria : '';
   const estadoAux = estado ? estado : '';
   const ordenar_por = orderByToSend ? orderByToSend : '';
@@ -45,7 +43,6 @@ export const onGetColeccion = (
           nombre: nombreAux,
           identificacion: identificacionAux,
           familia: familiaAux,
-          primerApellido: primerApellidoAux,
           categoriaAp: categoriaAux,
           estado: estadoAux,
           ordenar_por: ordenar_por,

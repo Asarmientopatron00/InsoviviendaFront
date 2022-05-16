@@ -8,16 +8,17 @@ import {
 } from '../../../../redux/actions/ProyectoAction';
 import {onGetColeccionLigera as onGetColeccionLigeraPersona} from '../../../../redux/actions/PersonaAction';
 import {onGetColeccionLigera as onGetColeccionLigeraOrientador} from '../../../../redux/actions/OrientadorAction';
+import {onGetColeccionLigera as onGetColeccionLigeraTipoPrograma} from '../../../../redux/actions/TipoProgramaAction';
 import ProyectoForm from './ProyectoForm';
-// import {onGetColeccionLigera as tipoDocumentoColeccionLigera} from '../../../../redux/actions/TipoDocumentoAction';
-// import {onGetColeccionLigera as departamentosColeccionLigera} from '../../../../redux/actions/DepartamentoAction';
-// import {onGetColeccionLigera as gruposPoblacionalesColeccionLigera} from '../../../../redux/actions/GrupoPoblacionalAction';
-// import {onGetColeccionLigera as nivelesEscolaridadColeccionLigera} from '../../../../redux/actions/NivelEscolaridadAction';
-// import {onGetColeccionLigera as estadosSociopoliticosColeccionLigera} from '../../../../redux/actions/EstadoSociopoliticoAction';
-import {useParams} from 'react-router-dom';
-import {history} from 'redux/store';
 import {UPDATE_TYPE, CREATE_TYPE} from 'shared/constants/Constantes';
 import {MessageView} from '../../../../@crema';
+import { Dialog, Slide } from '@material-ui/core';
+import {Fonts} from '../../../../shared/constants/AppEnums';
+import {makeStyles} from '@material-ui/core/styles/index';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction='down' ref={ref} {...props} />;
+});
 
 const validationSchema = yup.object({
   persona_id: yup
@@ -44,9 +45,13 @@ const validationSchema = yup.object({
   remitido_id: yup
     .number()
     .nullable(),
-  remitido_identificacion: yup
+  remitente_identificacion: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosRemitido', {
+      is: 'S',
+      then: yup.number().required('Debe especificar un remitente')
+    }),
   proyectosZona: yup
     .string()
     .nullable(),
@@ -61,82 +66,102 @@ const validationSchema = yup.object({
     .nullable(),
 });
 
+const useStyles = makeStyles(() => ({
+  dialogBox: {
+    position: 'relative',
+    '& .MuiDialog-paperWidthSm': {
+      maxWidth: 600,
+      width: '100%',
+      // maxHeight:'fit-content'
+    },
+    '& .MuiTypography-h6': {
+      fontWeight: Fonts.LIGHT,
+    },
+  },
+}));
+
 const ProyectoCreador = (props) => {
-  const {accion} = useParams();
-  const handleOnClose = () => {
-    history.goBack();
-  };
+  const {showForm, handleOnClose, updateColeccion} = props;
+  
   const dispatch = useDispatch();
   const personas = useSelector(({personaReducer}) => personaReducer.ligera);
   const orientadores = useSelector(({orientadorReducer}) => orientadorReducer.ligera);
+  const tiposPrograma = useSelector(({tipoProgramaReducer}) => tipoProgramaReducer.ligera);
 
   const {message, error, messageType} = useSelector(({common}) => common);
 
   useEffect(() => {
     dispatch(onGetColeccionLigeraPersona());
     dispatch(onGetColeccionLigeraOrientador());
+    dispatch(onGetColeccionLigeraTipoPrograma());
   }, []); //eslint-disable-line
 
-  if (accion !== 'crear') {
-    history.goBack();
-  }
+  const classes = useStyles(props);
 
   return (
-    <Scrollbar>
-      <Formik
-        initialStatus={true}
-        enableReinitialize={true}
-        validateOnBlur={false}
-        initialValues={{
-          persona_id: '',
-          persona_identificacion: '',
-          nombrePersona: '',
-          proyectosEstadoProyecto: '',
-          proyectosFechaSolicitud: '',
-          proyectosTipoProyecto: '',
-          tipo_programa_id: '',
-          proyectosRemitido: 'S',
-          remitido_id: '',
-          nombreRemitente: '',
-          remitente_identificacion: '',
-          proyectosZona: '',
-          orientador_id: '',
-          orientador_identificacion: '',
-          nombreOrientador: '',
-          proyectosObservaciones: '',
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(data, {setSubmitting, resetForm}) => {
-          setSubmitting(true);
-          if (accion === 'crear') {
-            dispatch(onCreate(data, handleOnClose));
+    <Dialog
+      open={showForm}
+      onClose={handleOnClose}
+      aria-labelledby='simple-modal-title'
+      TransitionComponent={Transition}
+      aria-describedby='simple-modal-description'
+      className={classes.dialogBox}
+      disableBackdropClick={true}
+      maxWidth={'lg'}>
+      <Scrollbar>
+        <Formik
+          initialStatus={true}
+          enableReinitialize={true}
+          validateOnBlur={false}
+          initialValues={{
+            persona_id: '',
+            persona_identificacion: '',
+            nombrePersona: '',
+            proyectosEstadoProyecto: '',
+            proyectosFechaSolicitud: '',
+            proyectosTipoProyecto: '',
+            tipo_programa_id: '',
+            proyectosRemitido: 'S',
+            remitido_id: '',
+            nombreRemitente: '',
+            remitente_identificacion: '',
+            proyectosZona: '',
+            orientador_id: '',
+            orientador_identificacion: '',
+            nombreOrientador: '',
+            proyectosObservaciones: '',
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(data, {setSubmitting}) => {
+            setSubmitting(true);
+            dispatch(onCreate(data, handleOnClose, updateColeccion));
+            setSubmitting(false);
+          }}>
+          {({values, setFieldValue}) => (
+            <ProyectoForm
+              values={values}
+              setFieldValue={setFieldValue}
+              personas={personas}
+              orientadores={orientadores}
+              tiposPrograma={tiposPrograma}
+              handleOnClose={handleOnClose}
+            />
+          )}
+        </Formik>
+        <MessageView
+          variant={
+            messageType === UPDATE_TYPE || messageType === CREATE_TYPE
+              ? 'success'
+              : 'error'
           }
-          setSubmitting(false);
-        }}>
-        {({values, initialValues, setFieldValue}) => (
-          <ProyectoForm
-            values={values}
-            setFieldValue={setFieldValue}
-            accion={accion}
-            initialValues={initialValues}
-            personas={personas}
-            orientadores={orientadores}
-          />
-        )}
-      </Formik>
-      <MessageView
-        variant={
-          messageType === UPDATE_TYPE || messageType === CREATE_TYPE
-            ? 'success'
-            : 'error'
-        }
-        message={
-          messageType === UPDATE_TYPE || messageType === CREATE_TYPE
-            ? message
-            : error
-        }
-      />
-    </Scrollbar>
+          message={
+            messageType === UPDATE_TYPE || messageType === CREATE_TYPE
+              ? message
+              : error
+          }
+        />
+      </Scrollbar>
+    </Dialog>
   );
 };
 

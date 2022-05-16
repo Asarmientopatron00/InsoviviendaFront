@@ -187,7 +187,7 @@ export const onCreate = (params, handleOnClose, updateColeccion) => {
             type: CREATE_PROYECTO,
             payload: data.data,
           });
-          // updateColeccion();
+          updateColeccion();
           handleOnClose();
           dispatch({
             type: SHOW_MESSAGE,

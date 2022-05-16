@@ -58,6 +58,7 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import moment from 'moment';
 import MyCell from 'shared/components/MyCell';
 import MySearcher from 'shared/components/MySearcher';
+import ProyectoCreador from './ProyectoCreador';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
@@ -957,6 +958,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Proyecto = (props) => {
+  const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [orderByToSend, setOrderByToSend] = React.useState(
@@ -1196,8 +1198,17 @@ const Proyecto = (props) => {
     });
   };
 
+  // const onOpenAddProyecto = () => {
+  //   history.push(history.location.pathname + '/crear');
+  // };
+
   const onOpenAddProyecto = () => {
-    history.push(history.location.pathname + '/crear');
+    // setAccion('crear');
+    setShowForm(true);
+  };
+
+  const handleOnClose = () => {
+    setShowForm(false);
   };
 
   const handleSelectAllClick = (event) => {
@@ -1435,6 +1446,17 @@ const Proyecto = (props) => {
           </Box>
         )}
       </Paper>
+
+      {showForm ? (
+        <ProyectoCreador
+          showForm={showForm}
+          handleOnClose={handleOnClose}
+          updateColeccion={updateColeccion}
+          titulo={titulo}
+        />
+      ) : (
+        ''
+      )}
 
       <Popover
         id='popoverColumns'

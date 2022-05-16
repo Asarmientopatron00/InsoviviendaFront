@@ -11,13 +11,6 @@ import Search from '@material-ui/icons/Search';
 import MyRadioField from 'shared/components/MyRadioField';
 import MyAutocompletePersona from 'shared/components/MyAutoCompletePersona';
 
-const options = [
-  {id: 1, nombre: 'Uno', estado: 1},
-  {id: 2, nombre: 'Dos', estado: 1},
-  {id: 3, nombre: 'Tres', estado: 1},
-  {id: 4, nombre: 'Cuatro', estado: 1},
-];
-
 const useStyles = makeStyles((theme) => ({
   bottomsGroup: {
     display: 'flex',
@@ -26,9 +19,7 @@ const useStyles = makeStyles((theme) => ({
     gap: '10px',
     backgroundColor: 'white',
     paddingRight: '20px',
-    position: 'sticky',
-    left: 0,
-    bottom: 0,
+    marginTop: 80
   },
   myTextField: {
     width: '100%',
@@ -112,25 +103,18 @@ const useStyles = makeStyles((theme) => ({
 
 const ProyectoForm = (props) => {
   const {
-    accion,
     values,
-    initialValues,
     setFieldValue,
     personas,
-    orientadores
+    tiposPrograma,
+    orientadores,
+    handleOnClose
   } = props;
 
-  const [disabled, setDisabled] = useState(false);
   const [showSearch, setShowSearch] = useState({
     persona: false,
     remitente: false
   });
-
-  useEffect(() => {
-    if (accion === 'ver' || initialValues.personasEstadoRegistro === 'IN') {
-      setDisabled(true);
-    }
-  }, [initialValues.estado, accion]); //eslint-disable-line
 
   const classes = useStyles(props);
 
@@ -188,7 +172,7 @@ const ProyectoForm = (props) => {
           <IntlMessages id='proyectos' />
         </Box>
         <Box px={{md: 5, lg: 8, xl: 10}}>
-          <Box className={classes.inputs_4}>
+          <Box className={classes.inputs_2}>
             <MyTextField
               label='Solicitante'
               name='persona_identificacion'
@@ -213,7 +197,6 @@ const ProyectoForm = (props) => {
             <MySelectField
               label='Estado Proyecto'
               className={classes.myTextField}
-              disabled={disabled}
               name='proyectosEstadoProyecto'
               options={ESTADOS_PROYECTO}
               variant='standard'
@@ -225,13 +208,11 @@ const ProyectoForm = (props) => {
                 shrink: true,
               }}
               name='proyectosFechaSolicitud'
-              disabled={disabled}
               type='date'
             />
             <MySelectField
               label='Tipo Proyecto'
               className={classes.myTextField}
-              disabled={disabled}
               name='proyectosTipoProyecto'
               options={TIPOS_PROYECTO}
               variant='standard'
@@ -239,26 +220,23 @@ const ProyectoForm = (props) => {
             <MySelectField
               label='Tipo Programa'
               className={classes.myTextField}
-              disabled={disabled}
               name='tipo_programa_id'
-              options={options}
+              options={tiposPrograma}
               variant='standard'
             />
             <MySelectField
               label='Zona'
               className={classes.myTextField}
-              disabled={disabled}
               name='proyectosZona'
               options={ZONA}
               variant='standard'
             />
           </Box>
-          <Box className={classes.inputs_4}>
+          <Box className={classes.inputs_2}>
             <MyRadioField
               label='Remitido'
               className={classes.MyRadioField}
               name='proyectosRemitido'
-              disabled={disabled}
               required
               options={DATO_BOOLEAN_RADIO}
             />
@@ -283,12 +261,12 @@ const ProyectoForm = (props) => {
                   className={classes.myTextField}
                   label='Nombre Remitente'
                   name='nombreRemitente'
-                  disabled
+                  
                 />
               </>
               )}
           </Box>
-          <Box className={classes.inputs_4}>
+          <Box className={classes.inputs_2}>
             <MyAutocompletePersona
               label='Identificacion Asesor'
               completeid={'true'}
@@ -297,7 +275,6 @@ const ProyectoForm = (props) => {
               }}
               className={classes.myTextField}
               name='orientador_identificacion'
-              disabled={disabled}
               options={orientadores}
             />
             <MyTextField
@@ -311,25 +288,23 @@ const ProyectoForm = (props) => {
             <MyTextField
               className={classes.myTextField}
               label='Observaciones'
+              multiline
+              variant='outlined'
+              rows={4}
               name='proyectosObservaciones'
-              disabled={disabled}
             />
           </Box>
         </Box>
         <Box className={classes.bottomsGroup}>
-          {accion !== 'ver' ? (
-            <Button
-              className={`${classes.btnRoot} ${classes.btnPrymary}`}
-              variant='contained'
-              type='submit'>
-              <IntlMessages id='boton.submit' />
-            </Button>
-          ) : (
-            ''
-          )}
+          <Button
+            className={`${classes.btnRoot} ${classes.btnPrymary}`}
+            variant='contained'
+            type='submit'>
+            <IntlMessages id='boton.submit' />
+          </Button>
           <Button
             className={`${classes.btnRoot} ${classes.btnSecundary}`}
-            href='/proyectos'>
+            onClick={handleOnClose}>
             <IntlMessages id='boton.cancel' />
           </Button>
         </Box>

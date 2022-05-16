@@ -958,7 +958,6 @@ const EnhancedTableToolbar = (props) => {
     nombreFiltro,
     numeroDocumentoFiltro,
     familiaFiltro,
-    primerApellidoFiltro,
     categoriaApFiltro,
     estadoFiltro,
     limpiarFiltros,
@@ -1007,8 +1006,6 @@ const EnhancedTableToolbar = (props) => {
                         numeroDocumentoFiltro +
                         '&familia=' +
                         familiaFiltro +
-                        '&primerApellido=' +
-                        primerApellidoFiltro +
                         '&categoriaAp=' +
                         categoriaApFiltro +
                         '&estado=' +
@@ -1098,18 +1095,11 @@ const EnhancedTableToolbar = (props) => {
           </Box>
           <Box className={classes.contenedorFiltros}>
             <TextField
-              label='Nombres'
+              label='Nombres y/o Apellidos'
               name='nombreFiltro'
               id='nombreFiltro'
               onChange={queryFilter}
               value={nombreFiltro}
-            />
-            <TextField
-              label='Primer Apellido'
-              name='primerApellidoFiltro'
-              id='primerApellidoFiltro'
-              onChange={queryFilter}
-              value={primerApellidoFiltro}
             />
             <TextField
               label='Familia'
@@ -1289,7 +1279,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Participante = (props) => {
+const Persona = (props) => {
   const {buscador, onSelectPersona} = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
@@ -1325,14 +1315,12 @@ const Participante = (props) => {
   const [nombreFiltro, setNombreFiltro] = useState('');
   const [numeroDocumentoFiltro, setNumeroDocumentoFiltro] = useState('');
   const [familiaFiltro, setFamiliaFiltro] = useState('');
-  const [primerApellidoFiltro, setPrimerApellidoFiltro] = useState('');
   const [categoriaApFiltro, setCategoriaApFiltro] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
 
   const debouncedName = useDebounce(nombreFiltro, 800);
   const debouncedId = useDebounce(numeroDocumentoFiltro, 800);
   const debouncedFamily = useDebounce(familiaFiltro, 800);
-  const debouncedLastName = useDebounce(primerApellidoFiltro, 800);
   const debouncedApCategory = useDebounce(categoriaApFiltro, 800);
   const debouncedStatus = useDebounce(estadoFiltro, 800);
 
@@ -1414,7 +1402,6 @@ const Participante = (props) => {
         nombreFiltro,
         numeroDocumentoFiltro,
         familiaFiltro,
-        primerApellidoFiltro,
         categoriaApFiltro,
         estadoFiltro,
         orderByToSend,
@@ -1427,7 +1414,6 @@ const Participante = (props) => {
     debouncedName,
     debouncedId,
     debouncedFamily,
-    debouncedLastName,
     debouncedApCategory,
     debouncedStatus,
     orderByToSend,
@@ -1442,7 +1428,6 @@ const Participante = (props) => {
         nombreFiltro,
         numeroDocumentoFiltro,
         familiaFiltro,
-        primerApellidoFiltro,
         categoriaApFiltro,
         estadoFiltro,
         orderByToSend,
@@ -1456,7 +1441,6 @@ const Participante = (props) => {
     orderByToSend,
     debouncedId,
     debouncedFamily,
-    debouncedLastName,
     debouncedApCategory,
     debouncedStatus,
   ]);
@@ -1471,9 +1455,6 @@ const Participante = (props) => {
         break;
       case 'familiaFiltro':
         setFamiliaFiltro(e.target.value);
-        break;
-      case 'primerApellidoFiltro':
-        setPrimerApellidoFiltro(e.target.value);
         break;
       case 'categoriaApFiltro':
         setCategoriaApFiltro(e.target.value);
@@ -1490,7 +1471,6 @@ const Participante = (props) => {
     setNombreFiltro('');
     setNumeroDocumentoFiltro('');
     setFamiliaFiltro('');
-    setPrimerApellidoFiltro('');
     setCategoriaApFiltro('');
     setEstadoFiltro('');
   };
@@ -1623,7 +1603,6 @@ const Participante = (props) => {
             nombreFiltro={nombreFiltro}
             numeroDocumentoFiltro={numeroDocumentoFiltro}
             familiaFiltro={familiaFiltro}
-            primerApellidoFiltro={primerApellidoFiltro}
             categoriaApFiltro={categoriaApFiltro}
             estadoFiltro={estadoFiltro}
             familias={familias}
@@ -1867,4 +1846,4 @@ const Participante = (props) => {
   );
 };
 
-export default Participante;
+export default Persona;

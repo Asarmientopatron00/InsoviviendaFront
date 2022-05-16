@@ -1,0 +1,90 @@
+import {useEffect, useState} from 'react'
+import jwtAxios from '@crema/services/auth/jwt-auth/jwt-api';
+
+export const usePersonaFormData = () => {
+  const [state, setState] = useState({
+    isLoading: true,
+    tiposIdentificacion: [],
+    paises: [],
+    departamentos: [],
+    ciudades: [],
+    comunas: [],
+    barrios: [],
+    tiposParentesco: [],
+    tiposDiscapacidad: [],
+    familias: [],
+    estadosCiviles: [],
+    epses: [],
+    gradosEscolaridad: [],
+    ocupaciones: [],
+  });
+
+  const getPersonaFormData = async () => {
+    const tiposIdentificacionPromise = jwtAxios.get('tipos-identificacion', {params: {ligera: true}});
+    const paisesPromise = jwtAxios.get('paises', {params: {ligera: true}});
+    const departamentosPromise = jwtAxios.get('departamentos', {params: {ligera: true}});
+    const ciudadesPromise = jwtAxios.get('ciudades', {params: {ligera: true}});
+    const comunasPromise = jwtAxios.get('comunas', {params: {ligera: true}});
+    const barriosPromise = jwtAxios.get('barrios', {params: {ligera: true}});
+    const tiposParentescoPromise = jwtAxios.get('tipos-parentesco', {params: {ligera: true}});
+    const tiposDiscapacidadPromise = jwtAxios.get('tipos-discapacidad', {params: {ligera: true}});
+    const familiasPromise = jwtAxios.get('familias', {params: {ligera: true}});
+    const estadosCivilesPromise = jwtAxios.get('estados-civil', {params: {ligera: true}});
+    const epsesPromise = jwtAxios.get('eps', {params: {ligera: true}});
+    const gradosEscolaridadPromise = jwtAxios.get('grado-escolaridad', {params: {ligera: true}});
+    const ocupacionesPromise = jwtAxios.get('ocupaciones', {params: {ligera: true}});
+
+    const [
+      tiposIdentificacionResp,
+      paisesResp,
+      departamentosResp,
+      ciudadesResp,
+      comunasResp,
+      barriosResp,
+      tiposParentescoResp,
+      tiposDiscapacidadResp,
+      familiasResp,
+      estadosCivilesResp,
+      epsesResp,
+      gradosEscolaridadResp,
+      ocupacionesResp,
+    ] = await Promise.all([
+      tiposIdentificacionPromise,
+      paisesPromise,
+      departamentosPromise,
+      ciudadesPromise,
+      comunasPromise,
+      barriosPromise,
+      tiposParentescoPromise,
+      tiposDiscapacidadPromise,
+      familiasPromise,
+      estadosCivilesPromise,
+      epsesPromise,
+      gradosEscolaridadPromise,
+      ocupacionesPromise,
+    ]);
+
+    setState({
+      isLoading: false,
+      tiposIdentificacion: tiposIdentificacionResp.data,
+      paises: paisesResp.data,
+      departamentos: departamentosResp.data,
+      ciudades: ciudadesResp.data,
+      comunas: comunasResp.data,
+      barrios: barriosResp.data,
+      tiposParentesco: tiposParentescoResp.data,
+      tiposDiscapacidad: tiposDiscapacidadResp.data,
+      familias: familiasResp.data,
+      estadosCiviles: estadosCivilesResp.data,
+      epses: epsesResp.data,
+      gradosEscolaridad: gradosEscolaridadResp.data,
+      ocupaciones: ocupacionesResp.data,
+    })
+  };
+
+  useEffect(() => {
+    getPersonaFormData();
+  },[]);
+
+  return {...state}
+}

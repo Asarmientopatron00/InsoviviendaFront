@@ -8,15 +8,6 @@ import {
   onUpdate,
   onCreate,
 } from '../../../../redux/actions/PersonaAction';
-import {onGetColeccionLigera as onGetColeccionLigeraPais} from '../../../../redux/actions/PaisAction';
-import {onGetColeccionLigera as onGetColeccionLigeraDepartamento} from '../../../../redux/actions/DepartamentoAction';
-import {onGetColeccionLigera as onGetColeccionLigeraCiudad} from '../../../../redux/actions/CiudadAction';
-import {onGetColeccionLigera as onGetColeccionLigeraComuna} from '../../../../redux/actions/ComunaAction';
-import {onGetColeccionLigera as onGetColeccionLigeraBarrio} from '../../../../redux/actions/BarrioAction';
-import {onGetColeccionLigera as onGetColeccionLigeraTipoIdentificacion} from '../../../../redux/actions/TipoIdentificacionAction';
-import {onGetColeccionLigera as onGetColeccionLigeraTipoParentesco} from '../../../../redux/actions/TipoParentescoAction';
-import {onGetColeccionLigera as onGetColeccionLigeraTipoDiscapacidad} from '../../../../redux/actions/TipoDiscapacidadAction';
-import {onGetColeccionLigera as onGetColeccionLigeraFamilia} from '../../../../redux/actions/FamiliaAction';
 import ParticipanteForm from './PersonaForm';
 import {
   LONGITUD_MAXIMA_DOCUMENTOS_PERSONA_NATURAL,
@@ -32,6 +23,8 @@ import GetUsuario from '../../../../shared/functions/GetUsuario';
 import {UPDATE_TYPE, CREATE_TYPE} from 'shared/constants/Constantes';
 import {MessageView} from '../../../../@crema';
 import moment from 'moment';
+import {usePersonaFormData} from 'shared/hooks/usePersonaFormData';
+import { Box, CircularProgress } from '@material-ui/core';
 
 const validationSchema = yup.object({
   personasIdentificacion: yup
@@ -329,61 +322,28 @@ const PersonaCreator = (props) => {
   const handleOnClose = () => {
     history.goBack();
   };
-
+  
+  const {
+    isLoading,
+    barrios,
+    paises, 
+    ciudades, 
+    comunas, 
+    departamentos, 
+    familias, 
+    tiposDiscapacidad, 
+    tiposIdentificacion, 
+    tiposParentesco,
+    epses,
+    estadosCiviles,
+    gradosEscolaridad,
+    ocupaciones
+  } = usePersonaFormData();
   const usuario = GetUsuario();
 
   const dispatch = useDispatch();
 
-  const tiposIdentificacion = useSelector(
-    ({tipoIdentificacionReducer}) => tipoIdentificacionReducer.ligera,
-  );
-  const tiposParentesco = useSelector(
-    ({tipoParentescoReducer}) => tipoParentescoReducer.ligera,
-  );
-  const tiposDiscapacidad = useSelector(
-    ({tipoDiscapacidadReducer}) => tipoDiscapacidadReducer.ligera,
-  );
-  const paises = useSelector(({paisReducer}) => paisReducer.ligera);
-  const departamentos = useSelector(
-    ({departamentoReducer}) => departamentoReducer.ligera,
-  );
-  const ciudades = useSelector(({ciudadReducer}) => ciudadReducer.ligera);
-  const comunas = useSelector(({comunaReducer}) => comunaReducer.ligera);
-  const barrios = useSelector(({barrioReducer}) => barrioReducer.ligera);
-  const familias = useSelector(({familiaReducer}) => familiaReducer.ligera);
-  // const nivelesEscolaridad = useSelector(
-  //   ({nivelEscolaridadReducer}) => nivelEscolaridadReducer.ligera,
-  // );
-
   const {message, error, messageType} = useSelector(({common}) => common);
-
-  useEffect(() => {
-    dispatch(onGetColeccionLigeraPais());
-    dispatch(onGetColeccionLigeraDepartamento());
-    dispatch(onGetColeccionLigeraCiudad());
-    dispatch(onGetColeccionLigeraComuna());
-    dispatch(onGetColeccionLigeraBarrio());
-    dispatch(onGetColeccionLigeraTipoIdentificacion());
-    dispatch(onGetColeccionLigeraTipoParentesco());
-    dispatch(onGetColeccionLigeraTipoDiscapacidad());
-    dispatch(onGetColeccionLigeraFamilia());
-  }, []); //eslint-disable-line
-
-  const onChangePais = (id) => {
-    dispatch(onGetColeccionLigeraDepartamento(id));
-  }
-
-  const onChangeDepartamento = (id) => {
-    dispatch(onGetColeccionLigeraCiudad(id));
-  };
-
-  const onChangeCity = (id) => {
-    dispatch(onGetColeccionLigeraComuna(id));
-  };
-
-  const onChangeComuna = (id) => {
-    dispatch(onGetColeccionLigeraBarrio(id));
-  };
 
   let selectedRow = useRef();
   selectedRow = useSelector(
@@ -849,27 +809,40 @@ const PersonaCreator = (props) => {
           // updateColeccion();
         }}>
         {({values, initialValues, setFieldValue}) => (
-          <ParticipanteForm
-            usuario={usuario}
-            values={values}
-            setFieldValue={setFieldValue}
-            accion={accion}
-            initialValues={initialValues}
-            tiposIdentificacion={tiposIdentificacion}
-            paises={paises}
-            departamentos={departamentos}
-            ciudades={ciudades}
-            comunas={comunas}
-            barrios={barrios}
-            familias={familias}
-            tiposParentesco={tiposParentesco}
-            tiposDiscapacidad={tiposDiscapacidad}
-            // nivelesEscolaridad={nivelesEscolaridad}
-            onChangeDepartamento={onChangeDepartamento}
-            onChangeCity={onChangeCity}
-            onChangeComuna={onChangeComuna}
-            onChangePais={onChangePais}
-          />
+          <>
+            { isLoading ? (
+            <Box
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '40px'
+              }}
+            >
+              <CircularProgress size={60}/>
+            </Box>
+            ) : ( 
+            <ParticipanteForm
+              usuario={usuario}
+              values={values}
+              setFieldValue={setFieldValue}
+              accion={accion}
+              initialValues={initialValues}
+              tiposIdentificacion={tiposIdentificacion}
+              paises={paises}
+              departamentos={departamentos}
+              ciudades={ciudades}
+              comunas={comunas}
+              barrios={barrios}
+              familias={familias}
+              tiposParentesco={tiposParentesco}
+              tiposDiscapacidad={tiposDiscapacidad}
+              epses={epses}
+              estadosCiviles={estadosCiviles}
+              gradosEscolaridad={gradosEscolaridad}
+              ocupaciones={ocupaciones}
+            />
+            )}
+          </>
         )}
       </Formik>
       <MessageView

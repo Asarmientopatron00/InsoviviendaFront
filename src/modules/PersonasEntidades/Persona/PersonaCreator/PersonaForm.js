@@ -108,7 +108,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ParticipanteForm = (props) => {
+let departamentosNacimiento = [];
+let ciudadesNacimiento = [];
+let ciudadesVivienda = [];
+let comunasVivienda = [];
+let barriosVivienda = [];
+let ciudadesCor = [];
+let comunasCor = [];
+let barriosCor = [];
+
+const PersonaForm = (props) => {
   const {
     accion,
     values,
@@ -120,13 +129,12 @@ const ParticipanteForm = (props) => {
     comunas,
     barrios,
     tiposDiscapacidad,
-    // nivelesEscolaridad,
     familias,
     tiposParentesco,
-    onChangePais,
-    onChangeDepartamento,
-    // onChangeCity,
-    // onChangeComuna,
+    epses,
+    estadosCiviles,
+    gradosEscolaridad,
+    ocupaciones
   } = props;
 
   const [disabled, setDisabled] = useState(false);
@@ -138,82 +146,51 @@ const ParticipanteForm = (props) => {
 
   useEffect(() => {
     if(values.pais_nacimiento_id){
-      onChangePais(values.pais_nacimiento_id)
-    } else {
-      onChangePais()
+      departamentosNacimiento = departamentos.filter((dep) => dep.pais_id === values.pais_nacimiento_id)
     }
-  },[values.pais_nacimiento_id]) //eslint-disable-line
+  },[values.pais_nacimiento_id]); //eslint-disable-line
   
   useEffect(() => {
     if(values.departamento_nacimiento_id){
-      onChangeDepartamento(values.departamento_nacimiento_id)
-    } else {
-      onChangeDepartamento()
+      ciudadesNacimiento = ciudades.filter((city) => city.departamento_id === values.departamento_nacimiento_id)
     }
-  },[values.departamento_nacimiento_id]) //eslint-disable-line
+  },[values.departamento_nacimiento_id]); //eslint-disable-line
   
   useEffect(() => {
-    if(values.departamento_nacimiento_id){
-      onChangeDepartamento(values.departamento_nacimiento_id)
-    } else {
-      onChangeDepartamento()
+    if(values.departamento_id){
+      ciudadesVivienda = ciudades.filter((city) => city.departamento_id === values.departamento_id)
     }
-  },[values.departamento_nacimiento_id]) //eslint-disable-line
+  },[values.departamento_id]); //eslint-disable-line
   
   useEffect(() => {
-    if(values.departamento_nacimiento_id){
-      onChangeDepartamento(values.departamento_nacimiento_id)
-    } else {
-      onChangeDepartamento()
+    if(values.ciudad_id){
+      comunasVivienda = comunas.filter((comuna) => comuna.ciudad_id === values.ciudad_id)
     }
-  },[values.departamento_nacimiento_id]) //eslint-disable-line
+  },[values.ciudad_id]); //eslint-disable-line
 
-  // let onChangeDepartamento1 = useRef();
-  // onChangeDepartamento1 = (id) => {
-  //   onChangeDepartamento(id);
-  //   if (!initialValues.departamento_id) {
-  //     values.ciudad_id = '';
-  //   }
-  // };
-  // let onChangeCiudad1 = useRef();
-  // onChangeCiudad1 = (id) => {
-  //   onChangeCity(id);
-  //   if (!initialValues.ciudad_id) {
-  //     values.comuna_id = '';
-  //   }
-  // };
-  // let onChangeComuna1 = useRef();
-  // onChangeComuna1 = (id) => {
-  //   onChangeComuna(id);
-  //   // initialValues.barrio_id='';
-  //   if (!initialValues.comuna_id) {
-  //     values.barrio_id = '';
-  //   }
-  // };
+  useEffect(() => {
+    if(values.comuna_id){
+      barriosVivienda = barrios.filter((neigh) => neigh.comuna_id === values.comuna_id)
+    }
+  },[values.comuna_id]); //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.departamento_correspondencia_id){
+      ciudadesCor = ciudades.filter((city) => city.departamento_id === values.departamento_correspondencia_id)
+    }
+  },[values.departamento_correspondencia_id]); //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.ciudad_correspondencia_id){
+      comunasCor = comunas.filter((comuna) => comuna.ciudad_id === values.ciudad_correspondencia_id)
+    }
+  },[values.ciudad_correspondencia_id]); //eslint-disable-line
 
-  // useEffect(() => {
-  //   if (values.departamento_id !== '') {
-  //     onChangeDepartamento1(values.departamento_id);
-  //   } else {
-  //     onChangeDepartamento1(0);
-  //   }
-  // }, [values.departamento_id]);
-
-  // useEffect(() => {
-  //   if (values.ciudad_id !== '') {
-  //     onChangeCiudad1(values.ciudad_id);
-  //   } else {
-  //     onChangeCiudad1(0);
-  //   }
-  // }, [values.ciudad_id]);
-
-  // useEffect(() => {
-  //   if (values.comuna_id !== '') {
-  //     onChangeComuna1(values.comuna_id);
-  //   } else {
-  //     onChangeComuna1(0);
-  //   }
-  // }, [values.comuna_id]);
+  useEffect(() => {
+    if(values.comuna_correspondencia_id){
+      barriosCor = barrios.filter((neigh) => neigh.comuna_id === values.comuna_correspondencia_id)
+    }
+  },[values.comuna_correspondencia_id]); //eslint-disable-line
 
   const classes = useStyles(props);
   return (
@@ -311,7 +288,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='departamento_nacimiento_id'
               disabled={disabled}
-              options={departamentos}
+              options={departamentosNacimiento}
             />
             <MyAutocomplete
               label='Ciudad Nacimiento'
@@ -321,7 +298,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='ciudad_nacimiento_id'
               disabled={disabled}
-              options={ciudades}
+              options={ciudadesNacimiento}
             />
             <MySelectField
               label='Género'
@@ -336,7 +313,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='estado_civil_id'
-              options={options}
+              options={estadosCiviles}
               variant='standard'
             />
             <MySelectField
@@ -376,7 +353,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='eps_id'
-              options={options}
+              options={epses}
               variant='standard'
             />
             <MySelectField
@@ -384,7 +361,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='grado_escolaridad_id'
-              options={options}
+              options={gradosEscolaridad}
               variant='standard'
             />
             <MySelectField
@@ -482,7 +459,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='ciudad_id'
               disabled={disabled}
-              options={ciudades}
+              options={ciudadesVivienda}
             />
             <MyAutocomplete
               label='Comuna'
@@ -492,7 +469,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='comuna_id'
               disabled={disabled}
-              options={comunas}
+              options={comunasVivienda}
             />
             <MyAutocomplete
               label='Barrio'
@@ -502,7 +479,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='barrio_id'
               disabled={disabled}
-              options={barrios}
+              options={barriosVivienda}
             />
             <MyTextField
               className={classes.myTextField}
@@ -675,7 +652,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               disabled={disabled}
               name='ocupacion_id'
-              options={options}
+              options={ocupaciones}
               variant='standard'
             />
             <MySelectField
@@ -755,7 +732,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='ciudad_correspondencia_id'
               disabled={disabled}
-              options={ciudades}
+              options={ciudadesCor}
             />
             <MyAutocomplete
               label='Comuna'
@@ -765,7 +742,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='comuna_correspondencia_id'
               disabled={disabled}
-              options={comunas}
+              options={comunasCor}
             />
             <MyAutocomplete
               label='Barrio'
@@ -775,7 +752,7 @@ const ParticipanteForm = (props) => {
               className={classes.myTextField}
               name='barrio_correspondencia_id'
               disabled={disabled}
-              options={barrios}
+              options={barriosCor}
             />
             <MyTextField
               className={classes.myTextField}
@@ -996,4 +973,4 @@ const ParticipanteForm = (props) => {
   );
 };
 
-export default ParticipanteForm;
+export default PersonaForm;

@@ -23,7 +23,7 @@ const validationSchema = yup.object({
 });
 
 const FamiliaCreador = (props) => {
-  const {familia, personas, handleOnClose, accion, updateColeccion, titulo} = props;
+  const {familia, personas, handleOnClose, accion, updateColeccion, titulo, tiposFamilia, condicionesFamilia} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -180,6 +180,8 @@ const FamiliaCreador = (props) => {
                 titulo={titulo}
                 accion={accion}
                 personas={personas}
+                tiposFamilia={tiposFamilia}
+                condicionesFamilia={condicionesFamilia}
                 initialValues={initialValues}
               />
             )}

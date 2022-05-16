@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, MenuItem} from '@material-ui/core';
+import {Box, Button, MenuItem, InputAdornment} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
@@ -27,6 +27,7 @@ import {
   onDelete,
 } from '../../../redux/actions/FamiliaAction';
 import {onGetColeccionLigera as onGetColeccionLigeraPersona} from 'redux/actions/PersonaAction';
+import {onGetColeccionLigera as onGetColeccionLigeraTiposFamilia} from 'redux/actions/TipofamiliaAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -46,7 +47,8 @@ import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
 import { ESTADO } from 'shared/constants/ListaValores';
-import { Autocomplete } from '@material-ui/lab';
+import MySearcher from 'shared/components/MySearcher';
+import Search from '@material-ui/icons/Search';
 
 const {
   theme: {palette},
@@ -412,9 +414,11 @@ const EnhancedTableToolbar = (props) => {
     onOpenAddFamilia,
     handleOpenPopoverColumns,
     queryFilter,
-    // identificacionFiltro,
-    setIdentificacionFiltro,
-    personas,
+    identificacionFiltro,
+    showSearch,
+    handleOnClose,
+    setSelectePersona,
+    handleOnOpen,
     tipos_familia,
     condiciones_familia,
     tipoFamiliaFiltro,
@@ -468,18 +472,23 @@ const EnhancedTableToolbar = (props) => {
             </Box>
           </Box>
           <Box className={classes.contenedorFiltros}>
-            <Autocomplete
-              id='identificacionFiltro'
-              // value={identificacionFiltro}
-              onChange={(event, newValue) => newValue&&setIdentificacionFiltro(newValue.personasIdentificacion)}
-              clearOnBlur
-              handleHomeEndKeys
-              selectOnFocus
-              options={personas}
-              // getOptionSelected={(option, value) =>  option.personasIdentificacion === value}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} label='Solicitante'/>}
-            />
+            <TextField
+                label='Solicitante'
+                name='identificacionFiltro'
+                id='identificacionFiltro'
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={handleOnOpen}>
+                        <Search/>
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+                onChange={queryFilter}
+                value={identificacionFiltro}
+              />
+              { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
             <TextField
               label='Estado'
               name='estadoFiltro'
@@ -680,6 +689,7 @@ const Familias = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
+  const [showSearch, setShowSearch] = useState(false);
 
   const [accion, setAccion] = useState('ver');
   const [familiaSeleccionada, setFamiliaSeleccionada] = useState(0);
@@ -715,7 +725,7 @@ const Familias = (props) => {
     {id: 4, nombre: 'Cuatro', estado: 1},
   ];
 
-  const tipos_familia = options;
+  const tipos_familia = useSelector(({tipofamiliaReducer}) => tipofamiliaReducer.ligera);
   const condiciones_familia =  options;
   const personas = useSelector(({personaReducer}) => personaReducer.ligera);
 
@@ -781,6 +791,7 @@ const Familias = (props) => {
 
   useEffect(() => {
     dispatch(onGetColeccionLigeraPersona());
+    dispatch(onGetColeccionLigeraTiposFamilia());
   },[]) //eslint-disable-line
 
   const queryFilter = (e) => {
@@ -932,6 +943,18 @@ const Familias = (props) => {
     }
   }, [rows]);
 
+  const setSelectePersona = (id) => {
+    setIdentificacionFiltro(id);
+  }
+
+  const handleCloseSearcher = () => {
+    setShowSearch(false);
+  }
+
+  const handleOpenSearcher = () => {
+    setShowSearch(true);
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -952,6 +975,10 @@ const Familias = (props) => {
             tipos_familia={tipos_familia}
             condiciones_familia={condiciones_familia}
             titulo={titulo}
+            handleOnClose={handleCloseSearcher}
+            handleOnOpen={handleOpenSearcher}
+            showSearch={showSearch}
+            setSelectePersona={setSelectePersona}
           />
         )}
         {showTable && permisos ? (
@@ -1114,6 +1141,8 @@ const Familias = (props) => {
         <FamiliaCreador
           showForm={showForm}
           familia={familiaSeleccionada}
+          tiposFamilia={tipos_familia}
+          condicionesFamilia={condiciones_familia}
           personas={personas}
           accion={accion}
           handleOnClose={handleOnClose}

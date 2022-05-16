@@ -4,7 +4,7 @@ import {Scrollbar} from '@crema';
 import {makeStyles} from '@material-ui/core/styles/index';
 import { Fonts } from 'shared/constants/AppEnums';
 import { Slide, Box, Button } from '@material-ui/core';
-import Participante from 'modules/PersonasEntidades/Persona';
+import Persona from 'modules/PersonasEntidades/Persona';
 
 const cells = [
   {
@@ -100,7 +100,7 @@ const MySearcher = (props) => {
       className={classes.dialogBox}
       maxWidth={'lg'}>
       <Scrollbar>
-        <Participante 
+        <Persona 
           buscador={true} 
           route={{path:'/personas'}} 
           onSelectPersona={(id) => {

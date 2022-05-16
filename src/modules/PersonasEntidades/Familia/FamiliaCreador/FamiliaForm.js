@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button} from '@material-ui/core';
+import {Box, Button, InputAdornment, IconButton} from '@material-ui/core';
 import {Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import Scrollbar from '../../../../@crema/core/Scrollbar';
@@ -9,7 +9,8 @@ import MyTextField from 'shared/components/MyTextField';
 import MyRadioField from 'shared/components/MyRadioField';
 import MySelectField from 'shared/components/MySelectField';
 import MyCurrencyField from 'shared/components/MyCurrencyField';
-import MyAutocompletePersona from 'shared/components/MyAutoCompletePersona';
+import MySearcher from 'shared/components/MySearcher';
+import Search from '@material-ui/icons/Search';
 
 const options = [
   {value: '1', label: 'Activo'},
@@ -87,9 +88,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FamiliaForm = (props) => {
-  const {handleOnClose, accion, values, initialValues, titulo, setFieldValue, personas} = props;
+  const {
+    handleOnClose, 
+    accion, 
+    values, 
+    initialValues,
+    titulo, 
+    setFieldValue, 
+    personas, 
+    tiposFamilia, 
+    condicionesFamilia
+  } = props;
 
   const [disabled, setDisabled] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     if (accion === 'ver' || initialValues.estado === '0') {
@@ -135,6 +147,17 @@ const FamiliaForm = (props) => {
     values.familiasEgresosOtros,
   ])
 
+  const setSelectePersona = (id) => {
+    setFieldValue('identificacion_persona', id);
+  }
+
+  const handleOnOpen = () => {
+    setShowSearch(true);
+  }
+
+  const handleOnCloseSearch = () => {
+    setShowSearch(false);
+  }
   const classes = useStyles(props);
 
   return (
@@ -151,19 +174,26 @@ const FamiliaForm = (props) => {
 
           <Box px={{md: 5, lg: 8, xl: 10}}>
             <Box className={classes.inputs_2}>
-              <MyAutocompletePersona
-                options={personas}
-                completeid
+              <MyTextField
+                label='Solicitante'
+                disabled={disabled}
                 style={{
-                  paddingRight: '10px'
+                  marginRight: '20px'
                 }}
                 name='identificacion_persona'
-                inputValue={initialValues.identificacion_persona}
-                label='Identificación Solicitante'
-                className={classes.myTextField}
-                required
-                disabled={disabled}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton style={{
+                        pointerEvents: disabled?'none':'auto'
+                      }} onClick={handleOnOpen}>
+                        <Search/>
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
+              { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnCloseSearch} getValue={setSelectePersona}/> }
               <MyTextField
                 className={classes.myTextField}
                 label='Nombre Solicitante'
@@ -178,7 +208,7 @@ const FamiliaForm = (props) => {
                 }}
                 disabled={disabled}
                 name='tipo_familia_id'
-                options={options}
+                options={tiposFamilia}
                 variant='standard'
               />
               <MySelectField
@@ -186,7 +216,7 @@ const FamiliaForm = (props) => {
                 className={classes.myTextField}
                 disabled={disabled}
                 name='condicion_familia_id'
-                options={options}
+                options={condicionesFamilia}
                 variant='standard'
               />
               <MyTextField
