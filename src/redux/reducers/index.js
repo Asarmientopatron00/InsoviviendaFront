@@ -34,6 +34,12 @@ import OcupacionReducer from './OcupacionReducer';
 import GradosescolaridadReducer from './GradosescolaridadReducer';
 import EpsReducer from './EpsReducer';
 import TipofamiliaReducer from './TipofamiliaReducer';
+import CondicionFamiliaReducer from './CondicionFamiliaReducer';
+import TipoPoblacionReducer from './TipoPoblacionReducer';
+import TipoViviendaReducer from './TipoViviendaReducer';
+import TipoTechoReducer from './TipoTechoReducer';
+import TipoPisoReducer from './TipoPisoReducer';
+import TipoDivisionReducer from './TipoDivisionReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -68,5 +74,11 @@ const reducers = (history) =>
     gradosEscolaridadReducer:GradosescolaridadReducer,
     epsReducer:EpsReducer,
     tipofamiliaReducer:TipofamiliaReducer,
+    condicionFamiliaReducer: CondicionFamiliaReducer,
+    tipoPoblacionReducer: TipoPoblacionReducer,
+    tipoViviendaReducer: TipoViviendaReducer,
+    tipoTechoReducer: TipoTechoReducer,
+    tipoPisoReducer: TipoPisoReducer,
+    tipoDivisionReducer: TipoDivisionReducer,
   });
 export default reducers;
