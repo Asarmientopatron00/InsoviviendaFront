@@ -47,6 +47,7 @@ import TipoGastoReducer from './TipoGastoReducer';
 import TipoBenefactorReducer from './TipoBenefactorReducer';
 import TipoDonacionReducer from './TipoDonacionReducer';
 import ParametroCorreoReducer from './ParametroCorreoReducer';
+import ParametroConstanteReducer from './ParametroConstanteReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -90,6 +91,7 @@ const reducers = (history) =>
     bancoReducer: BancoReducer,
     formaPagoReducer: FormaPagoReducer,
     parametroCorreoReducer: ParametroCorreoReducer,
+    parametroConstanteReducer: ParametroConstanteReducer,
     tipoBenefactorReducer: TipoBenefactorReducer,
     tipoDocumentoProyectoReducer: TipoDocumentoProyectoReducer,
     tipoDonacionReducer: TipoDonacionReducer,

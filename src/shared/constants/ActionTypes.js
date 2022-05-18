@@ -331,5 +331,13 @@ export const UPDATE_PARAMETRO_CORREO = 'update_parametro_correo';
 export const CREATE_PARAMETRO_CORREO = 'create_parametro_correo';
 export const DELETE_PARAMETRO_CORREO = 'delete_parametro_correo';
 
+// PARAMETROS CONSTANTES
+export const GET_COLECCION_PARAMETRO_CONSTANTE = 'get_coleccion_parametro_constante';
+export const GET_COLECCION_LIGERA_PARAMETRO_CONSTANTE = 'get_coleccion_ligera_parametro_constante';
+export const SHOW_PARAMETRO_CONSTANTE = 'show_parametro_constante';
+export const UPDATE_PARAMETRO_CONSTANTE = 'update_parametro_constante';
+export const CREATE_PARAMETRO_CONSTANTE = 'create_parametro_constante';
+export const DELETE_PARAMETRO_CONSTANTE = 'delete_parametro_constante';
+
 
 
