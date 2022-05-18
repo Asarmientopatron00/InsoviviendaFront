@@ -7,6 +7,8 @@ import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import MyTextField from 'shared/components/MyTextField';
 import MyRadioField from 'shared/components/MyRadioField';
+import MySelectField from 'shared/components/MySelectField';
+import { ESTADOS_PROYECTO } from 'shared/constants/ListaValores';
 
 const options_requerido = [
   {value: '1', label: 'Si'},
@@ -90,9 +92,12 @@ const TipoDocumentoProyectoForm = (props) => {
         <Box py={5} px={{xs: 5, lg: 8, xl: 10}}>
           <Box component='h6' mb={{xs: 4, xl: 6}} fontSize={20} fontWeight={Fonts.MEDIUM}> {titulo} </Box>
 
-          <Box px={{md: 5, lg: 8, xl: 10}}>
+          <Box px={{md: 5, lg: 8, xl: 10}} style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
             <MyTextField className={classes.myTextField} label='Nombre*' name='tiDoPrDescripcion' disabled={disabled}/>
-            <MyTextField className={classes.myTextField} label='Etapa*' name='tiDoPrEtapa' disabled={disabled}/>
+            <MySelectField className={classes.myTextField} label='Etapa*' name='tiDoPrEtapa' disabled={disabled} options={ESTADOS_PROYECTO}/>
             <MyRadioField label='Requerido' name='tiDoPrRequerido' required /*disabled={disabled}*/ options={options_requerido}/>
             <MyRadioField label='Estado' name='tiDoPrEstado' required /*disabled={disabled}*/ options={options}/>
           </Box>

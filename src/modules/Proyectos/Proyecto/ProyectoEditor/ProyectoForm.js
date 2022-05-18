@@ -749,7 +749,7 @@ const ProyectoForm = (props) => {
                   label='Tipo Cuenta Recaudo'
                   className={classes.myTextField}
                   disabled={disabled}
-                  name='personasTipoTrabajo'
+                  name='proyectosTipoCuentaRecaudo'
                   options={TIPOS_CUENTA_RECAUDO}
                   variant='standard'
                 />

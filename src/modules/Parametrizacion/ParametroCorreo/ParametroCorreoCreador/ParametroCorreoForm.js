@@ -7,14 +7,37 @@ import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import MyTextField from 'shared/components/MyTextField';
 import MyRadioField from 'shared/components/MyRadioField';
+import {CKEditor} from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const options = [
   {value: '1', label: 'Activo'},
   {value: '0', label: 'Inactivo'},
 ];
 
+const customConfig = {
+  toolbar: {
+    items: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'link',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'imageUpload',
+      'undo',
+      'redo',
+    ],
+  },
+  table: {
+    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+  },
+};
+
 const ParametroCorreoForm = (props) => {
-  const {handleOnClose, accion, initialValues, titulo} = props;
+  const {handleOnClose, accion, initialValues, titulo, values} = props;
 
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {
@@ -92,10 +115,17 @@ const ParametroCorreoForm = (props) => {
           </Box>
 
           <Box px={{md: 5, lg: 8, xl: 10}}>
-            <MyTextField className={classes.myTextField} label='Nombre*' name='nombre' disabled={disabled}/>
-            <MyTextField className={classes.myTextField} label='Asunto*' name='asunto' disabled={disabled}/>
-            <MyTextField className={classes.myTextField} label='Texto*' name='texto' disabled={disabled}/>
-            <MyTextField className={classes.myTextField} label='Parametros*' name='parametros' disabled={disabled}/>
+            <MyTextField className={classes.myTextField} required label='Nombre' name='nombre' disabled={disabled}/>
+            <MyTextField className={classes.myTextField} required label='Asunto' name='asunto' disabled={disabled}/>
+            <CKEditor
+              editor={ClassicEditor}
+              config={customConfig}
+              data={values.texto}
+              onChange={(event, editor) => {
+                values.texto = editor.getData();
+              }}
+            />
+            <MyTextField className={classes.myTextField} required label='Parámetros' name='parametros' disabled={disabled}/>
             <MyRadioField label='Estado' name='estado' required /*disabled={disabled}*/ options={options}/>
           </Box>
         </Box>

@@ -44,6 +44,7 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
+import parse from 'html-react-parser';
 
 const {
   theme: {palette},
@@ -70,7 +71,7 @@ const cells = [
     id: 'texto',
     typeHead: 'string',
     label: 'Texto',
-    value: (value) => value,
+    value: (value) => parse(value),
     align: 'left',
     mostrarInicio: true,
   },
@@ -99,7 +100,7 @@ const cells = [
     value: (value) => value,
     align: 'left',
     width: '140px',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'fecha_modificacion',
@@ -108,7 +109,7 @@ const cells = [
     value: (value) => moment(value).format('DD-MM-YYYY HH:mm:ss'),
     align: 'left',
     width: '180px',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'usuario_creacion_nombre',

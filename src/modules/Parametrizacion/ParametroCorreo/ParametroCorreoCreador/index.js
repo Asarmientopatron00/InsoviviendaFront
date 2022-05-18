@@ -118,11 +118,12 @@ const ParametroCorreoCreador = (props) => {
               }
               setSubmitting(false);
             }}>
-            {({initialValues}) => (
+            {({initialValues, values}) => (
               <ParametroCorreoForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
+                values={values}
                 initialValues={initialValues}
               />
             )}

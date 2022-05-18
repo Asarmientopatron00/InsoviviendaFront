@@ -44,6 +44,7 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
+import { ESTADOS_PROYECTO } from 'shared/constants/ListaValores';
 
 const {
   theme: {palette},
@@ -62,7 +63,7 @@ const cells = [
     id: 'etapa',
     typeHead: 'string',
     label: 'Etapa',
-    value: (value) => value,
+    value: (value) =>  ESTADOS_PROYECTO.map((estado) => (estado.id === value ? estado.nombre : '')),
     align: 'left',
     mostrarInicio: true,
   },
