@@ -50,12 +50,48 @@ import moment from 'moment';
 import { ESTADO } from 'shared/constants/ListaValores';
 import MySearcher from 'shared/components/MySearcher';
 import Search from '@material-ui/icons/Search';
+import Check from '@material-ui/icons/Check';
 
 const {
   theme: {palette},
 } = defaultConfig;
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
+
+const cells2 = [
+  {
+    id: 'identificacion_persona',
+    typeHead: 'numeric',
+    label: 'Identificación Familia',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'nombre',
+    typeHead: 'string',
+    label: 'Nombre',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'tipFamDescripcion',
+    typeHead: 'string',
+    label: 'Tipo Familia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'conFamDescripcion',
+    typeHead: 'string',
+    label: 'Condición Familia',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+];
 
 const cells = [
   {
@@ -427,6 +463,7 @@ const EnhancedTableToolbar = (props) => {
     estadoFiltro,
     limpiarFiltros,
     permisos,
+    buscador,
   } = props;
   return (
     <Toolbar
@@ -451,26 +488,28 @@ const EnhancedTableToolbar = (props) => {
               component='div'>
               {titulo}
             </Typography>
-            <Box className={classes.horizontalBottoms}>
-              <Tooltip
-                title='Mostrar/Ocultar Columnas'
-                onClick={handleOpenPopoverColumns}>
-                <IconButton
-                  className={classes.columnFilterButton}
-                  aria-label='filter list'>
-                  <TuneIcon />
-                </IconButton>
-              </Tooltip>
-              {permisos.indexOf('Crear') >= 0 && (
-                <Tooltip title='Crear Familia' onClick={onOpenAddFamilia}>
+            { buscador ? (''): (
+              <Box className={classes.horizontalBottoms}>
+                <Tooltip
+                  title='Mostrar/Ocultar Columnas'
+                  onClick={handleOpenPopoverColumns}>
                   <IconButton
-                    className={classes.createButton}
+                    className={classes.columnFilterButton}
                     aria-label='filter list'>
-                    <AddIcon />
+                    <TuneIcon />
                   </IconButton>
                 </Tooltip>
-              )}
-            </Box>
+                {permisos.indexOf('Crear') >= 0 && (
+                  <Tooltip title='Crear Familia' onClick={onOpenAddFamilia}>
+                    <IconButton
+                      className={classes.createButton}
+                      aria-label='filter list'>
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Box>
+            )}
           </Box>
           <Box className={classes.contenedorFiltros}>
             <TextField
@@ -678,6 +717,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Familias = (props) => {
+  const {buscador, onSelectFamilia} = props;
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
@@ -725,18 +765,33 @@ const Familias = (props) => {
 
   let columnasMostradasInicial = [];
 
-  cells.forEach((cell) => {
-    columnasMostradasInicial.push({
-      id: cell.id,
-      mostrar: cell.mostrarInicio,
-      typeHead: cell.typeHead,
-      label: cell.label,
-      value: cell.value,
-      align: cell.align,
-      width: cell.width,
-      cellColor: cell.cellColor,
+  if(buscador){
+    cells2.forEach((cell) => {
+      columnasMostradasInicial.push({
+        id: cell.id,
+        mostrar: cell.mostrarInicio,
+        typeHead: cell.typeHead,
+        label: cell.label,
+        value: cell.value,
+        align: cell.align,
+        width: cell.width,
+        cellColor: cell.cellColor,
+      });
     });
-  });
+  } else {
+    cells.forEach((cell) => {
+      columnasMostradasInicial.push({
+        id: cell.id,
+        mostrar: cell.mostrarInicio,
+        typeHead: cell.typeHead,
+        label: cell.label,
+        value: cell.value,
+        align: cell.align,
+        width: cell.width,
+        cellColor: cell.cellColor,
+      });
+    });
+  }
 
   const [columnasMostradas, setColumnasMostradas] = useState(
     columnasMostradasInicial,
@@ -974,6 +1029,7 @@ const Familias = (props) => {
             handleOnOpen={handleOpenSearcher}
             showSearch={showSearch}
             setSelectePersona={setSelectePersona}
+            buscador={buscador}
           />
         )}
         {showTable && permisos ? (
@@ -1034,27 +1090,37 @@ const Familias = (props) => {
                         selected={isItemSelected}
                         className={classes.row}>
                         <TableCell align='center' className={classes.acciones}>
-                          {permisos.indexOf('Modificar') >= 0 && (
-                            <Tooltip title={<IntlMessages id='boton.editar' />}>
-                              <EditIcon
-                                onClick={() => onOpenEditFamilia(row.id)}
-                                className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Listar') >= 0 && (
-                            <Tooltip title={<IntlMessages id='boton.ver' />}>
-                              <VisibilityIcon
-                                onClick={() => onOpenViewFamilia(row.id)}
-                                className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Eliminar') >= 0 && (
-                            <Tooltip
-                              title={<IntlMessages id='boton.eliminar' />}>
-                              <DeleteIcon
-                                onClick={() => onDeleteFamilia(row.id)}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
-                            </Tooltip>
+                          {buscador ? (
+                             <Tooltip title={'Seleccionar'}>
+                                <Check
+                                  onClick={() => onSelectFamilia(row.identificacion_persona)}
+                                  className={`${classes.generalIcons} ${classes.editIcon}`}></Check>
+                              </Tooltip>
+                          ) : ( 
+                            <>
+                              {permisos.indexOf('Modificar') >= 0 && (
+                                <Tooltip title={<IntlMessages id='boton.editar' />}>
+                                  <EditIcon
+                                    onClick={() => onOpenEditFamilia(row.id)}
+                                    className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                                </Tooltip>
+                              )}
+                              {permisos.indexOf('Listar') >= 0 && (
+                                <Tooltip title={<IntlMessages id='boton.ver' />}>
+                                  <VisibilityIcon
+                                    onClick={() => onOpenViewFamilia(row.id)}
+                                    className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
+                                </Tooltip>
+                              )}
+                              {permisos.indexOf('Eliminar') >= 0 && (
+                                <Tooltip
+                                  title={<IntlMessages id='boton.eliminar' />}>
+                                  <DeleteIcon
+                                    onClick={() => onDeleteFamilia(row.id)}
+                                    className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
+                                </Tooltip>
+                              )}
+                            </>
                           )}
                         </TableCell>
 

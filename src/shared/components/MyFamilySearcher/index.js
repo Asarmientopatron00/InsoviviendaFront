@@ -4,7 +4,7 @@ import {Scrollbar} from '@crema';
 import {makeStyles} from '@material-ui/core/styles/index';
 import { Fonts } from 'shared/constants/AppEnums';
 import { Slide, Box, Button } from '@material-ui/core';
-import Persona from 'modules/PersonasEntidades/Persona';
+import Familias from 'modules/PersonasEntidades/Familia';
 
 const useStyles = makeStyles((theme) => ({
   dialogBox: {
@@ -49,7 +49,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='down' ref={ref} {...props} />;
 });
 
-const MySearcher = (props) => {
+const MySearcherFamily = (props) => {
   const { showForm, handleOnClose, getValue } = props;
   const classes = useStyles(props);
 
@@ -67,10 +67,10 @@ const MySearcher = (props) => {
       className={classes.dialogBox}
       maxWidth={'lg'}>
       <Scrollbar>
-        <Persona 
+        <Familias 
           buscador={true} 
-          route={{path:'/personas'}} 
-          onSelectPersona={(id) => {
+          route={{path:'/familias'}} 
+          onSelectFamilia={(id) => {
             onSelect(id);
             handleOnClose();
           }}
@@ -87,4 +87,4 @@ const MySearcher = (props) => {
   )
 }
 
-export default MySearcher;
+export default MySearcherFamily;

@@ -114,7 +114,7 @@ export const onShow = (id) => {
   };
 };
 
-export const onUpdate = (params, handleOnClose, updateColeccion) => {
+export const onUpdate = (params, handleOnClose, /*updateColeccion*/) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
@@ -126,7 +126,7 @@ export const onUpdate = (params, handleOnClose, updateColeccion) => {
             type: UPDATE_PROYECTO,
             payload: data.data,
           });
-          updateColeccion();
+          // updateColeccion();
           handleOnClose();
           dispatch({
             type: SHOW_MESSAGE,

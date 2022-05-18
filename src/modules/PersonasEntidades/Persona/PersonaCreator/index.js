@@ -797,6 +797,16 @@ const PersonaCreator = (props) => {
               ? selectedRow.familia_id
               : ''
             : '',
+          familia_identificacion: selectedRow
+            ? selectedRow?.familia?.identificacion
+              ? selectedRow.familia.identificacion
+              : ''
+            : '',
+          familia_nombre: selectedRow
+            ? selectedRow?.familia?.nombre
+              ? selectedRow.familia.nombre
+              : ''
+            : '',
         }}
         validationSchema={validationSchema}
         onSubmit={(data, {setSubmitting, resetForm}) => {

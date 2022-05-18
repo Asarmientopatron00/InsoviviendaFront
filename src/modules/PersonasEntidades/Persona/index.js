@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button} from '@material-ui/core';
+import {Box, Button, InputAdornment} from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -23,7 +23,7 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import { Check } from '@material-ui/icons';
+import { Check, Search } from '@material-ui/icons';
 import {
   onGetColeccion,
   onDelete,
@@ -64,6 +64,7 @@ import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import moment from 'moment';
 import MyCell from 'shared/components/MyCell';
+import MySearcherFamily from 'shared/components/MyFamilySearcher';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
@@ -963,7 +964,10 @@ const EnhancedTableToolbar = (props) => {
     limpiarFiltros,
     permisos,
     buscador,
-    familias,
+    handleOnClose,
+    handleOnOpen,
+    showSearch,
+    setSelecteFamilia
   } = props;
   return (
     <Toolbar
@@ -1105,21 +1109,19 @@ const EnhancedTableToolbar = (props) => {
               label='Familia'
               name='familiaFiltro'
               id='familiaFiltro'
-              select={true}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleOnOpen}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
               onChange={queryFilter}
-              value={familiaFiltro}>
-              {familias.map((familia) => {
-                return (
-                  <MenuItem
-                    value={familia.id}
-                    key={familia.id}
-                    id={familia.id}
-                    className={classes.pointer}>
-                    {familia.nombre}
-                  </MenuItem>
-                );
-              })}
-            </TextField>
+              value={familiaFiltro}
+            />
+            { showSearch && <MySearcherFamily showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelecteFamilia}/> }
             <Box display='grid'>
               <Box display='flex' mb={2}>
                 <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
@@ -1157,7 +1159,6 @@ EnhancedTableToolbar.propTypes = {
   nombreFiltro: PropTypes.string.isRequired,
   numeroDocumentoFiltro: PropTypes.string.isRequired,
   familiaFiltro: PropTypes.string.isRequired,
-  primerApellidoFiltro: PropTypes.string.isRequired,
   categoriaApFiltro: PropTypes.string.isRequired,
   estadoFiltro: PropTypes.string.isRequired,
 };
@@ -1291,15 +1292,10 @@ const Persona = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-
+  const [showSearch, setShowSearch] = useState(false);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
     ({personaReducer}) => personaReducer,
   );
-
-  // const familias = useSelector(({familiaReducer}) => familiaReducer.ligera);
-  const familias = [
-    {id: 1, nombre: 'Hola'}
-  ]
 
   const {message, error, messageType} = useSelector(({common}) => common);
   useEffect(() => {
@@ -1590,6 +1586,18 @@ const Persona = (props) => {
     }
   }, [rows]);
 
+  const handleCloseSearcher = () => {
+    setShowSearch(false);
+  }
+
+  const handleOpenSearcher = () => {
+    setShowSearch(true);
+  }
+
+  const setSelecteFamilia = (id) => {
+    setFamiliaFiltro(id);
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -1605,10 +1613,13 @@ const Persona = (props) => {
             familiaFiltro={familiaFiltro}
             categoriaApFiltro={categoriaApFiltro}
             estadoFiltro={estadoFiltro}
-            familias={familias}
             permisos={permisos}
             titulo={titulo}
             buscador={buscador}
+            handleOnClose={handleCloseSearcher}
+            handleOnOpen={handleOpenSearcher}
+            showSearch={showSearch}
+            setSelecteFamilia={setSelecteFamilia}
           />
         )}
         {showTable && permisos ? (

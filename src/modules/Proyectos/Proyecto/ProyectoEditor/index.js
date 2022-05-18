@@ -49,90 +49,201 @@ const validationSchema = yup.object({
       is: 'S',
       then: yup.number().required('Debe especificar un remitente')
     }),
+  pais_id: yup
+    .number()
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   departamento_id: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   ciudad_id: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   comuna_id: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   barrio_id: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   proyectosZona: yup
     .string()
-    .nullable(),
+    .required('Requerido'),
   proyectosDireccion: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.string().required('Requerido')
+    }),
   proyectosVisitaDomiciliaria: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.string().required('Requerido')
+    }),
   proyectosFechaVisitaDom: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosVisitaDomiciliaria', {
+      is: 'S',
+      then: yup.date().required('Requerido')
+    }),
   proyectosPagoEstudioCre: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.string().required('Requerido')
+    }),
   proyectosReqLicenciaCon: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.string().required('Requerido')
+    }),
   proyectosFechaInicioEstudio: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.date().required('Requerido')
+    }),
   proyectosFechaAproRec: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.date().required('Requerido')
+    }),
   proyectosFechaEstInicioObr: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.date().required('Requerido')
+    }),
   proyectosValorProyecto: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),    
   proyectosValorSolicitud: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),    
   proyectosValorRecursosSol: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),    
   proyectosValorSubsidios: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),    
   proyectosValorDonaciones: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   proyectosValorCuotaAprobada: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.number().required('Requerido')
+    }),
   proyectosValorCapPagoMen: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   proyectosValorAprobado: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.number().required('Requerido')
+    }),
   proyectosValorSeguroVida: yup
     .number()
     .nullable(),
   proyectosTasaInteresNMV: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.number().required('Requerido')
+    }),
   proyectosTasaInteresEA: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.number().required('Requerido')
+    }),
   proyectosNumeroCuotas: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.number().required('Requerido')
+    }),
   banco_id: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.number().required('Requerido')
+    }),
   proyectosTipoCuentaRecaudo: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.string().required('Requerido')
+    }),
   proyectosNumCuentaRecaudo: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'APR',
+      then: yup.string().required('Requerido')
+    }),
   proyectosEstadoFormalizacion: yup
     .string()
     .nullable(),
@@ -142,7 +253,10 @@ const validationSchema = yup.object({
   proyectosFechaFirEscrituras: yup
     .date()
     .nullable(),
-  proyectosFechaIngresosReg: yup
+  proyectosFechaIngresoReg: yup
+    .date()
+    .nullable(),
+  proyectosFechaSalidaReg: yup
     .date()
     .nullable(),
   proyectosAutorizacionDes: yup
@@ -156,13 +270,17 @@ const validationSchema = yup.object({
     .nullable(),
   orientador_id: yup
     .number()
-    .nullable(),
+    .required('Requerido'),
   orientador_identificacion: yup
     .number()
-    .nullable(),
+    .required('Requerido'),
   proyectosObservaciones: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'EST',
+      then: yup.string().required('Requerido')
+    }),
 });
 
 const ProyectoCreador = (props) => {
@@ -446,9 +564,14 @@ const ProyectoCreador = (props) => {
                 ? selectedRow.proyectosFechaFirEscrituras 
                 : '') 
             : '',
-          proyectosFechaIngresosReg: selectedRow 
-            ? (selectedRow.proyectosFechaIngresosReg 
-                ? selectedRow.proyectosFechaIngresosReg 
+          proyectosFechaIngresoReg: selectedRow 
+            ? (selectedRow.proyectosFechaIngresoReg 
+                ? selectedRow.proyectosFechaIngresoReg 
+                : '') 
+            : '',
+          proyectosFechaSalidaReg: selectedRow 
+            ? (selectedRow.proyectosFechaSalidaReg 
+                ? selectedRow.proyectosFechaSalidaReg 
                 : '') 
             : '',
           proyectosAutorizacionDes: selectedRow 
@@ -525,6 +648,7 @@ const ProyectoCreador = (props) => {
                 paises={paises}
                 personas={personas}
                 tiposPrograma={tiposPrograma}
+                state={state}
               />
             )}
           </>

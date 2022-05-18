@@ -50,35 +50,47 @@ export const usePersonaFormData = () => {
       departamentosResp,
       ciudadesResp,
       comunasResp,
-      barriosResp,
-      tiposParentescoResp,
-      tiposDiscapacidadResp,
-      familiasResp,
-      estadosCivilesResp,
-      epsesResp,
-      gradosEscolaridadResp,
-      ocupacionesResp,
-      tiposPoblacionResp,
-      tiposViviendaResp,
-      tiposTechoResp,
-      tiposPisoResp,
-      tiposDivisionResp,
     ] = await Promise.all([
       tiposIdentificacionPromise,
       paisesPromise,
       departamentosPromise,
       ciudadesPromise,
       comunasPromise,
+    ]);
+
+    const [
+      barriosResp,
+      tiposParentescoResp,
+      tiposDiscapacidadResp,
+      familiasResp,
+      estadosCivilesResp,
+    ] = await Promise.all([
       barriosPromise,
       tiposParentescoPromise,
       tiposDiscapacidadPromise,
       familiasPromise,
       estadosCivilesPromise,
+    ]);
+
+    const [
+      epsesResp,
+      gradosEscolaridadResp,
+      ocupacionesResp,
+      tiposPoblacionResp,
+      tiposViviendaResp,
+    ] = await Promise.all([
       epsesPromise,
       gradosEscolaridadPromise,
       ocupacionesPromise,
       tiposPoblacionPromise,
       tiposViviendaPromise,
+    ]);
+
+    const [
+      tiposTechoResp,
+      tiposPisoResp,
+      tiposDivisionResp,
+    ] = await Promise.all([
       tiposTechoPromise,
       tiposPisoPromise,
       tiposDivisionPromise,

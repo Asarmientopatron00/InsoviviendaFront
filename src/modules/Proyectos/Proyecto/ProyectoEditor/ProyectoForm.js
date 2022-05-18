@@ -6,17 +6,14 @@ import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import MyAutocompletePersona from '../../../../shared/components/MyAutoCompletePersona';
 import MyTextField from 'shared/components/MyTextField';
 import MySelectField from 'shared/components/MySelectField';
-import { DATO_BOOLEAN_RADIO, ESTADOS_PROYECTO, TIPOS_PROYECTO, ZONA } from 'shared/constants/ListaValores';
+import { DATO_BOOLEAN_RADIO, ESTADOS_FORMALIZACION, ESTADOS_PROYECTO, TIPOS_CUENTA_RECAUDO, TIPOS_PROYECTO, ZONA } from 'shared/constants/ListaValores';
 import MySearcher from 'shared/components/MySearcher';
 import Search from '@material-ui/icons/Search';
 import MyRadioField from 'shared/components/MyRadioField';
-
-const options = [
-  {id: 1, nombre: 'Uno', estado: 1},
-  {id: 2, nombre: 'Dos', estado: 1},
-  {id: 3, nombre: 'Tres', estado: 1},
-  {id: 4, nombre: 'Cuatro', estado: 1},
-];
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import MyAutocomplete from 'shared/components/MyAutoComplete';
+import MyCurrencyField from 'shared/components/MyCurrencyField';
 
 const useStyles = makeStyles((theme) => ({
   bottomsGroup: {
@@ -110,6 +107,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let departamentosFilter = [];
+let ciudadesFilter = [];
+let comunasFilter = [];
+let barriosFilter = [];
+
 const ProyectoForm = (props) => {
   const {
     accion,
@@ -132,12 +134,54 @@ const ProyectoForm = (props) => {
     persona: false,
     remitente: false
   });
+  const verifyInitialState = (label) => {
+    if(values.proyectosEstadoProyecto === label){
+      return true;
+    }
+    return false;
+  }
+  
+  const [parts, setParts] = useState({
+    inicial: true,
+    estudio: verifyInitialState('EST'),
+    aprobacion: verifyInitialState('APR'),
+    formalizacion: verifyInitialState('FOR'),
+    autorizacion: verifyInitialState('DES')
+  });
 
   useEffect(() => {
-    if (accion === 'ver' || initialValues.personasEstadoRegistro === 'IN') {
+    if (accion === 'ver' || initialValues.proyectosEstadoProyecto === 'CAN') {
       setDisabled(true);
     }
-  }, [initialValues.estado, accion]); //eslint-disable-line
+  }, [initialValues.proyectosEstadoProyecto, accion]); //eslint-disable-line
+
+  useEffect(() => {
+    if(values.pais_id){
+      departamentosFilter = departamentos.filter((dep) => dep.pais_id === values.pais_id)
+    }
+  },[values.pais_id]); //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.departamento_id){
+      ciudadesFilter = ciudades.filter((city) => city.departamento_id === values.departamento_id)
+    }
+  },[values.departamento_id]); //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.ciudad_id){
+      comunasFilter = comunas.filter((com) => com.ciudad_id === values.ciudad_id)
+    }
+  },[values.ciudad_id]); //eslint-disable-line
+  
+  useEffect(() => {
+    if(values.comuna_id){
+      barriosFilter = barrios.filter((neigh) => neigh.comuna_id === values.comuna_id)
+    }
+  },[values.comuna_id]); //eslint-disable-line
+
+  useEffect(() => {
+    openOneCloseOthers(values.proyectosEstadoProyecto)
+  },[values.proyectosEstadoProyecto]) //eslint-disable-line
 
   const classes = useStyles(props);
 
@@ -184,6 +228,130 @@ const ProyectoForm = (props) => {
     }
   },[values.orientador_identificacion]) //eslint-disable-line
 
+  useEffect(() => {
+    if(values.proyectosTasaInteresNMV){
+      const tasaEA = (1+parseFloat(values.proyectosTasaInteresNMV)/1200)**12-1
+      setFieldValue('proyectosTasaInteresEA', (tasaEA*100).toFixed(2).toString())
+    }
+  },[values.proyectosTasaInteresNMV]) //eslint-disable-line
+
+  const renderChevron = (state) => {
+    return (
+      state ?
+        ( <KeyboardArrowDown style={{fontSize: 40}}/> )
+        : 
+        ( <KeyboardArrowRight style={{fontSize: 40}}/> )
+    );
+  }
+
+  const tooglePart = (e) => {
+    switch (e) {
+      case 'SOL':
+        setParts(
+          {...parts,
+          inicial: !parts.inicial
+        })
+        break;
+      case 'EST':
+        setParts(
+          {...parts,
+          estudio: !parts.estudio
+        })
+        break;
+      case 'APR':
+        setParts(
+          {...parts,
+          aprobacion: !parts.aprobacion
+        })
+        break;
+      case 'FOR':
+        setParts(
+          {...parts,
+          formalizacion: !parts.formalizacion
+        })
+        break;
+      case 'DES':
+        setParts(
+          {...parts,
+          autorizacion: !parts.autorizacion
+        })
+        break;
+      default:
+        break;
+    }
+  }
+
+  const openOneCloseOthers = (e) => {
+    switch (e) {
+      case 'SOL':
+        setParts(
+          {...parts,
+          estudio: false,
+          aprobacion: false,
+          formalizacion: false,
+          autorizacion: false
+        })
+        break;
+      case 'EST':
+        setParts(
+          {...parts,
+          estudio: true,
+          aprobacion: false,
+          formalizacion: false,
+          autorizacion: false
+        })
+        break;
+      case 'APR':
+        setParts(
+          {...parts,
+            estudio: false,
+            aprobacion: true,
+            formalizacion: false,
+            autorizacion: false
+        })
+        break;
+      case 'FOR':
+        setParts(
+          {...parts,
+            estudio: false,
+            aprobacion: false,
+            formalizacion: true,
+            autorizacion: false
+        })
+        break;
+      case 'DES':
+        setParts(
+          {...parts,
+            estudio: false,
+            aprobacion: false,
+            formalizacion: false,
+            autorizacion: true
+        })
+        break;
+      default:
+        break;
+    }
+  }
+
+  const isClickeable = (currentState, currentLabel) => {
+    const estados = [
+      {id: 'SOL', nombre: 'Solicitud', value: 1},
+      {id: 'EST', nombre: 'Estudio', value: 2},
+      {id: 'APR', nombre: 'Aprobado', value: 3},
+      {id: 'REC', nombre: 'Rechazado', value: 4},
+      {id: 'FOR', nombre: 'Formalización', value: 5},
+      {id: 'DES', nombre: 'Desembolsado', value: 6},
+      {id: 'CAN', nombre: 'Cancelado', value: 7},
+      {id: 'CON', nombre: 'Congelado', value: 8},
+    ];
+    const currentEstado = estados.filter((estado) => estado.id === currentState);
+    const currentPart = estados.filter((estado) => estado.id === currentLabel);
+    if(currentEstado[0]?.value >= currentPart[0]?.value){
+      return 'auto';
+    }
+    return 'none'
+  }
+
   return (
     <Form noValidate autoComplete='off' className={classes.root}>
       <Box className={classes.marco}>
@@ -195,103 +363,35 @@ const ProyectoForm = (props) => {
           <IntlMessages id='proyectos' />
         </Box>
         <Box px={{md: 5, lg: 8, xl: 10}}>
-          <Box component='h6' fontSize={16} fontWeight='bold' mb={3}>
-              Datos Iniciales:
+          <Box 
+            component='h6' 
+            fontSize={17} 
+            onClick={() => tooglePart('SOL')}
+            fontWeight='bold' 
+            mb={3} 
+            style={{
+              display: 'flex', 
+              alignItems: 'center',
+              cursor: 'pointer'
+            }}
+          >
+              Datos Iniciales: {renderChevron(parts.inicial)}
           </Box>
-          <Box className={classes.inputs_4}>
-            <MyTextField
-              label='Solicitante'
-              name='persona_identificacion'
-              disabled={disabled}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton
-                      style={{
-                        pointerEvents: disabled?'none':'auto'
-                      }} 
-                      onClick={handleOpenPersonaSearcher}
-                    >
-                      <Search/>
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              className={classes.myTextField}
-            />
-            { showSearch.persona && <MySearcher showForm={showSearch.persona} handleOnClose={handleCloseSearcher} getValue={setSelectePersona}/> }
-            <MyTextField
-              className={classes.myTextField}
-              label='Nombre Solicitante'
-              name='nombrePersona'
-              disabled
-            />
-            <MySelectField
-              label='Estado Proyecto'
-              className={classes.myTextField}
-              disabled={disabled}
-              name='proyectosEstadoProyecto'
-              options={ESTADOS_PROYECTO}
-              variant='standard'
-            />
-            <MyTextField
-              className={classes.myTextField}
-              label='Fecha Solicitud'
-              InputLabelProps={{
-                shrink: true,
-              }}
-              name='proyectosFechaSolicitud'
-              disabled={disabled}
-              type='date'
-            />
-            <MySelectField
-              label='Tipo Proyecto'
-              className={classes.myTextField}
-              disabled={disabled}
-              name='proyectosTipoProyecto'
-              options={TIPOS_PROYECTO}
-              variant='standard'
-            />
-            <MySelectField
-              label='Tipo Programa'
-              className={classes.myTextField}
-              disabled={disabled}
-              name='tipo_programa_id'
-              options={tiposPrograma}
-              variant='standard'
-            />
-            <MySelectField
-              label='Zona'
-              className={classes.myTextField}
-              disabled={disabled}
-              name='proyectosZona'
-              options={ZONA}
-              variant='standard'
-            />
-          </Box>
-          <Box className={classes.inputs_4}>
-            <MyRadioField
-              label='Remitido'
-              className={classes.MyRadioField}
-              name='proyectosRemitido'
-              disabled={disabled}
-              required
-              options={DATO_BOOLEAN_RADIO}
-            />
-            {values.proyectosRemitido === 'S' && (
-              <>
+          { parts.inicial && 
+            <>
+              <Box className={classes.inputs_4}>
                 <MyTextField
-                  label='Remitente'
-                  name='remitente_identificacion'
+                  label='Solicitante'
+                  name='persona_identificacion'
                   disabled={disabled}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <IconButton
+                        <IconButton 
                           style={{
                             pointerEvents: disabled?'none':'auto'
                           }} 
-                          onClick={handleOpenRemitenteSearcher}
+                          onClick={handleOpenPersonaSearcher}
                         >
                           <Search/>
                         </IconButton>
@@ -300,27 +400,493 @@ const ProyectoForm = (props) => {
                   }}
                   className={classes.myTextField}
                 />
-                { showSearch.remitente && <MySearcher showForm={showSearch.remitente} handleOnClose={handleCloseSearcher} getValue={setSelecteRemitente}/> }
+                { showSearch.persona && 
+                  <MySearcher 
+                    showForm={showSearch.persona} 
+                    handleOnClose={handleCloseSearcher} 
+                    getValue={setSelectePersona}
+                  /> 
+                }
                 <MyTextField
                   className={classes.myTextField}
-                  label='Nombre Remitente'
-                  name='nombreRemitente'
+                  label='Nombre Solicitante'
+                  name='nombrePersona'
                   disabled
                 />
-              </>
-              )}
+              </Box>
+              <Box className={classes.inputs_4}>
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Num. Proyecto'
+                  name='id'
+                  disabled
+                />
+                <MySelectField
+                  label='Estado Proyecto'
+                  className={classes.myTextField}
+                  disabled={disabled}
+                  name='proyectosEstadoProyecto'
+                  options={ESTADOS_PROYECTO}
+                  variant='standard'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Solicitud'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaSolicitud'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MySelectField
+                  label='Tipo Proyecto'
+                  className={classes.myTextField}
+                  disabled={disabled}
+                  name='proyectosTipoProyecto'
+                  options={TIPOS_PROYECTO}
+                  variant='standard'
+                />
+                <MySelectField
+                  label='Tipo Programa'
+                  className={classes.myTextField}
+                  disabled={disabled}
+                  name='tipo_programa_id'
+                  options={tiposPrograma}
+                  variant='standard'
+                />
+                <MySelectField
+                  label='Zona'
+                  className={classes.myTextField}
+                  disabled={disabled}
+                  name='proyectosZona'
+                  options={ZONA}
+                  variant='standard'
+                />
+              </Box>
+              <Box className={classes.inputs_4}>
+                <MyRadioField
+                  label='Remitido'
+                  className={classes.MyRadioField}
+                  name='proyectosRemitido'
+                  disabled={disabled}
+                  required
+                  options={DATO_BOOLEAN_RADIO}
+                />
+                {values.proyectosRemitido === 'S' && (
+                  <>
+                    <MyTextField
+                      label='Remitente'
+                      name='remitente_identificacion'
+                      disabled={disabled}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton
+                              style={{
+                                pointerEvents: disabled?'none':'auto'
+                              }} 
+                              onClick={handleOpenRemitenteSearcher}
+                            >
+                              <Search/>
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                      className={classes.myTextField}
+                    />
+                    { showSearch.remitente && 
+                      <MySearcher 
+                        showForm={showSearch.remitente} 
+                        handleOnClose={handleCloseSearcher} 
+                        getValue={setSelecteRemitente}
+                      /> 
+                    }
+                    <MyTextField
+                      className={classes.myTextField}
+                      label='Nombre Remitente'
+                      name='nombreRemitente'
+                      disabled
+                    />
+                  </>
+                  )}
+              </Box>
+            </>
+          }
+          <Box 
+            component='h6' 
+            fontSize={17} 
+            onClick={() => tooglePart('EST')}
+            fontWeight='bold' 
+            mb={3}
+            style={{
+              display: 'flex', 
+              alignItems: 'center',
+              cursor: 'pointer',
+              pointerEvents: isClickeable(values.proyectosEstadoProyecto, 'EST')
+            }}
+          >
+                Datos Estudio: {renderChevron(parts.estudio)}
           </Box>
-          <Box component='h6' fontSize={16} fontWeight='bold' mb={3}>
-                Datos Estudio:
+          { parts.estudio && 
+            <>
+              <Box className={classes.inputs_4}>
+                <MyAutocomplete
+                  label='Pais'
+                  style={{
+                    paddingRight: '10px'
+                  }}
+                  className={classes.myTextField}
+                  name='pais_id'
+                  disabled={disabled}
+                  options={paises}
+                />
+                <MyAutocomplete
+                  label='Departamento'
+                  style={{
+                    paddingRight: '10px'
+                  }}
+                  className={classes.myTextField}
+                  name='departamento_id'
+                  disabled={disabled}
+                  options={departamentosFilter}
+                />
+                <MyAutocomplete
+                  label='Ciudad'
+                  style={{
+                    paddingRight: '10px'
+                  }}
+                  className={classes.myTextField}
+                  name='ciudad_id'
+                  disabled={disabled}
+                  options={ciudadesFilter}
+                />
+                <MyAutocomplete
+                  label='Comuna'
+                  style={{
+                    paddingRight: '10px'
+                  }}
+                  className={classes.myTextField}
+                  name='comuna_id'
+                  disabled={disabled}
+                  options={comunasFilter}
+                />
+                <MyAutocomplete
+                  label='Barrio'
+                  style={{
+                    paddingRight: '10px'
+                  }}
+                  className={classes.myTextField}
+                  name='barrio_id'
+                  disabled={disabled}
+                  options={barriosFilter}
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Direccion'
+                  name='proyectosDireccion'
+                  disabled={disabled}
+                />
+                <MyRadioField
+                  label='Pago Estudio Crédito'
+                  className={classes.MyRadioField}
+                  name='proyectosPagoEstudioCre'
+                  disabled={disabled}
+                  options={DATO_BOOLEAN_RADIO}
+                />
+                <MyRadioField
+                  label='Requiere Licencia Construcción'
+                  className={classes.MyRadioField}
+                  name='proyectosReqLicenciaCon'
+                  disabled={disabled}
+                  options={DATO_BOOLEAN_RADIO}
+                />
+                <MyRadioField
+                  label='Visita Domiciliaria'
+                  className={classes.MyRadioField}
+                  name='proyectosVisitaDomiciliaria'
+                  disabled={disabled}
+                  options={DATO_BOOLEAN_RADIO}
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Visita Domic.'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaVisitaDom'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Inicio Estudio'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaInicioEstudio'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Proyecto'
+                  name='proyectosValorProyecto'
+                  disabled={disabled}
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Solicitud'
+                  name='proyectosValorSolicitud'
+                  disabled={disabled}
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Recursos Solicitante'
+                  name='proyectosValorRecursosSol'
+                  disabled={disabled}
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Subsidios'
+                  name='proyectosValorSubsidios'
+                  disabled={disabled}
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Donaciones'
+                  name='proyectosValorDonaciones'
+                  disabled={disabled}
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Capacidad de Pago Mensual'
+                  name='proyectosValorCapPagoMen'
+                  disabled={disabled}
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Número de Cuotas'
+                  name='proyectosNumeroCuotas'
+                  disabled={disabled}
+                />
+              </Box>
+            </>
+          }
+          <Box 
+            component='h6' 
+            fontSize={17} 
+            onClick={() => tooglePart('APR')}
+            fontWeight='bold' 
+            mb={3}
+            style={{
+              display: 'flex', 
+              alignItems: 'center',
+              cursor: 'pointer',
+              pointerEvents: isClickeable(values.proyectosEstadoProyecto, 'APR')
+            }}
+          >
+                Datos Aprobación: {renderChevron(parts.aprobacion)}
           </Box>
-          <Box component='h6' fontSize={16} fontWeight='bold' mb={3}>
-                Datos Aprobación:
+          { parts.aprobacion && 
+            <>
+              <Box className={classes.inputs_4}>
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Aprobación/Rechazo'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaAproRec'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Estimada Inicio Obra'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaEstInicioObr'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Aprobado'
+                  name='proyectosValorAprobado'
+                  disabled={disabled}
+                />
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Cuota Aprobada'
+                  name='proyectosValorCuotaAprobada'
+                  disabled={disabled}
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Tasa Interés NMV (%)'
+                  name='proyectosTasaInteresNMV'
+                  disabled={disabled}
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Tasa Interés EA (%)'
+                  name='proyectosTasaInteresEA'
+                  disabled
+                />
+                <MyAutocomplete
+                  label='Banco Recaudo'
+                  style={{
+                    paddingRight: '10px'
+                  }}
+                  className={classes.myTextField}
+                  name='banco_id'
+                  disabled={disabled}
+                  options={bancos}
+                />
+                <MySelectField
+                  label='Tipo Cuenta Recaudo'
+                  className={classes.myTextField}
+                  disabled={disabled}
+                  name='personasTipoTrabajo'
+                  options={TIPOS_CUENTA_RECAUDO}
+                  variant='standard'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Número Cuenta Recaudo'
+                  name='proyectosNumCuentaRecaudo'
+                  disabled={disabled}
+                />
+              </Box>
+            </>
+          }
+          <Box 
+            component='h6' 
+            fontSize={17} 
+            onClick={() => tooglePart('FOR')}
+            fontWeight='bold' 
+            mb={3}
+            style={{
+              display: 'flex', 
+              alignItems: 'center',
+              cursor: 'pointer',
+              pointerEvents: isClickeable(values.proyectosEstadoProyecto, 'FOR')
+            }}
+          >
+                Datos Formalización: {renderChevron(parts.formalizacion)}
           </Box>
-          <Box component='h6' fontSize={16} fontWeight='bold' mb={3}>
-                Datos Formalización:
+          { parts.formalizacion && 
+            <>
+              <Box className={classes.inputs_4}>
+                <MySelectField
+                  label='Estado Formalización'
+                  className={classes.myTextField}
+                  disabled={disabled}
+                  name='proyectosEstadoFormalizacion'
+                  options={ESTADOS_FORMALIZACION}
+                  variant='standard'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Autorización Notaria'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaAutNotaria'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Firma Escrituras'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaFirEscrituras'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Ingreso Registro'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaIngresosReg'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Salida Registro'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaSalidaReg'
+                  disabled={disabled}
+                  type='date'
+                />
+              </Box>
+            </> 
+          }
+          <Box 
+            component='h6' 
+            fontSize={17} 
+            onClick={() => tooglePart('DES')}
+            fontWeight='bold' 
+            mb={3}
+            style={{
+              display: 'flex', 
+              alignItems: 'center',
+              cursor: 'pointer',
+              pointerEvents: isClickeable(values.proyectosEstadoProyecto, 'DES')
+            }}
+          >
+                Datos Autorización: {renderChevron(parts.autorizacion)}
           </Box>
-          <Box component='h6' fontSize={16} fontWeight='bold' mb={3}>
-                Datos Autorización:
+          { parts.autorizacion && 
+            <>
+              <Box className={classes.inputs_4}>
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Seguro de Vida'
+                  name='proyectosValorSeguroVida'
+                  disabled={disabled}
+                />
+                <MyRadioField
+                  label='Autorización Desembolso'
+                  className={classes.MyRadioField}
+                  name='proyectosAutorizacionDes'
+                  disabled={disabled}
+                  options={DATO_BOOLEAN_RADIO}
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Autorización Desembolso'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaAutDes'
+                  disabled={disabled}
+                  type='date'
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Cancelación'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name='proyectosFechaCancelacion'
+                  disabled={disabled}
+                  type='date'
+                />
+              </Box>
+            </>
+          }
+          <Box component='h6' fontSize={17} fontWeight='bold' mb={3} mt={3}>
+              Asesor:
           </Box>
           <Box className={classes.inputs_4}>
             <MyAutocompletePersona
@@ -347,6 +913,29 @@ const ProyectoForm = (props) => {
               label='Observaciones'
               name='proyectosObservaciones'
               disabled={disabled}
+            />
+          </Box>
+          <Box component='h6' fontSize={17} fontWeight='bold' mb={3} mt={3}>
+            Auditoría:
+          </Box>
+          <Box className={classes.inputs_4}>
+            <MyTextField
+              className={classes.myTextField}
+              label='Usuario Creción'
+              name='usuario_creacion_nombre'
+              InputLabelProps={{
+                shrink: true,
+              }}
+              disabled
+            />
+            <MyTextField
+              className={classes.myTextField}
+              label='Usuario Modificación'
+              name='usuario_modificacion_nombre'
+              InputLabelProps={{
+                shrink: true,
+              }}
+              disabled
             />
           </Box>
         </Box>

@@ -1136,8 +1136,8 @@ const Proyecto = (props) => {
     }
   };
 
-  const onOpenEditProyecto = (id) => {
-    history.push(history.location.pathname + '/editar/' + id, {state: true});
+  const onOpenEditProyecto = (id, state) => {
+    history.push(history.location.pathname + '/editar/' + id, {state});
   };
 
   const handleClosePopover = () => {
@@ -1176,8 +1176,8 @@ const Proyecto = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewProyecto = (id) => {
-    history.push(history.location.pathname + '/ver/' + id, {state: true});
+  const onOpenViewProyecto = (id, state) => {
+    history.push(history.location.pathname + '/ver/' + id, {state});
   };
 
   const onDeleteProyecto = (id) => {
@@ -1339,14 +1339,14 @@ const Proyecto = (props) => {
                               <Tooltip
                                 title={<IntlMessages id='boton.editar' />}>
                                 <EditIcon
-                                  onClick={() => onOpenEditProyecto(row.id)}
+                                  onClick={() => onOpenEditProyecto(row.id, row.proyectosEstadoProyecto)}
                                   className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
                               </Tooltip>
                             )}
                             {permisos.indexOf('Listar') >= 0 && (
                               <Tooltip title={<IntlMessages id='boton.ver' />}>
                                 <VisibilityIcon
-                                  onClick={() => onOpenViewProyecto(row.id)}
+                                  onClick={() => onOpenViewProyecto(row.id, row.proyectosEstadoProyecto)}
                                   className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                               </Tooltip>
                             )}
