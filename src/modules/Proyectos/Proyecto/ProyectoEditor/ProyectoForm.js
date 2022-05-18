@@ -814,7 +814,7 @@ const ProyectoForm = (props) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  name='proyectosFechaIngresosReg'
+                  name='proyectosFechaIngresoReg'
                   disabled={disabled}
                   type='date'
                 />

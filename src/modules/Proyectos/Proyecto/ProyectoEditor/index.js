@@ -201,7 +201,11 @@ const validationSchema = yup.object({
     }),
   proyectosValorSeguroVida: yup
     .number()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'DES',
+      then: yup.number().required('Requerido')
+    }),
   proyectosTasaInteresNMV: yup
     .number()
     .nullable()
@@ -246,25 +250,71 @@ const validationSchema = yup.object({
     }),
   proyectosEstadoFormalizacion: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'FOR',
+      then: yup.string().required('Requerido')
+    }),
   proyectosFechaAutNotaria: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoFormalizacion', {
+      is: 'AN',
+      then: yup.date().required('Requerido')
+    }),
   proyectosFechaFirEscrituras: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoFormalizacion', {
+      is: 'FI',
+      then: yup
+        .date()
+        .required('Requerido')
+        .min(
+          yup.ref('proyectosFechaAutNotaria'),
+          "Debe ser mayor o igual que Fecha Aut. Notaría"
+        )
+    }),
   proyectosFechaIngresoReg: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoFormalizacion', {
+      is: 'IR',
+      then: yup
+        .date()
+        .required('Requerido')
+        .min(
+          yup.ref('proyectosFechaFirEscrituras'),
+          "Debe ser mayor o igual que Fecha Firma Escritura"
+        )
+    }),
   proyectosFechaSalidaReg: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoFormalizacion', {
+      is: 'SR',
+      then: yup
+        .date()
+        .required('Requerido')
+        .min(
+          yup.ref('proyectosFechaIngresoReg'),
+          "Debe ser mayor o igual que Fecha Ingreso Registro"
+        )
+    }),
   proyectosAutorizacionDes: yup
     .string()
-    .nullable(),
+    .nullable()
+    .when('proyectosEstadoProyecto', {
+      is: 'DES',
+      then: yup.string().required('Requerido')
+    }),
   proyectosFechaAutDes: yup
     .date()
-    .nullable(),
+    .nullable()
+    .when('proyectosAutorizacionDes', {
+      is: 'S',
+      then: yup.date().required('Requerido')
+    }),
   proyectosFechaCancelacion: yup
     .date()
     .nullable(),
