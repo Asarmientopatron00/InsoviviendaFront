@@ -292,6 +292,24 @@ const ProyectoForm = (props) => {
           autorizacion: false
         })
         break;
+      case 'CAN':
+        setParts(
+          {...parts,
+          estudio: false,
+          aprobacion: false,
+          formalizacion: false,
+          autorizacion: false
+        })
+        break;
+      case 'CON':
+        setParts(
+          {...parts,
+          estudio: false,
+          aprobacion: false,
+          formalizacion: false,
+          autorizacion: false
+        })
+        break;
       case 'EST':
         setParts(
           {...parts,
@@ -302,6 +320,15 @@ const ProyectoForm = (props) => {
         })
         break;
       case 'APR':
+        setParts(
+          {...parts,
+            estudio: false,
+            aprobacion: true,
+            formalizacion: false,
+            autorizacion: false
+        })
+        break;
+      case 'REC':
         setParts(
           {...parts,
             estudio: false,
@@ -338,11 +365,11 @@ const ProyectoForm = (props) => {
       {id: 'SOL', nombre: 'Solicitud', value: 1},
       {id: 'EST', nombre: 'Estudio', value: 2},
       {id: 'APR', nombre: 'Aprobado', value: 3},
-      {id: 'REC', nombre: 'Rechazado', value: 4},
+      {id: 'REC', nombre: 'Rechazado', value: 3},
       {id: 'FOR', nombre: 'Formalización', value: 5},
       {id: 'DES', nombre: 'Desembolsado', value: 6},
-      {id: 'CAN', nombre: 'Cancelado', value: 7},
-      {id: 'CON', nombre: 'Congelado', value: 8},
+      {id: 'CAN', nombre: 'Cancelado', value: 1},
+      {id: 'CON', nombre: 'Congelado', value: 1},
     ];
     const currentEstado = estados.filter((estado) => estado.id === currentState);
     const currentPart = estados.filter((estado) => estado.id === currentLabel);

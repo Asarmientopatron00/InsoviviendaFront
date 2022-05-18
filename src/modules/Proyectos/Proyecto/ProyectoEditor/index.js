@@ -133,7 +133,7 @@ const validationSchema = yup.object({
     .date()
     .nullable()
     .when('proyectosEstadoProyecto', {
-      is: 'APR',
+      is: (proyectosEstadoProyecto) => proyectosEstadoProyecto === 'APR' || proyectosEstadoProyecto === 'REC',
       then: yup.date().required('Requerido')
     }),
   proyectosFechaEstInicioObr: yup

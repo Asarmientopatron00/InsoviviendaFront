@@ -59,9 +59,29 @@ import moment from 'moment';
 import MyCell from 'shared/components/MyCell';
 import MySearcher from 'shared/components/MySearcher';
 import ProyectoCreador from './ProyectoCreador';
-
+import Description from '@material-ui/icons/Description'
+import { Money } from '@material-ui/icons';
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
+const stateColor = [
+  {id: 'SOL', value: '#79E145'},
+  {id: 'EST', value: '#2397E2'},
+  {id: 'APR', value: '#9C00B2'},
+  {id: 'FOR', value: '#671DE1'},
+  {id: 'DES', value: '#ECA313'},
+  {id: 'REC', value: '#B20A0A'},
+  {id: 'CAN', value: '#B20A0A'},
+  {id: 'CON', value: '#B20A0A'},
+]
+
+const setCellColor = (value) => {
+  const state = stateColor.find((state) => state.id === value);
+  if(state){
+    console.log(state.value);
+    return state.value;
+  }
+  return 'transparent';
+}
 const cells = [
   {
     id: 'id',
@@ -86,6 +106,7 @@ const cells = [
     value: (value) => ESTADOS_PROYECTO.map((estadoProyecto) => (estadoProyecto.id === value ? estadoProyecto.nombre : '')),
     align: 'left',
     mostrarInicio: true,
+    cellColor: (value) => setCellColor(value),
   },
   {
     id: 'proyectosFechaSolicitud',
@@ -519,12 +540,24 @@ function EnhancedTableHead(props) {
             return <th key={cell.id}></th>;
           }
         })}
-        {/* <TableCell
+        <TableCell
           align='center'
           style={{fontWeight: 'bold'}}
           className={classes.headCellWoMargin}>
-          {'Datos Adicionales'}
-        </TableCell> */}
+          {'Documentos'}
+        </TableCell>
+        <TableCell
+          align='center'
+          style={{fontWeight: 'bold'}}
+          className={classes.headCellWoMargin}>
+          {'Plan Amort. Inic.'}
+        </TableCell>
+        <TableCell
+          align='center'
+          style={{fontWeight: 'bold'}}
+          className={classes.headCellWoMargin}>
+          {'Plan Amort. Def.'}
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -1381,19 +1414,36 @@ const Proyecto = (props) => {
                               return <th key={row.id + columna.id}></th>;
                             }
                           })}
-                          {/* <TableCell align='center' className={classes.cell}>
-                            <Tooltip
-                              title={
-                                <IntlMessages id='boton.datosAdicionales' />
-                              }>
-                              <Icon
-                                path={mdiDatabasePlusOutline}
-                                onClick={() =>
-                                  onOpenParticipanteDatosAdicionales(row.id)
-                                }
-                                className={`${classes.generalIcons}`}></Icon>
+                          <TableCell align='center' className={classes.cell}>
+                            <Tooltip title={'Documentos'}>
+                              <Description 
+                                style={{
+                                  color: '#001597'
+                                }}
+                                onClick={() => console.log(row.id)}
+                                className={`${classes.generalIcons}`}/>
                             </Tooltip>
-                          </TableCell> */}
+                          </TableCell>
+                          <TableCell align='center' className={classes.cell}>
+                            <Tooltip title={'Plan Amort. Ini.'}>
+                              <Money 
+                                style={{
+                                  color: '#ff9800'
+                                }}
+                                onClick={() => console.log(row.id)}
+                                className={`${classes.generalIcons}`}/>
+                            </Tooltip>
+                          </TableCell>
+                          <TableCell align='center' className={classes.cell}>
+                            <Tooltip title={'Plan Amort. Def.'}>
+                              <Money 
+                                style={{
+                                  color: '#009705'
+                                }}
+                                onClick={() => console.log(row.id)}
+                                className={`${classes.generalIcons}`}/>
+                            </Tooltip>
+                          </TableCell>
                         </TableRow>
                       );
                     })
