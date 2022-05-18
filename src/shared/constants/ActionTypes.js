@@ -275,3 +275,61 @@ export const SHOW_TIPOS_DIVISION = 'show_tipos_division';
 export const UPDATE_TIPOS_DIVISION = 'update_tipos_division';
 export const CREATE_TIPOS_DIVISION = 'create_tipos_division';
 export const DELETE_TIPOS_DIVISION = 'delete_tipos_division';
+// BANCO
+export const GET_COLECCION_BANCO = 'get_coleccion_banco';
+export const GET_COLECCION_LIGERA_BANCO = 'get_coleccion_ligera_banco';
+export const SHOW_BANCO = 'show_banco';
+export const UPDATE_BANCO = 'update_banco';
+export const CREATE_BANCO = 'create_banco';
+export const DELETE_BANCO = 'delete_banco';
+
+// FORMAS DE PAGO
+export const GET_COLECCION_FORMA_PAGO = 'get_coleccion_forma_pago';
+export const GET_COLECCION_LIGERA_FORMA_PAGO = 'get_coleccion_ligera_forma_pago';
+export const SHOW_FORMA_PAGO = 'show_forma_pago';
+export const UPDATE_FORMA_PAGO = 'update_forma_pago';
+export const CREATE_FORMA_PAGO = 'create_forma_pago';
+export const DELETE_FORMA_PAGO = 'delete_forma_pago';
+
+// TIPOS DOCUMENTOS PAGO
+export const GET_COLECCION_TIPO_DOCUMENTO_PROYECTO = 'get_coleccion_tipo_documento_proyecto';
+export const GET_COLECCION_LIGERA_TIPO_DOCUMENTO_PROYECTO = 'get_coleccion_ligera_tipo_documento_proyecto';
+export const SHOW_TIPO_DOCUMENTO_PROYECTO = 'show_tipo_documento_proyecto';
+export const UPDATE_TIPO_DOCUMENTO_PROYECTO = 'update_tipo_documento_proyecto';
+export const CREATE_TIPO_DOCUMENTO_PROYECTO = 'create_tipo_documento_proyecto';
+export const DELETE_TIPO_DOCUMENTO_PROYECTO = 'delete_tipo_documento_proyecto';
+
+// TIPOS GASTOS
+export const GET_COLECCION_TIPO_GASTO = 'get_coleccion_tipo_gasto';
+export const GET_COLECCION_LIGERA_TIPO_GASTO = 'get_coleccion_ligera_tipo_gasto';
+export const SHOW_TIPO_GASTO = 'show_tipo_gasto';
+export const UPDATE_TIPO_GASTO = 'update_tipo_gasto';
+export const CREATE_TIPO_GASTO = 'create_tipo_gasto';
+export const DELETE_TIPO_GASTO = 'delete_tipo_gasto';
+
+// TIPOS BENEFACTOR
+export const GET_COLECCION_TIPO_BENEFACTOR = 'get_coleccion_tipo_benefactor';
+export const GET_COLECCION_LIGERA_TIPO_BENEFACTOR = 'get_coleccion_ligera_tipo_benefactor';
+export const SHOW_TIPO_BENEFACTOR = 'show_tipo_benefactor';
+export const UPDATE_TIPO_BENEFACTOR = 'update_tipo_benefactor';
+export const CREATE_TIPO_BENEFACTOR = 'create_tipo_benefactor';
+export const DELETE_TIPO_BENEFACTOR = 'delete_tipo_benefactor';
+
+// TIPOS DONACION
+export const GET_COLECCION_TIPO_DONACION = 'get_coleccion_tipo_donacion';
+export const GET_COLECCION_LIGERA_TIPO_DONACION = 'get_coleccion_ligera_tipo_donacion';
+export const SHOW_TIPO_DONACION = 'show_tipo_donacion';
+export const UPDATE_TIPO_DONACION = 'update_tipo_donacion';
+export const CREATE_TIPO_DONACION = 'create_tipo_donacion';
+export const DELETE_TIPO_DONACION = 'delete_tipo_donacion';
+
+// PARAMETROS CORREOS
+export const GET_COLECCION_PARAMETRO_CORREO = 'get_coleccion_parametro_correo';
+export const GET_COLECCION_LIGERA_PARAMETRO_CORREO = 'get_coleccion_ligera_parametro_correo';
+export const SHOW_PARAMETRO_CORREO = 'show_parametro_correo';
+export const UPDATE_PARAMETRO_CORREO = 'update_parametro_correo';
+export const CREATE_PARAMETRO_CORREO = 'create_parametro_correo';
+export const DELETE_PARAMETRO_CORREO = 'delete_parametro_correo';
+
+
+
