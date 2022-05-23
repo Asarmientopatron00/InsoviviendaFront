@@ -4,11 +4,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
-import {
-  onShow,
-  onUpdate,
-  onCreate,
-} from '../../../../redux/actions/TipoBenefactorAction';
+import {onShow, onUpdate, onCreate,} from '../../../../redux/actions/TipoBenefactorAction';
 import Slide from '@material-ui/core/Slide';
 import TipoBenefactorForm from './TipoBenefactorForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
@@ -94,11 +90,7 @@ const TipoBenefactorCreador = (props) => {
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
               tipBenDescripcion: selectedRow ? selectedRow.nombre : '',
-              tipBenEstado: selectedRow
-                ? selectedRow.estado === 1
-                  ? '1'
-                  : '0'
-                : '1',
+              tipBenEstado: selectedRow ? selectedRow.estado === 1 ? '1' : '0' : '1',
             }}
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {

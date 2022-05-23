@@ -29,8 +29,7 @@ export const DELETE_ROL = 'delete_rol';
 
 // APLICACIONES
 export const GET_COLECCION_APLICACION = 'get_coleccion_aplicacion';
-export const GET_COLECCION_LIGERA_APLICACION =
-  'get_coleccion_ligera_aplicacion';
+export const GET_COLECCION_LIGERA_APLICACION = 'get_coleccion_ligera_aplicacion';
 export const SHOW_APLICACION = 'show_aplicacion';
 export const UPDATE_APLICACION = 'update_aplicacion';
 export const CREATE_APLICACION = 'create_aplicacion';
@@ -54,8 +53,7 @@ export const DELETE_USUARIO = 'delete_usuario';
 
 // OPCIONES DEL SISTEMA
 export const GET_COLECCION_OPCION_SISTEMA = 'get_coleccion_opcion_sistema';
-export const GET_COLECCION_LIGERA_OPCION_SISTEMA =
-  'get_coleccion_ligera_opcion_sistema';
+export const GET_COLECCION_LIGERA_OPCION_SISTEMA = 'get_coleccion_ligera_opcion_sistema';
 export const SHOW_OPCION_SISTEMA = 'show_opcion_sistema';
 export const UPDATE_OPCION_SISTEMA = 'update_opcion_sistema';
 export const CREATE_OPCION_SISTEMA = 'create_opcion_sistema';
@@ -92,6 +90,14 @@ export const SHOW_FAMILIA = 'show_familia';
 export const UPDATE_FAMILIA = 'update_familia';
 export const CREATE_FAMILIA = 'create_familia';
 export const DELETE_FAMILIA = 'delete_familia';
+
+// BENEFACTOR
+export const GET_COLECCION_BENEFACTOR = 'get_coleccion_benefactor';
+export const GET_COLECCION_LIGERA_BENEFACTOR = 'get_coleccion_ligera_benefactor';
+export const SHOW_BENEFACTOR = 'show_benefactor';
+export const UPDATE_BENEFACTOR = 'update_benefactor';
+export const CREATE_BENEFACTOR = 'create_benefactor';
+export const DELETE_BENEFACTOR = 'delete_benefactor';
 
 // TIPO IDENTIFICACION
 export const GET_COLECCION_TIPO_IDENTIFICACION = 'get_coleccion_tipo_identificacion';

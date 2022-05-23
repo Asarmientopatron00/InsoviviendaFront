@@ -18,6 +18,7 @@ import FamiliaReducer from './FamiliaReducer';
 import OrientadorReducer from './OrientadorReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
+import BenefactorReducer from './BenefactorReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import TipoParentescoReducer from './TipoParentescoReducer';
@@ -66,6 +67,7 @@ const reducers = (history) =>
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
     orientadorReducer: OrientadorReducer,
+    benefactorReducer: BenefactorReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
     proyectoReducer: ProyectoReducer,
     tipoParentescoReducer: TipoParentescoReducer,

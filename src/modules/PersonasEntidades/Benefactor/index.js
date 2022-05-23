@@ -21,11 +21,8 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import TipoDonacionCreador from './TipoDonacionCreador';
-import {
-  onGetColeccion,
-  onDelete,
-} from '../../../redux/actions/TipoDonacionAction';
+import BenefactorCreador from './BenefactorCreador';
+import {onGetColeccion, onDelete,} from '../../../redux/actions/BenefactorAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -34,11 +31,7 @@ import TuneIcon from '@material-ui/icons/Tune';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
 import Swal from 'sweetalert2';
-import {
-  UPDATE_TYPE,
-  CREATE_TYPE,
-  DELETE_TYPE,
-} from 'shared/constants/Constantes';
+import {UPDATE_TYPE, CREATE_TYPE, DELETE_TYPE,} from 'shared/constants/Constantes';
 import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
@@ -50,10 +43,121 @@ const {
 } = defaultConfig;
 
 const cells = [
-  {
-    id: 'nombre',
-    typeHead: 'string',
-    label: 'Nombre',
+  { id: 'benefactoresIdentificacion',    
+    typeHead: 'string', 
+    label: 'Identificacion',   
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresNombres',           
+    typeHead: 'string', 
+    label: 'Nombres',          
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresPrimerApellido',    
+    typeHead: 'string', 
+    label: 'Primer Apellido',  
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresSegundoApellido',   
+    typeHead: 'string', 
+    label: 'Segundo Apellido', 
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'tipo_benefactor_id',            
+    typeHead: 'string', 
+    label: 'Tipo benefactor',  
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresNombrePerContacto', 
+    typeHead: 'string', 
+    label: 'Nombre Contacto',  
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactor_id',                 
+    typeHead: 'string', 
+    label: 'Benefactor',       
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'pais_id',                       
+    typeHead: 'string', 
+    label: 'País',             
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  { id: 'departamento_id',               
+    typeHead: 'string', 
+    label: 'Departamento',     
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  { id: 'ciudad_id',                     
+    typeHead: 'string', 
+    label: 'Ciudad',           
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  { id: 'comuna_id',                     
+    typeHead: 'string', 
+    label: 'Comuna',           
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'barrio_id',                     
+    typeHead: 'string', 
+    label: 'Barrio',           
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresDireccion',         
+    typeHead: 'string', 
+    label: 'Dirección',        
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresTelefonoFijo',      
+    typeHead: 'string', 
+    label: 'Telefono',         
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresTelefonoCelular',   
+    typeHead: 'string', 
+    label: 'Celular',          
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresCorreo',            
+    typeHead: 'string', 
+    label: 'Correo',           
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  { id: 'benefactoresNotas',             
+    typeHead: 'string', 
+    label: 'Observación',      
     value: (value) => value,
     align: 'left',
     mostrarInicio: true,
@@ -65,8 +169,7 @@ const cells = [
     value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
     align: 'center',
     mostrarInicio: true,
-    cellColor: (value) =>
-      value === 1 ? palette.secondary.main : palette.secondary.red,
+    cellColor: (value) => value === 1 ? palette.secondary.main : palette.secondary.red,
   },
   {
     id: 'usuario_modificacion_nombre',
@@ -123,14 +226,8 @@ function EnhancedTableHead(props) {
             return (
               <TableCell
                 key={cell.id}
-                style={{fontWeight: 'bold'}}
-                align={
-                  cell.typeHead === 'string'
-                    ? 'left'
-                    : cell.typeHead === 'numeric'
-                    ? 'right'
-                    : 'center'
-                }
+                style={ {fontWeight: 'bold'} }
+                align={ cell.typeHead === 'string' ? 'left' : cell.typeHead === 'numeric' ? 'right' : 'center' }
                 className={classes.cell}
                 sortDirection={orderBy === cell.id ? order : false}>
                 <TableSortLabel
@@ -236,7 +333,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '4fr 4fr 1fr',
     gap: '20px',
   },
   pairFilters: {
@@ -252,10 +349,11 @@ const EnhancedTableToolbar = (props) => {
   const {
     numSelected,
     titulo,
-    onOpenAddTipoDonacion,
+    onOpenAddBenefactor,
     handleOpenPopoverColumns,
     queryFilter,
     nombreFiltro,
+    asuntoFiltro,
     limpiarFiltros,
     permisos,
   } = props;
@@ -293,7 +391,7 @@ const EnhancedTableToolbar = (props) => {
                 </IconButton>
               </Tooltip>
               {permisos.indexOf('Crear') >= 0 && (
-                <Tooltip title='Crear Tipo de donación' onClick={onOpenAddTipoDonacion}>
+                <Tooltip title='Crear Parametro correo' onClick={onOpenAddBenefactor}>
                   <IconButton
                     className={classes.createButton}
                     aria-label='filter list'>
@@ -310,6 +408,14 @@ const EnhancedTableToolbar = (props) => {
               id='nombreFiltro'
               onChange={queryFilter}
               value={nombreFiltro}
+              className={classes.inputFiltros}
+            />
+            <TextField
+              label='Asunto'
+              name='asuntoFiltro'
+              id='asuntoFiltro'
+              onChange={queryFilter}
+              value={asuntoFiltro}
               className={classes.inputFiltros}
             />
             <Box display='grid'>
@@ -342,7 +448,7 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onOpenAddTipoDonacion: PropTypes.func.isRequired,
+  onOpenAddBenefactor: PropTypes.func.isRequired,
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
@@ -439,7 +545,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TiposDonacion = (props) => {
+const Benefactores = (props) => {
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
@@ -452,9 +558,9 @@ const TiposDonacion = (props) => {
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
 
   const [accion, setAccion] = useState('ver');
-  const [tipoDonacionSeleccionado, setTipoDonacionSeleccionado] = useState(0);
+  const [benefactorSeleccionado, setBenefactorSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({tipoDonacionReducer}) => tipoDonacionReducer,
+    ({benefactorReducer}) => benefactorReducer,
   );
 
   const {message, error, messageType} = useSelector(({common}) => common);
@@ -470,7 +576,9 @@ const TiposDonacion = (props) => {
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
   const [nombreFiltro, setNombreFiltro] = useState('');
+  const [asuntoFiltro, setAsuntoFiltro] = useState('');
   const debouncedName = useDebounce(nombreFiltro, 800);
+  const debouncedAsunto = useDebounce(asuntoFiltro, 800);
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
@@ -524,23 +632,33 @@ const TiposDonacion = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, orderByToSend));
-  }, [dispatch, page, rowsPerPage, debouncedName, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, asuntoFiltro, orderByToSend));
+  }, [dispatch, page, rowsPerPage, debouncedName, debouncedAsunto,orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateColeccion = () => {
     setPage(1);
-    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, orderByToSend));
+    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, asuntoFiltro, orderByToSend));
   };
   useEffect(() => {
     setPage(1);
-  }, [debouncedName, orderByToSend]);
+  }, [debouncedName, debouncedAsunto, orderByToSend]);
 
   const queryFilter = (e) => {
-    setNombreFiltro(e.target.value);
+    switch (e.target.name) {
+      case 'nombreFiltro':
+        setNombreFiltro(e.target.value);
+        break;
+      case 'asuntoFiltro':
+        setAsuntoFiltro(e.target.value);
+        break;
+      default:
+        break;
+    }
   };
 
   const limpiarFiltros = () => {
     setNombreFiltro('');
+    setAsuntoFiltro('');
   };
 
   const changeOrderBy = (id) => {
@@ -559,8 +677,8 @@ const TiposDonacion = (props) => {
     }
   };
 
-  const onOpenEditTipoDonacion = (id) => {
-    setTipoDonacionSeleccionado(id);
+  const onOpenEditBenefactor = (id) => {
+    setBenefactorSeleccionado(id);
     setAccion('editar');
     setShowForm(true);
   };
@@ -601,16 +719,16 @@ const TiposDonacion = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewTipoDonacion = (id) => {
-    setTipoDonacionSeleccionado(id);
+  const onOpenViewBenefactor = (id) => {
+    setBenefactorSeleccionado(id);
     setAccion('ver');
     setShowForm(true);
   };
 
-  const onDeleteTipoDonacion = (id) => {
+  const onDeleteBenefactor = (id) => {
     Swal.fire({
       title: 'Confirmar',
-      text: '¿ Seguro que desea eliminar el Tipo de donación ?',
+      text: '¿ Seguro que desea eliminar los Parametros de correo ?',
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -625,15 +743,15 @@ const TiposDonacion = (props) => {
     });
   };
 
-  const onOpenAddTipoDonacion = () => {
-    setTipoDonacionSeleccionado(0);
+  const onOpenAddBenefactor = () => {
+    setBenefactorSeleccionado(0);
     setAccion('crear');
     setShowForm(true);
   };
 
   const handleOnClose = () => {
     setShowForm(false);
-    setTipoDonacionSeleccionado(0);
+    setBenefactorSeleccionado(0);
     setAccion('ver');
   };
 
@@ -672,11 +790,12 @@ const TiposDonacion = (props) => {
         {permisos && (
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onOpenAddTipoDonacion={onOpenAddTipoDonacion}
+            onOpenAddBenefactor={onOpenAddBenefactor}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
             nombreFiltro={nombreFiltro}
+            asuntoFiltro={asuntoFiltro}
             permisos={permisos}
             titulo={titulo}
           />
@@ -742,14 +861,14 @@ const TiposDonacion = (props) => {
                           {permisos.indexOf('Modificar') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.editar' />}>
                               <EditIcon
-                                onClick={() => onOpenEditTipoDonacion(row.id)}
+                                onClick={() => onOpenEditBenefactor(row.id)}
                                 className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
                             </Tooltip>
                           )}
                           {permisos.indexOf('Listar') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.ver' />}>
                               <VisibilityIcon
-                                onClick={() => onOpenViewTipoDonacion(row.id)}
+                                onClick={() => onOpenViewBenefactor(row.id)}
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                             </Tooltip>
                           )}
@@ -757,7 +876,7 @@ const TiposDonacion = (props) => {
                             <Tooltip
                               title={<IntlMessages id='boton.eliminar' />}>
                               <DeleteIcon
-                                onClick={() => onDeleteTipoDonacion(row.id)}
+                                onClick={() => onDeleteBenefactor(row.id)}
                                 className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
                             </Tooltip>
                           )}
@@ -838,9 +957,9 @@ const TiposDonacion = (props) => {
       </Paper>
 
       {showForm ? (
-        <TipoDonacionCreador
+        <BenefactorCreador
           showForm={showForm}
-          tipoDonacion={tipoDonacionSeleccionado}
+          benefactor={benefactorSeleccionado}
           accion={accion}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}
@@ -901,4 +1020,4 @@ const TiposDonacion = (props) => {
   );
 };
 
-export default TiposDonacion;
+export default Benefactores;

@@ -22,10 +22,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import ParametroCorreoCreador from './ParametroCorreoCreador';
-import {
-  onGetColeccion,
-  onDelete,
-} from '../../../redux/actions/ParametroCorreoAction';
+import {onGetColeccion, onDelete,} from '../../../redux/actions/ParametroCorreoAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -34,11 +31,7 @@ import TuneIcon from '@material-ui/icons/Tune';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
 import Swal from 'sweetalert2';
-import {
-  UPDATE_TYPE,
-  CREATE_TYPE,
-  DELETE_TYPE,
-} from 'shared/constants/Constantes';
+import {UPDATE_TYPE, CREATE_TYPE, DELETE_TYPE,} from 'shared/constants/Constantes';
 import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
@@ -90,8 +83,7 @@ const cells = [
     value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
     align: 'center',
     mostrarInicio: true,
-    cellColor: (value) =>
-      value === 1 ? palette.secondary.main : palette.secondary.red,
+    cellColor: (value) => value === 1 ? palette.secondary.main : palette.secondary.red,
   },
   {
     id: 'usuario_modificacion_nombre',
@@ -261,7 +253,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '4fr 4fr 1fr',
     gap: '20px',
   },
   pairFilters: {
@@ -281,6 +273,7 @@ const EnhancedTableToolbar = (props) => {
     handleOpenPopoverColumns,
     queryFilter,
     nombreFiltro,
+    asuntoFiltro,
     limpiarFiltros,
     permisos,
   } = props;
@@ -335,6 +328,14 @@ const EnhancedTableToolbar = (props) => {
               id='nombreFiltro'
               onChange={queryFilter}
               value={nombreFiltro}
+              className={classes.inputFiltros}
+            />
+            <TextField
+              label='Asunto'
+              name='asuntoFiltro'
+              id='asuntoFiltro'
+              onChange={queryFilter}
+              value={asuntoFiltro}
               className={classes.inputFiltros}
             />
             <Box display='grid'>
@@ -464,13 +465,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TiposIdentificacion = (props) => {
+const ParametrosCorreo = (props) => {
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
-  const [orderByToSend, setOrderByToSend] = React.useState(
-    'fecha_modificacion:desc',
-  );
+  const [orderByToSend, setOrderByToSend] = React.useState( 'nombre:asc', );
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(1);
   // const [dense, setDense] = React.useState(false);
@@ -497,7 +496,9 @@ const TiposIdentificacion = (props) => {
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
   const [nombreFiltro, setNombreFiltro] = useState('');
+  const [asuntoFiltro, setAsuntoFiltro] = useState('');
   const debouncedName = useDebounce(nombreFiltro, 800);
+  const debouncedAsunto = useDebounce(asuntoFiltro, 800);
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
@@ -551,23 +552,33 @@ const TiposIdentificacion = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, orderByToSend));
-  }, [dispatch, page, rowsPerPage, debouncedName, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, asuntoFiltro, orderByToSend));
+  }, [dispatch, page, rowsPerPage, debouncedName, debouncedAsunto,orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateColeccion = () => {
     setPage(1);
-    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, orderByToSend));
+    dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, asuntoFiltro, orderByToSend));
   };
   useEffect(() => {
     setPage(1);
-  }, [debouncedName, orderByToSend]);
+  }, [debouncedName, debouncedAsunto, orderByToSend]);
 
   const queryFilter = (e) => {
-    setNombreFiltro(e.target.value);
+    switch (e.target.name) {
+      case 'nombreFiltro':
+        setNombreFiltro(e.target.value);
+        break;
+      case 'asuntoFiltro':
+        setAsuntoFiltro(e.target.value);
+        break;
+      default:
+        break;
+    }
   };
 
   const limpiarFiltros = () => {
     setNombreFiltro('');
+    setAsuntoFiltro('');
   };
 
   const changeOrderBy = (id) => {
@@ -704,6 +715,7 @@ const TiposIdentificacion = (props) => {
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
             nombreFiltro={nombreFiltro}
+            asuntoFiltro={asuntoFiltro}
             permisos={permisos}
             titulo={titulo}
           />
@@ -928,4 +940,4 @@ const TiposIdentificacion = (props) => {
   );
 };
 
-export default TiposIdentificacion;
+export default ParametrosCorreo;

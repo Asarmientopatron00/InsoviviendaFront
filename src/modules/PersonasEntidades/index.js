@@ -30,6 +30,11 @@ export const personasEntidadesConfigs = [
         path: '/orientadores',
         component: React.lazy(() => import('./Orientador')),
       },
+      {
+        exact: true,
+        path: '/benefactores',
+        component: React.lazy(() => import('./Benefactor')),
+      },
     ],
   },
 ];

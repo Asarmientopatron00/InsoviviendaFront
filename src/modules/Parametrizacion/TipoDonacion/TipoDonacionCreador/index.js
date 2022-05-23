@@ -4,11 +4,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
-import {
-  onShow,
-  onUpdate,
-  onCreate,
-} from '../../../../redux/actions/TipoDonacionAction';
+import {onShow, onUpdate, onCreate,} from '../../../../redux/actions/TipoDonacionAction';
 import Slide from '@material-ui/core/Slide';
 import TipoDonacionForm from './TipoDonacionForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
@@ -94,11 +90,7 @@ const TipoDonacionCreador = (props) => {
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
               tipDonDescripcion: selectedRow ? selectedRow.nombre : '',
-              tipDonEstado: selectedRow
-                ? selectedRow.estado === 1
-                  ? '1'
-                  : '0'
-                : '1',
+              tipDonEstado: selectedRow ? selectedRow.estado === 1 ? '1' : '0' : '1',
             }}
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {

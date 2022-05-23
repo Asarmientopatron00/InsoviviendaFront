@@ -4,11 +4,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
-import {
-  onShow,
-  onUpdate,
-  onCreate,
-} from '../../../../redux/actions/TipoDocumentoProyectoAction';
+import {onShow, onUpdate, onCreate,} from '../../../../redux/actions/TipoDocumentoProyectoAction';
 import Slide from '@material-ui/core/Slide';
 import TipoDocumentoProyectoForm from './TipoDocumentoProyectoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';

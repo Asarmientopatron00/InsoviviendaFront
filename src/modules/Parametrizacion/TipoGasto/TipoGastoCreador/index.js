@@ -4,11 +4,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
-import {
-  onShow,
-  onUpdate,
-  onCreate,
-} from '../../../../redux/actions/TipoGastoAction';
+import {onShow, onUpdate, onCreate,} from '../../../../redux/actions/TipoGastoAction';
 import Slide from '@material-ui/core/Slide';
 import TipoGastoForm from './TipoGastoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
@@ -94,11 +90,7 @@ const TipoGastoCreador = (props) => {
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
               tipGasDescripcion: selectedRow ? selectedRow.nombre : '',
-              tipGasEstado: selectedRow
-                ? selectedRow.estado === 1
-                  ? '1'
-                  : '0'
-                : '1',
+              tipGasEstado: selectedRow ? selectedRow.estado === 1 ? '1' : '0' : '1',
             }}
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {
