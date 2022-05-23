@@ -14,6 +14,7 @@ import PermisoReducer from './PermisoReducer';
 // PersonasEntidades
 import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
+import BenefactorReducer from './BenefactorReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import BancoReducer from './BancoReducer';
@@ -39,6 +40,7 @@ const reducers = (history) =>
     consultaAuditoriaReducer: ConsultaAuditoriaReducer,
     personaReducer: PersonaReducer,
     familiaReducer: FamiliaReducer,
+    benefactorReducer: BenefactorReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
     bancoReducer: BancoReducer,
     formaPagoReducer: FormaPagoReducer,

@@ -350,102 +350,56 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  marcoTabla: {
-    backgroundColor: 'white',
-    boxShadow: '0px 0px 5px 5px rgb(0 0 0 / 10%)',
-    borderRadius: '4px',
-    paddingLeft: '15px',
-    paddingRight: '15px',
-    marginTop: '5px',
-  },
-  root: {
-    width: '100%%',
-    padding: '20px',
-  },
-  head: {
-    borderTop: '2px solid #dee2e6',
-    borderBottom: '2px solid #dee2e6',
-  },
-  headCell: {
-    padding: '0px 0px 0px 15px',
-  },
-  row: {
-    padding: 'none',
-  },
-  cell: (props) => ({
-    padding: props.vp + ' 0px ' + props.vp + ' 15px',
-    whiteSpace: 'nowrap',
-  }),
-  cellWidth: (props) => ({
-    minWidth: props.width,
-  }),
-  cellColor: (props) => ({
-    backgroundColor: props.cellColor,
-    color: 'white',
-  }),
-  acciones: (props) => ({
-    padding: props.vp + ' 0px ' + props.vp + ' 15px',
-    minWidth: '100px',
-  }),
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-    boxShadow: 'none',
-    backgroundColor: 'transparent',
-  },
-  table: {
-    minWidth: '100%',
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-  generalIcons: {
-    '&:hover': {
-      color: theme.palette.colorHover,
-      cursor: 'pointer',
-    },
-  },
-  editIcon: {
-    color: theme.palette.secondary.main,
-  },
-  visivilityIcon: {
-    color: theme.palette.grayBottoms,
-  },
-  deleteIcon: {
-    color: theme.palette.primary.main,
-  },
-  popoverColumns: {
-    display: 'grid',
-    padding: '10px',
-    color: theme.palette.grayBottoms,
-  },
-  paginacion: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: '10px',
-    paddingBottom: '5px',
-  },
-  rowsPerPageOptions: {
-    marginRight: '10px',
-  },
+  marcoTabla: { backgroundColor: 'white',
+                boxShadow: '0px 0px 5px 5px rgb(0 0 0 / 10%)',
+                borderRadius: '4px',
+                paddingLeft: '15px',
+                paddingRight: '15px',
+                marginTop: '5px', },
+  root: { width: '100%%',
+          padding: '20px',  },
+  head: { borderTop: '2px solid #dee2e6',
+          borderBottom: '2px solid #dee2e6',  },
+  headCell: { padding: '0px 0px 0px 15px',  },
+  row: {  padding: 'none',  },
+  cell: (props) => ({ padding: props.vp + ' 0px ' + props.vp + ' 15px', whiteSpace: 'nowrap', }),
+  cellWidth: (props) => ({  minWidth: props.width,  }),
+  cellColor: (props) => ({  backgroundColor: props.cellColor, color: 'white', }),
+  acciones: (props) => ({ padding: props.vp + ' 0px ' + props.vp + ' 15px', minWidth: '100px',  }),
+  paper: {  width: '100%',
+            marginBottom: theme.spacing(2),
+            boxShadow: 'none',
+            backgroundColor: 'transparent', },
+  table: {  minWidth: '100%', },
+  visuallyHidden: { border: 0,
+                    clip: 'rect(0 0 0 0)',
+                    height: 1,
+                    margin: -1,
+                    overflow: 'hidden',
+                    padding: 0,
+                    position: 'absolute',
+                    top: 20,
+                    width: 1, },
+  generalIcons: { '&:hover': {  color: theme.palette.colorHover,  cursor: 'pointer',  },  },
+  editIcon: { color: theme.palette.secondary.main,  },
+  visivilityIcon: { color: theme.palette.grayBottoms, },
+  deleteIcon: { color: theme.palette.primary.main,  },
+  popoverColumns: { display: 'grid',
+                    padding: '10px',
+                    color: theme.palette.grayBottoms, },
+  paginacion: { display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingTop: '10px',
+                paddingBottom: '5px', },
+  rowsPerPageOptions: { marginRight: '10px',  },
 }));
 
 const Banco = (props) => {
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
-  const [orderByToSend, setOrderByToSend] = React.useState(
-    'fecha_modificacion:desc',
-  );
+  const [orderByToSend, setOrderByToSend] = React.useState( 'nombre:asc',  );
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(1);
   // const [dense, setDense] = React.useState(false);
@@ -455,9 +409,7 @@ const Banco = (props) => {
 
   const [accion, setAccion] = useState('ver');
   const [bancoSeleccionado, setBancoSeleccionado] = useState(0);
-  const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({bancoReducer}) => bancoReducer,
-  );
+  const {rows, desde, hasta, ultima_pagina, total} = useSelector( ({bancoReducer}) => bancoReducer, );
 
   const {message, error, messageType} = useSelector(({common}) => common);
 
@@ -492,9 +444,7 @@ const Banco = (props) => {
     });
   });
 
-  const [columnasMostradas, setColumnasMostradas] = useState(
-    columnasMostradasInicial,
-  );
+  const [columnasMostradas, setColumnasMostradas] = useState( columnasMostradasInicial, );
 
   let vp = '15px';
   if (dense === true) {
@@ -775,11 +725,7 @@ const Banco = (props) => {
                                 width={columna.width}
                                 claseBase={classes.cell}
                                 value={columna.value(row[columna.id])}
-                                cellColor={
-                                  columna.cellColor
-                                    ? columna.cellColor(row[columna.id])
-                                    : ''
-                                }
+                                cellColor={ columna.cellColor ? columna.cellColor(row[columna.id]) : '' }
                               />
                             );
                           } else {
@@ -867,19 +813,11 @@ const Banco = (props) => {
         }}>
         <Box className={classes.popoverColumns}>
           {columnasMostradas.map((column) => {
-            return (
-              <FormControlLabel
-                key={column.id}
-                control={
-                  <Switch
-                    id={column.id}
-                    checked={column.mostrar}
-                    onChange={handleOnchangeMostrarColumna}
-                  />
-                }
-                label={column.label}
-              />
-            );
+            return (  <FormControlLabel key={column.id}
+                                        control={ <Switch id={column.id}
+                                                          checked={column.mostrar}
+                                                          onChange={handleOnchangeMostrarColumna} />  }
+                                        label={column.label}  />  );
           })}
           <Box>
             <Button onClick={showAllColumns}>Mostrar Todos</Button>
@@ -888,16 +826,8 @@ const Banco = (props) => {
         </Box>
       </Popover>
       <MessageView
-        variant={
-          messageType === UPDATE_TYPE || messageType === CREATE_TYPE
-            ? 'success'
-            : 'error'
-        }
-        message={
-          messageType === UPDATE_TYPE || messageType === CREATE_TYPE
-            ? message
-            : ''
-        }
+        variant={ messageType === UPDATE_TYPE || messageType === CREATE_TYPE ? 'success' : 'error' }
+        message={ messageType === UPDATE_TYPE || messageType === CREATE_TYPE ? message : ''}
       />
     </div>
   );

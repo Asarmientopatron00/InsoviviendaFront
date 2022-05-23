@@ -4,11 +4,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
-import {
-  onShow,
-  onUpdate,
-  onCreate,
-} from '../../../../redux/actions/ParametroCorreoAction';
+import {onShow, onUpdate, onCreate,} from '../../../../redux/actions/ParametroCorreoAction';
 import Slide from '@material-ui/core/Slide';
 import ParametroCorreoForm from './ParametroCorreoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
@@ -100,11 +96,7 @@ const ParametroCorreoCreador = (props) => {
               asunto: selectedRow ? selectedRow.asunto : '',
               texto: selectedRow ? selectedRow.texto : '', 
               parametros: selectedRow ? selectedRow.parametros : '',
-              estado: selectedRow
-                ? selectedRow.estado === 1
-                  ? '1'
-                  : '0'
-                : '1',
+              estado: selectedRow ? selectedRow.estado === 1 ? '1' : '0' : '1',
             }}
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {

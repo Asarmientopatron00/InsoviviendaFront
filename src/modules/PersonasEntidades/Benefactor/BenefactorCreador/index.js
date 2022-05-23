@@ -4,26 +4,30 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
-import {
-  onShow,
-  onUpdate,
-  onCreate,
-} from '../../../../redux/actions/BancoAction';
+import {onShow, onUpdate, onCreate,} from '../../../../redux/actions/BenefactorAction';
 import Slide from '@material-ui/core/Slide';
-import BancoForm from './BancoForm';
+import BenefactorForm from './BenefactorForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
+import { onGetColeccionLigera as paisLigera } from 'redux/actions/PaisAction';
+import { onGetColeccionLigera as departamentoLigera } from 'redux/actions/DepartamentoAction';
+import { onGetColeccionLigera as ciudadLigera } from 'redux/actions/CiudadAction';
+import { onGetColeccionLigera as comunaLigera } from 'redux/actions/ComunaAction';
+import { onGetColeccionLigera as barrioLigera } from 'redux/actions/BarrioAction';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='down' ref={ref} {...props} />;
 });
 
 const validationSchema = yup.object({
-  bancosDescripcion: yup.string().required('Requerido'),
+  nombre: yup.string().required('Requerido'),
+  asunto: yup.string().required('Requerido'),
+  texto: yup.string().required('Requerido'),
+  parametros: yup.string().required('Requerido'),
 });
 
-const BancoCreador = (props) => {
-  const {banco, handleOnClose, accion, updateColeccion, titulo} = props;
+const BenefactorCreador = (props) => {
+  const {benefactor, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -43,9 +47,11 @@ const BancoCreador = (props) => {
 
   const classes = useStyles(props);
 
+  const paises = useSelector(({paisReducer}) => paisReducer.ligera, );
+
   let selectedRow = useRef();
   selectedRow = useSelector(
-    ({bancoReducer}) => bancoReducer.selectedRow,
+    ({benefactorReducer}) => benefactorReducer.selectedRow,
   );
 
   const initializeSelectedRow = () => {
@@ -71,9 +77,9 @@ const BancoCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(banco));
+      dispatch(onShow(benefactor));
     }
-  }, [accion, dispatch, banco]);
+  }, [accion, dispatch, benefactor]);
 
   return (
     showForm && (
@@ -93,8 +99,11 @@ const BancoCreador = (props) => {
             validateOnBlur={false}
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
-              bancosDescripcion: selectedRow ? selectedRow.nombre : '',
-              bancosEstado: selectedRow ? selectedRow.estado === 1 ? '1' : '0' : '1',
+              nombre: selectedRow ? selectedRow.nombre : '',
+              asunto: selectedRow ? selectedRow.asunto : '',
+              texto: selectedRow ? selectedRow.texto : '', 
+              parametros: selectedRow ? selectedRow.parametros : '',
+              estado: selectedRow ? selectedRow.estado === 1 ? '1' : '0' : '1',
             }}
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {
@@ -109,7 +118,7 @@ const BancoCreador = (props) => {
               setSubmitting(false);
             }}>
             {({initialValues}) => (
-              <BancoForm
+              <BenefactorForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
@@ -123,4 +132,4 @@ const BancoCreador = (props) => {
   );
 };
 
-export default BancoCreador;
+export default BenefactorCreador;
