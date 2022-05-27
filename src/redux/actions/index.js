@@ -13,6 +13,7 @@ export * from './ConsultaAuditoriaAction';
 // PersonasEntidades
 export * from './PersonaAction';
 export * from './FamiliaAction';
+export * from './BenefactorAction';
 export * from './TipoIdentificacionAction';
 export * from './TipoParentescoAction';
 export * from './TipoDiscapacidadAction';

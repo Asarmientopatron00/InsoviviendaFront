@@ -15,6 +15,7 @@ import AuditoriaProcesoReducer from './AuditoriaProcesoReducer';
 // PersonasEntidades
 import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
+import BenefactorReducer from './BenefactorReducer';
 import OrientadorReducer from './OrientadorReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
