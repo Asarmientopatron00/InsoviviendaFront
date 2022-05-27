@@ -18,3 +18,5 @@ export * from './TipoParentescoAction';
 export * from './TipoDiscapacidadAction';
 export * from './TipoAsesoriaAction';
 export * from './OrientadorAction';
+// Proyectos
+export * from './OrientacionAction';

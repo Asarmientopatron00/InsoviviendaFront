@@ -139,3 +139,10 @@ export const SHOW_ORIENTADOR = 'show_orientador';
 export const UPDATE_ORIENTADOR = 'update_orientador';
 export const CREATE_ORIENTADOR = 'create_orientador';
 export const DELETE_ORIENTADOR = 'delete_orientador';
+
+// ORIENTACIONES
+export const GET_COLECCION_ORIENTACION = 'get_coleccion_orientacion';
+export const SHOW_ORIENTACION = 'show_orientacion';
+export const UPDATE_ORIENTACION = 'update_orientacion';
+export const CREATE_ORIENTACION = 'create_orientacion';
+export const DELETE_ORIENTACION = 'delete_orientacion';
