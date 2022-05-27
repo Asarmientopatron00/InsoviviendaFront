@@ -143,8 +143,7 @@ const BenefactorCreador = (props) => {
             TransitionComponent = {Transition}
             aria-describedby = 'simple-modal-description'
             className = {classes.dialogBox}
-            disableBackdropClick = { true }
-            maxWidth = {'lg'}
+            maxWidth = {'md'}
             fullWidth>
             <Scrollbar>
                <Formik

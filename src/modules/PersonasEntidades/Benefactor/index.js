@@ -434,7 +434,7 @@ const EnhancedTableToolbar = (props) => {
                   </Box>
                   <Box className = {classes.contenedorFiltros}>
                      <TextField
-                        label = 'Nombre'
+                        label = 'Nombres y/o Apellidos'
                         name = 'nombreFiltro'
                         id = 'nombreFiltro'
                         onChange = {queryFilter}
