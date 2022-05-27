@@ -15,10 +15,10 @@ import AuditoriaProcesoReducer from './AuditoriaProcesoReducer';
 // PersonasEntidades
 import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
+import BenefactorReducer from './BenefactorReducer';
 import OrientadorReducer from './OrientadorReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
-import BenefactorReducer from './BenefactorReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import TipoParentescoReducer from './TipoParentescoReducer';
@@ -51,53 +51,57 @@ import ParametroCorreoReducer from './ParametroCorreoReducer';
 import ParametroConstanteReducer from './ParametroConstanteReducer';
 
 const reducers = (history) =>
-  combineReducers({
-    router: connectRouter(history),
-    settings: Settings,
-    auth: Auth,
-    common: Common,
-    rolReducer: RolReducer,
-    aplicacionReducer: AplicacionReducer,
-    moduloReducer: ModuloReducer,
-    usuarioReducer: UsuarioReducer,
-    opcionSistemaReducer: OpcionSistemaReducer,
-    permisoReducer: PermisoReducer,
-    consultaAuditoriaReducer: ConsultaAuditoriaReducer,
-    auditoriaProcesoReducer: AuditoriaProcesoReducer,
-    personaReducer: PersonaReducer,
-    familiaReducer: FamiliaReducer,
-    orientadorReducer: OrientadorReducer,
-    benefactorReducer: BenefactorReducer,
-    tipoIdentificacionReducer: TipoIdentificacionReducer,
-    proyectoReducer: ProyectoReducer,
-    tipoParentescoReducer: TipoParentescoReducer,
-    tipoDiscapacidadReducer: TipoDiscapacidadReducer,
-    tipoAsesoriaReducer: TipoAsesoriaReducer,
-    tipoProgramaReducer: TipoProgramaReducer,
-    paisReducer: PaisReducer,
-    departamentoReducer: DepartamentoReducer,
-    ciudadReducer: CiudadReducer,
-    comunaReducer: ComunaReducer,
-    barrioReducer: BarrioReducer,
-    estadocivilReducer:EstadoCivilReducer,
-    ocupacionReducer:OcupacionReducer,
-    gradosEscolaridadReducer:GradosescolaridadReducer,
-    epsReducer:EpsReducer,
-    tipofamiliaReducer:TipofamiliaReducer,
-    condicionFamiliaReducer: CondicionFamiliaReducer,
-    tipoPoblacionReducer: TipoPoblacionReducer,
-    tipoViviendaReducer: TipoViviendaReducer,
-    tipoTechoReducer: TipoTechoReducer,
-    tipoPisoReducer: TipoPisoReducer,
-    tipoDivisionReducer: TipoDivisionReducer,
-    bancoReducer: BancoReducer,
-    formaPagoReducer: FormaPagoReducer,
-    parametroCorreoReducer: ParametroCorreoReducer,
-    parametroConstanteReducer: ParametroConstanteReducer,
-    tipoBenefactorReducer: TipoBenefactorReducer,
-    tipoDocumentoProyectoReducer: TipoDocumentoProyectoReducer,
-    tipoDonacionReducer: TipoDonacionReducer,
-    tipoGastoReducer: TipoGastoReducer,
-  });
+   combineReducers({
+      router: connectRouter(history),
+      settings: Settings,
+      auth: Auth,
+      common: Common,
+
+      rolReducer: RolReducer,
+      aplicacionReducer: AplicacionReducer,
+      moduloReducer: ModuloReducer,
+      usuarioReducer: UsuarioReducer,
+      opcionSistemaReducer: OpcionSistemaReducer,
+      permisoReducer: PermisoReducer,
+      consultaAuditoriaReducer: ConsultaAuditoriaReducer,
+      auditoriaProcesoReducer: AuditoriaProcesoReducer,
+
+      personaReducer: PersonaReducer,
+      familiaReducer: FamiliaReducer,
+      benefactorReducer: BenefactorReducer,
+      orientadorReducer: OrientadorReducer,
+
+      proyectoReducer: ProyectoReducer,
+      
+      tipoIdentificacionReducer: TipoIdentificacionReducer,
+      tipoParentescoReducer: TipoParentescoReducer,
+      tipoDiscapacidadReducer: TipoDiscapacidadReducer,
+      tipoAsesoriaReducer: TipoAsesoriaReducer,
+      tipoProgramaReducer: TipoProgramaReducer,
+      paisReducer: PaisReducer,
+      departamentoReducer: DepartamentoReducer,
+      ciudadReducer: CiudadReducer,
+      comunaReducer: ComunaReducer,
+      barrioReducer: BarrioReducer,
+      estadocivilReducer:EstadoCivilReducer,
+      ocupacionReducer:OcupacionReducer,
+      gradosEscolaridadReducer:GradosescolaridadReducer,
+      epsReducer:EpsReducer,
+      tipofamiliaReducer:TipofamiliaReducer,
+      condicionFamiliaReducer: CondicionFamiliaReducer,
+      tipoPoblacionReducer: TipoPoblacionReducer,
+      tipoViviendaReducer: TipoViviendaReducer,
+      tipoTechoReducer: TipoTechoReducer,
+      tipoPisoReducer: TipoPisoReducer,
+      tipoDivisionReducer: TipoDivisionReducer,
+      bancoReducer: BancoReducer,
+      formaPagoReducer: FormaPagoReducer,
+      parametroCorreoReducer: ParametroCorreoReducer,
+      parametroConstanteReducer: ParametroConstanteReducer,
+      tipoBenefactorReducer: TipoBenefactorReducer,
+      tipoDocumentoProyectoReducer: TipoDocumentoProyectoReducer,
+      tipoDonacionReducer: TipoDonacionReducer,
+      tipoGastoReducer: TipoGastoReducer,
+   });
 
 export default reducers;
