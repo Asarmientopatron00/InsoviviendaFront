@@ -15,6 +15,11 @@ export const proyectosConfigs = [
         path: '/proyectos/:accion/:id',
         component: React.lazy(() => import('./Proyecto/ProyectoEditor')),
       },
+      {
+        exact: true,
+        path: '/documentos-proyecto/:proyecto_id',
+        component: React.lazy(() => import('./DocumentosProyecto')),
+      },
     ],
   },
 ];

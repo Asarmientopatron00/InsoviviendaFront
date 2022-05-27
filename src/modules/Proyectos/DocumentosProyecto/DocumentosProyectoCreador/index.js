@@ -4,30 +4,26 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
-import {onShow, onUpdate, onCreate,} from '../../../../redux/actions/BenefactorAction';
+import {
+  onShow,
+  onUpdate,
+  onCreate,
+} from '../../../../redux/actions/TipoIdentificacionAction';
 import Slide from '@material-ui/core/Slide';
-import BenefactorForm from './BenefactorForm';
+import DocumentosProyectoForm from './DocumentosProyectoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
-// import { onGetColeccionLigera as paisLigera } from 'redux/actions/PaisAction';
-// import { onGetColeccionLigera as departamentoLigera } from 'redux/actions/DepartamentoAction';
-// import { onGetColeccionLigera as ciudadLigera } from 'redux/actions/CiudadAction';
-// import { onGetColeccionLigera as comunaLigera } from 'redux/actions/ComunaAction';
-// import { onGetColeccionLigera as barrioLigera } from 'redux/actions/BarrioAction';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='down' ref={ref} {...props} />;
 });
 
 const validationSchema = yup.object({
-  nombre: yup.string().required('Requerido'),
-  asunto: yup.string().required('Requerido'),
-  texto: yup.string().required('Requerido'),
-  parametros: yup.string().required('Requerido'),
+  tipIdeDescripcion: yup.string().required('Requerido'),
 });
 
-const BenefactorCreador = (props) => {
-  const {benefactor, handleOnClose, accion, updateColeccion, titulo} = props;
+const DocumentosProyectoCreador = (props) => {
+  const {tipoIdentificacion, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -47,11 +43,9 @@ const BenefactorCreador = (props) => {
 
   const classes = useStyles(props);
 
-  // const paises = useSelector(({paisReducer}) => paisReducer.ligera, );
-
   let selectedRow = useRef();
   selectedRow = useSelector(
-    ({benefactorReducer}) => benefactorReducer.selectedRow,
+    ({tipoIdentificacionReducer}) => tipoIdentificacionReducer.selectedRow,
   );
 
   const initializeSelectedRow = () => {
@@ -77,9 +71,9 @@ const BenefactorCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(benefactor));
+      dispatch(onShow(tipoIdentificacion));
     }
-  }, [accion, dispatch, benefactor]);
+  }, [accion, dispatch, tipoIdentificacion]);
 
   return (
     showForm && (
@@ -99,11 +93,12 @@ const BenefactorCreador = (props) => {
             validateOnBlur={false}
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
-              nombre: selectedRow ? selectedRow.nombre : '',
-              asunto: selectedRow ? selectedRow.asunto : '',
-              texto: selectedRow ? selectedRow.texto : '', 
-              parametros: selectedRow ? selectedRow.parametros : '',
-              estado: selectedRow ? selectedRow.estado === 1 ? '1' : '0' : '1',
+              tipIdeDescripcion: selectedRow ? selectedRow.nombre : '',
+              tipIdeEstado: selectedRow
+                ? selectedRow.estado === 1
+                  ? '1'
+                  : '0'
+                : '1',
             }}
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {
@@ -118,7 +113,7 @@ const BenefactorCreador = (props) => {
               setSubmitting(false);
             }}>
             {({initialValues}) => (
-              <BenefactorForm
+              <DocumentosProyectoForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
@@ -132,4 +127,4 @@ const BenefactorCreador = (props) => {
   );
 };
 
-export default BenefactorCreador;
+export default DocumentosProyectoCreador;

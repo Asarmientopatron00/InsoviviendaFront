@@ -1231,12 +1231,11 @@ const Proyecto = (props) => {
     });
   };
 
-  // const onOpenAddProyecto = () => {
-  //   history.push(history.location.pathname + '/crear');
-  // };
+  const onGoDocumentosProyecto = (proyecto_id) => {
+    history.push('/documentos-proyecto/'+proyecto_id);
+  };
 
   const onOpenAddProyecto = () => {
-    // setAccion('crear');
     setShowForm(true);
   };
 
@@ -1420,7 +1419,7 @@ const Proyecto = (props) => {
                                 style={{
                                   color: '#001597'
                                 }}
-                                onClick={() => console.log(row.id)}
+                                onClick={() => onGoDocumentosProyecto(row.id)}
                                 className={`${classes.generalIcons}`}/>
                             </Tooltip>
                           </TableCell>

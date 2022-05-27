@@ -19,6 +19,7 @@ import OrientadorReducer from './OrientadorReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
 import BenefactorReducer from './BenefactorReducer';
+import DocumentosProyectoReducer from './DocumentosProyectoReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import TipoParentescoReducer from './TipoParentescoReducer';
@@ -98,6 +99,7 @@ const reducers = (history) =>
     tipoDocumentoProyectoReducer: TipoDocumentoProyectoReducer,
     tipoDonacionReducer: TipoDonacionReducer,
     tipoGastoReducer: TipoGastoReducer,
+    documentosProyectoReducer: DocumentosProyectoReducer,
   });
 
 export default reducers;

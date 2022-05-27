@@ -345,5 +345,8 @@ export const UPDATE_PARAMETRO_CONSTANTE = 'update_parametro_constante';
 export const CREATE_PARAMETRO_CONSTANTE = 'create_parametro_constante';
 export const DELETE_PARAMETRO_CONSTANTE = 'delete_parametro_constante';
 
+// DOCUMENTOS PROYECTO
+export const GET_COLECCION_DOCUMENTOS_PROYECTO = 'get_coleccion_documentos_proyecto';
+export const UPDATE_DOCUMENTOS_PROYECTO = 'update_documentos_proyecto';
 
 
