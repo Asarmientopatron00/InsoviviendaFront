@@ -349,4 +349,9 @@ export const DELETE_PARAMETRO_CONSTANTE = 'delete_parametro_constante';
 export const GET_COLECCION_DOCUMENTOS_PROYECTO = 'get_coleccion_documentos_proyecto';
 export const UPDATE_DOCUMENTOS_PROYECTO = 'update_documentos_proyecto';
 
-
+// ORIENTACIONES
+export const GET_COLECCION_ORIENTACION = 'get_coleccion_orientacion';
+export const SHOW_ORIENTACION = 'show_orientacion';
+export const UPDATE_ORIENTACION = 'update_orientacion';
+export const CREATE_ORIENTACION = 'create_orientacion';
+export const DELETE_ORIENTACION = 'delete_orientacion';
