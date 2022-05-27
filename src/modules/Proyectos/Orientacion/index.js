@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button} from '@material-ui/core';
+import {Box, Button, InputAdornment} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
@@ -21,6 +21,7 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
+import Search from '@material-ui/icons/Search';
 import OrientacionCreador from './OrientacionCreador';
 import {
   onGetColeccion,
@@ -48,8 +49,8 @@ import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
 import { Autocomplete } from '@material-ui/lab';
 import {onGetColeccionLigera as onGetColeccionLigeraTipoAsesoria} from 'redux/actions/TipoAsesoriaAction';
-import {onGetColeccionLigera as onGetColeccionLigeraPersona} from 'redux/actions/PersonaAction';
 import {onGetColeccionLigera as onGetColeccionLigeraAsesores} from 'redux/actions/OrientadorAction';
+import MySearcher from 'shared/components/MySearcher';
 
 const {
   theme: {palette},
@@ -67,7 +68,7 @@ const cells = [
   {
     id: 'nombreOrientador',
     typeHead: 'string',
-    label: 'Asesores',
+    label: 'Asesor',
     value: (value) => value,
     align: 'left',
     mostrarInicio: true,
@@ -101,14 +102,14 @@ const cells = [
     label: 'Nota',
     value: (value) => value,
     align: 'left',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },{
     id: 'orientacionesRespuesta',
     typeHead: 'string',
     label: 'Respuesta',
     value: (value) => value,
     align: 'left',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'estado',
@@ -116,7 +117,7 @@ const cells = [
     label: 'Estado',
     value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
     align: 'center',
-    mostrarInicio: true,
+    mostrarInicio: false,
     cellColor: (value) =>
       value === 1 ? palette.secondary.main : palette.secondary.red,
   },
@@ -127,7 +128,7 @@ const cells = [
     value: (value) => value,
     align: 'left',
     width: '140px',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'fecha_modificacion',
@@ -136,7 +137,7 @@ const cells = [
     value: (value) => moment(value).format('DD-MM-YYYY HH:mm:ss'),
     align: 'left',
     width: '180px',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'usuario_creacion_nombre',
@@ -288,8 +289,8 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '20px',
+    gridTemplateColumns: 'repeat(4,1fr)',
+    gap: '10px',
   },
   pairFilters: {
     display: 'flex',
@@ -312,11 +313,14 @@ const EnhancedTableToolbar = (props) => {
     setIdentificacionOrientadorFiltro,
     orientadores,
     fechaOrientacionFiltro,
-    setIdentificacionPersonaFiltro,
-    personas,
     estadoFiltro, 
     limpiarFiltros,
     permisos,
+    handleOnClose,
+    handleOnOpen,
+    showSearch,
+    setSelectePersona,
+    identificacionPersonaFiltro
  } = props;
   return (
     <Toolbar
@@ -381,10 +385,10 @@ const EnhancedTableToolbar = (props) => {
               selectOnFocus
               options={orientadores}
               getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} label='Nombre Asesores'/>}
+              renderInput={(params) => <TextField {...params} label='Nombre Asesor(a)'/>}
             />
             <TextField
-              label = 'Fechas Asesorias'
+              label = 'Fecha Asesoria'
               name='fechaOrientacionFiltro'
               id='fechaOrientacionFiltro'
               onChange={queryFilter}
@@ -395,18 +399,8 @@ const EnhancedTableToolbar = (props) => {
                 shrink: true,
               }}
             />
-            <Autocomplete
-              id='identificacionPersonaFiltro'
-              onChange={(event, newValue) => newValue&&setIdentificacionPersonaFiltro(newValue.identificacion)}
-              clearOnBlur
-              handleHomeEndKeys
-              selectOnFocus
-              options={personas}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} label='Nombre Persona'/>}
-            />
             <TextField
-              label='estado'
+              label='Estado'
               name='estadoFiltro'
               id='estadoFiltro'
               select={true}
@@ -424,6 +418,23 @@ const EnhancedTableToolbar = (props) => {
                 );
               })}
             </TextField>
+            <TextField
+              label='Asesorado'
+              name='identificacionPersonaFiltro'
+              id='identificacionPersonaFiltro'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleOnOpen}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+              onChange={queryFilter}
+              value={identificacionPersonaFiltro}
+            />
+            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
             <Box display='grid'>
               <Box display='flex' mb={2}>
                 <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
@@ -564,6 +575,7 @@ const Orientacion = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
+  const [showSearch, setShowSearch] = useState(false);
 
   const [accion, setAccion] = useState('ver');
   const [OrientacionSeleccionado, setOrientacionSeleccionado] = useState(0);
@@ -599,19 +611,7 @@ const Orientacion = (props) => {
   const [popoverTarget, setPopoverTarget] = useState(null);
 
   const tipos_orientacion = useSelector(({tipoAsesoriaReducer}) => tipoAsesoriaReducer.ligera);
-  const personas = useSelector(({personaReducer}) => personaReducer.ligera);
   const orientadores = useSelector(({orientadorReducer}) => orientadorReducer.ligera);
-
-  /*const tipos_orientacion = [
-    {id: 1, nombre: 'Hola'}
-  ]
-  const personas = [
-    {id: 1, nombre: 'Hola1'}
-  ]
-  const orientadores = [
-    {id: 1, nombre: 'Hola2'}
-  ]*/
-
 
   let columnasMostradasInicial = [];
 
@@ -674,7 +674,7 @@ const Orientacion = (props) => {
         orderByToSend,
         ),
       );
-  }, [
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
       dispatch, 
       page, 
       rowsPerPage,
@@ -713,10 +713,6 @@ const Orientacion = (props) => {
 
   useEffect(() => {
     dispatch(onGetColeccionLigeraTipoAsesoria());
-  },[]) //eslint-disable-line
-
-  useEffect(() => {
-    dispatch(onGetColeccionLigeraPersona());
   },[]) //eslint-disable-line
 
   useEffect(() => {
@@ -876,6 +872,18 @@ const Orientacion = (props) => {
     }
   }, [rows]);
 
+  const handleCloseSearcher = () => {
+    setShowSearch(false);
+  }
+
+  const handleOpenSearcher = () => {
+    setShowSearch(true);
+  }
+
+  const setSelectePersona = (id) => {
+    setIdentificacionPersonaFiltro(id);
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -890,15 +898,17 @@ const Orientacion = (props) => {
             setTipoAsesoriasFiltro = {setTipoAsesoriasFiltro}
             identificacionOrientadorFiltro = {identificacionOrientadorFiltro} 
             setIdentificacionOrientadorFiltro = {setIdentificacionOrientadorFiltro} 
-            setIdentificacionPersonaFiltro = {setIdentificacionPersonaFiltro}
             identificacionPersonaFiltro = {identificacionPersonaFiltro}
             fechaOrientacionFiltro = {fechaOrientacionFiltro}
             estadoFiltro = {estadoFiltro}
             permisos={permisos}
             tipos_orientacion = {tipos_orientacion}
             orientadores = {orientadores}
-            personas = {personas}
             titulo={titulo}
+            handleOnClose={handleCloseSearcher}
+            handleOnOpen={handleOpenSearcher}
+            showSearch={showSearch}
+            setSelectePersona={setSelectePersona}
           />
         )}
         {showTable && permisos ? (
