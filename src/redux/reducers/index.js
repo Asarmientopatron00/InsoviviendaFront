@@ -19,7 +19,6 @@ import BenefactorReducer from './BenefactorReducer';
 import OrientadorReducer from './OrientadorReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
-import BenefactorReducer from './BenefactorReducer';
 import DocumentosProyectoReducer from './DocumentosProyectoReducer';
 import OrientacionReducer from './OrientacionReducer';
 //Parametrizacion
