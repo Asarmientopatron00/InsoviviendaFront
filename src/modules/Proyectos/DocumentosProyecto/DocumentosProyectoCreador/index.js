@@ -1,79 +1,56 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {Scrollbar} from '../../../../@crema';
 import {
-  onShow,
   onUpdate,
-  onCreate,
-} from '../../../../redux/actions/TipoIdentificacionAction';
+} from '../../../../redux/actions/DocumentosProyectoAction';
 import Slide from '@material-ui/core/Slide';
 import DocumentosProyectoForm from './DocumentosProyectoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
+import moment from 'moment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='down' ref={ref} {...props} />;
 });
 
+const useStyles = makeStyles((theme) => ({
+  dialogBox: {
+    position: 'relative',
+    '& .MuiDialog-paperWidthSm': {
+      maxWidth: 600,
+      width: '100%',
+      // maxHeight:'fit-content'
+    },
+    '& .MuiTypography-h6': {
+      fontWeight: Fonts.LIGHT,
+    },
+  },
+}));
+
 const validationSchema = yup.object({
-  tipIdeDescripcion: yup.string().required('Requerido'),
+  proyecto_id: yup.number().required('Requerido'),
+  tipo_documento_proyecto_id: yup.number().required('Requerido'),
 });
 
 const DocumentosProyectoCreador = (props) => {
-  const {tipoIdentificacion, handleOnClose, accion, updateColeccion, titulo} = props;
+  const {documentoProyecto, handleOnClose, accion, updateColeccion} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
-  const useStyles = makeStyles((theme) => ({
-    dialogBox: {
-      position: 'relative',
-      '& .MuiDialog-paperWidthSm': {
-        maxWidth: 600,
-        width: '100%',
-        // maxHeight:'fit-content'
-      },
-      '& .MuiTypography-h6': {
-        fontWeight: Fonts.LIGHT,
-      },
-    },
-  }));
 
   const classes = useStyles(props);
 
-  let selectedRow = useRef();
-  selectedRow = useSelector(
-    ({tipoIdentificacionReducer}) => tipoIdentificacionReducer.selectedRow,
-  );
-
-  const initializeSelectedRow = () => {
-    selectedRow = null;
-  };
   useEffect(() => {
-    initializeSelectedRow();
-  }, []);
-
-  if (accion === 'crear') {
-    initializeSelectedRow();
-  }
-
-  useEffect(() => {
-    if (selectedRow) {
-      setShowForm(true);
-    } else if (accion === 'crear') {
+    if (documentoProyecto) {
       setShowForm(true);
     } else {
       setShowForm(false);
     }
-  }, [selectedRow, accion]);
-
-  useEffect(() => {
-    if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(tipoIdentificacion));
-    }
-  }, [accion, dispatch, tipoIdentificacion]);
+  }, [documentoProyecto]);
 
   return (
     showForm && (
@@ -84,18 +61,35 @@ const DocumentosProyectoCreador = (props) => {
         TransitionComponent={Transition}
         aria-describedby='simple-modal-description'
         className={classes.dialogBox}
-        disableBackdropClick={true}
-        maxWidth={'sm'}>
+        maxWidth={'md'}>
         <Scrollbar>
           <Formik
             initialStatus={true}
             enableReinitialize={true}
             validateOnBlur={false}
             initialValues={{
-              id: selectedRow ? selectedRow.id : '',
-              tipIdeDescripcion: selectedRow ? selectedRow.nombre : '',
-              tipIdeEstado: selectedRow
-                ? selectedRow.estado === 1
+              id: documentoProyecto ? documentoProyecto.id : '',
+              proyecto_id: documentoProyecto ? documentoProyecto.proyecto_id : '',
+              fechaSolicitud: documentoProyecto ? moment(documentoProyecto.fechaSolicitud).format('YYYY-MM-DD') : '',
+              tipo_documento_proyecto_id: documentoProyecto ? documentoProyecto.tipo_documento_proyecto_id : '',
+              tiDoPrDescripcion: documentoProyecto ? documentoProyecto.tiDoPrDescripcion : '',
+              tiDoPrEtapa: documentoProyecto ? documentoProyecto.tiDoPrEtapa : '',
+              tiDoPrRequerido: documentoProyecto ? documentoProyecto.tiDoPrRequerido === 1 ? '1' : '0' : '1',
+              estado: documentoProyecto ? documentoProyecto.estado : '',
+              identificacion: documentoProyecto ? documentoProyecto.identificacion : '',
+              solicitante: documentoProyecto ? documentoProyecto.solicitante : '',
+              docProEstado: documentoProyecto
+                ? documentoProyecto.docProEstado === 1
+                  ? '1'
+                  : '0'
+                : '1',
+              docProAplica: documentoProyecto
+                ? documentoProyecto.docProAplica === 1
+                  ? '1'
+                  : '0'
+                : '1',
+              docProEntregado: documentoProyecto
+                ? documentoProyecto.docProEntregado === 1
                   ? '1'
                   : '0'
                 : '1',
@@ -103,10 +97,8 @@ const DocumentosProyectoCreador = (props) => {
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {
               setSubmitting(true);
-              if (accion === 'crear') {
-                dispatch(onCreate(data, handleOnClose, updateColeccion));
-              } else if (accion === 'editar') {
-                if (selectedRow) {
+              if (accion === 'editar') {
+                if (documentoProyecto) {
                   dispatch(onUpdate(data, handleOnClose, updateColeccion));
                 }
               }
@@ -115,7 +107,6 @@ const DocumentosProyectoCreador = (props) => {
             {({initialValues}) => (
               <DocumentosProyectoForm
                 handleOnClose={handleOnClose}
-                titulo={titulo}
                 accion={accion}
                 initialValues={initialValues}
               />
