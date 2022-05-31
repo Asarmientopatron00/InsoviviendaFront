@@ -355,3 +355,6 @@ export const SHOW_ORIENTACION = 'show_orientacion';
 export const UPDATE_ORIENTACION = 'update_orientacion';
 export const CREATE_ORIENTACION = 'create_orientacion';
 export const DELETE_ORIENTACION = 'delete_orientacion';
+
+// PLAN AMORTIZACION
+export const GET_COLECCION_PLAN_AMORTIZACION = 'get_coleccion_plan_amortizacion';
