@@ -181,8 +181,6 @@ const DocumentosProyectoForm = (props) => {
                 disabled={disabled}
                 options={options2}
               />
-            </Box>
-            <Box className={classes.inputs_3}>
               <MyRadioField
                 label='Entregado'
                 name='docProEntregado'

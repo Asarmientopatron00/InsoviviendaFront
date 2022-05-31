@@ -667,28 +667,6 @@ const DocumentosProyecto = (props) => {
     setShowForm(true);
   };
 
-  const onDelete = (id) => {
-    console.log('Borrando')
-  }
-
-  const onDeleteDocumentoProyecto = (id) => {
-    Swal.fire({
-      title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar El Documento Del Proyecto?',
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'NO',
-      confirmButtonText: 'SI',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(onDelete(id));
-      }
-    });
-  };
-
   const handleOnClose = () => {
     setShowForm(false);
     setDocumentoProyectoSeleccionado(0);
@@ -809,14 +787,6 @@ const DocumentosProyecto = (props) => {
                               <VisibilityIcon
                                 onClick={() => onOpenViewDocumentoProyecto(row)}
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('EliminarDocPro') >= 0 && (
-                            <Tooltip
-                              title={<IntlMessages id='boton.eliminar' />}>
-                              <DeleteIcon
-                                onClick={() => onDeleteDocumentoProyecto(row.id)}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
                             </Tooltip>
                           )}
                         </TableCell>
