@@ -355,3 +355,11 @@ export const SHOW_ORIENTACION = 'show_orientacion';
 export const UPDATE_ORIENTACION = 'update_orientacion';
 export const CREATE_ORIENTACION = 'create_orientacion';
 export const DELETE_ORIENTACION = 'delete_orientacion';
+
+// DONACIONES
+export const GET_COLECCION_DONACION = 'get_coleccion_donacion';
+export const GET_COLECCION_LIGERA_DONACION = 'get_coleccion_ligera_donacion';
+export const SHOW_DONACION = 'show_donacion';
+export const UPDATE_DONACION = 'update_donacion';
+export const CREATE_DONACION = 'create_donacion';
+export const DELETE_DONACION = 'delete_donacion';
