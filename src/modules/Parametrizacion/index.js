@@ -7,17 +7,17 @@ export const parametrizacionConfigs = [
     routes: [
       {
         exact: true,
-        path: '/banco',
+        path: '/bancos',
         component: React.lazy(() => import('./Banco')),
       },
       {
         exact: true,
-        path: '/forma-pago',
+        path: '/formas-pago',
         component: React.lazy(() => import('./FormaPago')),
       },
       {
         exact: true,
-        path: '/parametro-correo',
+        path: '/parametros-correo',
         component: React.lazy(() => import('./ParametroCorreo')),
       },
       {
@@ -27,22 +27,22 @@ export const parametrizacionConfigs = [
       },
       {
         exact: true,
-        path: '/tipo-benefactor',
+        path: '/tipos-benefactor',
         component: React.lazy(() => import('./TipoBenefactor')),
       },
       {
         exact: true,
-        path: '/tipo-documento-proyecto',
+        path: '/tipos-documento-proyecto',
         component: React.lazy(() => import('./TipoDocumentoProyecto')),
       },
       {
         exact: true,
-        path: '/tipo-donacion',
+        path: '/tipos-donacion',
         component: React.lazy(() => import('./TipoDonacion')),
       },
       {
         exact: true,
-        path: '/tipo-gasto',
+        path: '/tipos-gasto',
         component: React.lazy(() => import('./TipoGasto')),
       },
       {
@@ -152,4 +152,3 @@ export const parametrizacionConfigs = [
     ],
   },    
 ];
-

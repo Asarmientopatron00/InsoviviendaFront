@@ -21,3 +21,4 @@ export * from './TipoAsesoriaAction';
 export * from './OrientadorAction';
 // Proyectos
 export * from './OrientacionAction';
+export * from './DonacionAction';

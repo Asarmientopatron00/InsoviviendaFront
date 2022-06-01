@@ -30,6 +30,11 @@ export const proyectosConfigs = [
         path: '/plan-amortizacion/:proyecto_id',
         component: React.lazy(() => import('./PlanAmortizacion')),
       },
+      {
+        exact: true,
+        path: '/donaciones',
+        component: React.lazy(() => import('./Donacion')),
+     },
     ],
-  },
+  }
 ];

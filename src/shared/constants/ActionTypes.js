@@ -358,3 +358,11 @@ export const DELETE_ORIENTACION = 'delete_orientacion';
 
 // PLAN AMORTIZACION
 export const GET_COLECCION_PLAN_AMORTIZACION = 'get_coleccion_plan_amortizacion';
+
+// DONACIONES
+export const GET_COLECCION_DONACION = 'get_coleccion_donacion';
+export const GET_COLECCION_LIGERA_DONACION = 'get_coleccion_ligera_donacion';
+export const SHOW_DONACION = 'show_donacion';
+export const UPDATE_DONACION = 'update_donacion';
+export const CREATE_DONACION = 'create_donacion';
+export const DELETE_DONACION = 'delete_donacion';
