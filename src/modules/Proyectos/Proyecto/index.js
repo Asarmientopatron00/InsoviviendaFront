@@ -60,7 +60,7 @@ import MyCell from 'shared/components/MyCell';
 import MySearcher from 'shared/components/MySearcher';
 import ProyectoCreador from './ProyectoCreador';
 import Description from '@material-ui/icons/Description'
-import { Money } from '@material-ui/icons';
+import { Money, Comment } from '@material-ui/icons';
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
 const stateColor = [
@@ -558,6 +558,12 @@ function EnhancedTableHead(props) {
           className={classes.headCellWoMargin}>
           {'Plan Amort. Def.'}
         </TableCell>
+        <TableCell
+          align='center'
+          style={{fontWeight: 'bold'}}
+          className={classes.headCellWoMargin}>
+          {'Bitácoras'}
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -919,6 +925,14 @@ const useStyles = makeStyles((theme) => ({
     },
     padding: props.vp + ' 0px ' + props.vp + ' 10px',
     whiteSpace: 'nowrap',
+  }),
+  cell2: (props) => ({
+    fontSize: '13px',
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '14px',
+    },
+    padding: props.vp + ' 0px ' + props.vp + ' 10px',
+    whiteSpace: 'wrap',
   }),
   cellWidth: (props) => ({
     minWidth: props.width,
@@ -1419,32 +1433,47 @@ const Proyecto = (props) => {
                           })}
                           <TableCell align='center' className={classes.cell}>
                             <Tooltip title={'Documentos'}>
-                              <Description 
-                                style={{
-                                  color: '#001597'
-                                }}
-                                onClick={() => onGoDocumentosProyecto(row.id)}
-                                className={`${classes.generalIcons}`}/>
+                              <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <Description 
+                                  style={{
+                                    color: '#001597'
+                                  }}
+                                  onClick={() => onGoDocumentosProyecto(row.id)}
+                                  className={`${classes.generalIcons}`}/>
+                              </Box>
                             </Tooltip>
                           </TableCell>
-                          <TableCell align='center' className={classes.cell}>
+                          <TableCell align='center' className={classes.cell2}>
                             <Tooltip title={'Plan Amort. Ini.'}>
-                              <Money 
-                                style={{
-                                  color: '#ff9800'
-                                }}
-                                onClick={() => onGoPlanAmortizacion(row.id)}
-                                className={`${classes.generalIcons}`}/>
+                              <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <Money 
+                                  style={{
+                                    color: '#ff9800'
+                                  }}
+                                  onClick={() => onGoPlanAmortizacion(row.id)}
+                                  className={`${classes.generalIcons}`}/>
+                              </Box>
                             </Tooltip>
                           </TableCell>
-                          <TableCell align='center' className={classes.cell}>
+                          <TableCell align='center' className={classes.cell2}>
                             <Tooltip title={'Plan Amort. Def.'}>
-                              <Money 
-                                style={{
-                                  color: '#009705'
-                                }}
-                                onClick={() => console.log(row.id)}
-                                className={`${classes.generalIcons}`}/>
+                              <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <Money 
+                                  style={{
+                                    color: '#009705'
+                                  }}
+                                  onClick={() => console.log(row.id)}
+                                  className={`${classes.generalIcons}`}/>
+                              </Box>
+                            </Tooltip>
+                          </TableCell>
+                          <TableCell align='center' className={classes.cell2}>
+                            <Tooltip title={'Bitácoras'}>
+                              <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <Comment 
+                                  onClick={() => console.log(row.id)}
+                                  className={`${classes.generalIcons}`}/>
+                              </Box>
                             </Tooltip>
                           </TableCell>
                         </TableRow>
