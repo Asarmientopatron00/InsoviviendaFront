@@ -21,6 +21,7 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
   onGetColeccion,
+  onGetHeaders
   // onDelete,
 } from '../../../redux/actions/PlanAmortizacionAction';
 import {useDispatch, useSelector} from 'react-redux';
@@ -40,7 +41,7 @@ import { MenuItem } from '@material-ui/core';
 import { ESTADOS_PROYECTO } from 'shared/constants/ListaValores';
 import { ArrowBackIos } from '@material-ui/icons';
 import { history } from 'redux/store';
-const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
+const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
 
 const cells = [
   {
@@ -175,7 +176,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow className={classes.head}>
-        {columnasMostradas.map((cell) => {
+        {columnasMostradas.map((cell, index) => {
           if (cell.mostrar) {
             return (
               <TableCell
@@ -188,7 +189,7 @@ function EnhancedTableHead(props) {
                     ? 'right'
                     : 'center'
                 }
-                className={classes.cell}
+                className={index === 1 || index === 8 ? classes.cell2 : classes.cell}
                 sortDirection={orderBy === cell.id ? order : false}>
                 <TableSortLabel
                   active={orderBy === cell.id}
@@ -312,6 +313,17 @@ const EnhancedTableToolbar = (props) => {
     onGoBack,
     row
   } = props;
+
+  const getName = (row) => {
+    if(row){
+      const firstName = row.personasNombres;
+      const lastFirstName = row.personasPrimerApellido;
+      const lastSecondName = row.personasSegundoApellido;
+      const fullName = [firstName, lastFirstName, lastSecondName].filter(Boolean).join(' ');
+      return fullName;
+    }
+    return '';
+  }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -367,7 +379,7 @@ const EnhancedTableToolbar = (props) => {
             <TextField
               label='Número Proyecto'
               name='numeroProyecto'
-              value={row?.proyecto_id??''}
+              value={row?.id??''}
               disabled
               className={classes.inputFiltros}
             />
@@ -375,7 +387,7 @@ const EnhancedTableToolbar = (props) => {
               label='Fecha Solicitud'
               name='fechaSolicitud'
               type={'date'}
-              value={moment(row?.fechaSolicitud??'').format('YYYY-MM-DD')}
+              value={moment(row?.proyectosFechaSolicitud??'').format('YYYY-MM-DD')}
               disabled
               className={classes.inputFiltros}
             />
@@ -384,7 +396,7 @@ const EnhancedTableToolbar = (props) => {
               name='estado'
               select
               disabled
-              value={row?.estado??''}>
+              value={row?.proyectosEstadoProyecto??''}>
               {ESTADOS_PROYECTO.map((estado) => {
                 return (
                   <MenuItem
@@ -402,14 +414,14 @@ const EnhancedTableToolbar = (props) => {
             <TextField
               label='Solicitante'
               name='identificacion'
-              value={row?.identificacion??''}
+              value={row?.solicitante?.personasIdentificacion??''}
               disabled
               className={classes.inputFiltros}
             />
             <TextField
               label='Nombre'
               name='solicitante'
-              value={row?.solicitante??''}
+              value={getName(row?.solicitante??'')}
               disabled
               className={classes.inputFiltros}
             />
@@ -461,6 +473,10 @@ const useStyles = makeStyles((theme) => ({
   cell: (props) => ({
     padding: props.vp + ' 0px ' + props.vp + ' 15px',
     whiteSpace: 'nowrap',
+  }),
+  cell2: (props) => ({
+    padding: props.vp + ' 0px ' + props.vp + ' 15px',
+    whiteSpace: 'wrap',
   }),
   cellWidth: (props) => ({
     minWidth: props.width,
@@ -543,6 +559,8 @@ const PlanAmortizacion = (props) => {
     ({planAmortizacionReducer}) => planAmortizacionReducer,
   );
 
+  const headers = useSelector(({planAmortizacionReducer}) => planAmortizacionReducer.ligera);
+
   const {message, messageType} = useSelector(({common}) => common);
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
@@ -599,6 +617,10 @@ const PlanAmortizacion = (props) => {
   useEffect(() => {
     dispatch(onGetColeccion(page, rowsPerPage, orderByToSend, proyecto_id));
   }, [dispatch, page, rowsPerPage, orderByToSend]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    dispatch(onGetHeaders(proyecto_id));
+  },[]) //eslint-disable-line
 
   const changeOrderBy = (id) => {
     if (orderBy === id) {
@@ -700,7 +722,7 @@ const PlanAmortizacion = (props) => {
           <EnhancedTableToolbar
             numSelected={selected.length}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
-            row={rows[0]}
+            row={headers}
             onGoBack={onGoBack}
           />
         )}

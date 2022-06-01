@@ -1,5 +1,6 @@
 import {
-  GET_COLECCION_PLAN_AMORTIZACION
+  GET_COLECCION_PLAN_AMORTIZACION,
+  GET_COLECCION_HEADERS_PLAN_AMORTIZACION,
 } from '../../shared/constants/ActionTypes';
 
 const initialState = {
@@ -26,6 +27,11 @@ const PlanAmortizacionReducer = (state = initialState, action) => {
         pagina_actual: action.payload.data.pagina_actual,
         ultima_pagina: action.payload.data.ultima_pagina,
         total: action.payload.data.total,
+      };
+    case GET_COLECCION_HEADERS_PLAN_AMORTIZACION:
+      return {
+        ...state,
+        ligera: action.payload.data,
       };
 
     default:

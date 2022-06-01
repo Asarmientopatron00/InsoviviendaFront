@@ -1,5 +1,6 @@
 import {
   GET_COLECCION_PLAN_AMORTIZACION,
+  GET_COLECCION_HEADERS_PLAN_AMORTIZACION,
   FETCH_ERROR,
   FETCH_START,
   FETCH_SUCCESS,
@@ -32,6 +33,35 @@ export const onGetColeccion = (
         if (data.status === 200) {
           dispatch({type: FETCH_SUCCESS});
           dispatch({type: GET_COLECCION_PLAN_AMORTIZACION, payload: data});
+        } else {
+          dispatch({
+            type: FETCH_ERROR,
+            payload: messages['message.somethingWentWrong'],
+          });
+        }
+      })
+      .catch((error) => {
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const onGetHeaders = (
+  proyecto_id
+) => {
+  const {messages} = appIntl();
+
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+    jwtAxios
+      .get('plan-amortizacion/'+proyecto_id, {
+        params: {
+          headerInfo: true,
+        },
+      })
+      .then((data) => {
+        if (data.status === 200) {
+          dispatch({type: FETCH_SUCCESS});
+          dispatch({type: GET_COLECCION_HEADERS_PLAN_AMORTIZACION, payload: data});
         } else {
           dispatch({
             type: FETCH_ERROR,

@@ -358,6 +358,7 @@ export const DELETE_ORIENTACION = 'delete_orientacion';
 
 // PLAN AMORTIZACION
 export const GET_COLECCION_PLAN_AMORTIZACION = 'get_coleccion_plan_amortizacion';
+export const GET_COLECCION_HEADERS_PLAN_AMORTIZACION = 'get_coleccion_headers_plan_amortizacion';
 
 // DONACIONES
 export const GET_COLECCION_DONACION = 'get_coleccion_donacion';
