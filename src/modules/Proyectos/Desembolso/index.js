@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, InputAdornment} from '@material-ui/core';
-import MenuItem from '@material-ui/core/MenuItem';
+import {Box, Button, MenuItem, InputAdornment} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import {Form, Formik} from 'formik';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
@@ -23,12 +21,12 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
+import DesembolsoCreador from './DesembolsoCreador';
 import {
   onGetColeccion,
   onDelete,
-} from '../../../redux/actions/ProyectoAction';
+} from '../../../redux/actions/DesembolsoAction';
 import {useDispatch, useSelector} from 'react-redux';
-// import {onGetColeccionLigera as onGetColeccionLigeraFamilia} from 'redux/actions/FamiliaAction';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import Popover from '@material-ui/core/Popover';
@@ -36,18 +34,6 @@ import TuneIcon from '@material-ui/icons/Tune';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
 import Swal from 'sweetalert2';
-import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
-import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
-import Search from '@material-ui/icons/Search';
-import {history} from 'redux/store';
-import {
-  DATO_BOOLEAN,
-  ZONA,
-  ESTADOS_PROYECTO,
-  TIPOS_PROYECTO,
-  TIPOS_CUENTA_RECAUDO,
-  ESTADOS_FORMALIZACION,
-} from 'shared/constants/ListaValores';
 import {
   UPDATE_TYPE,
   CREATE_TYPE,
@@ -55,37 +41,33 @@ import {
 } from 'shared/constants/Constantes';
 import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
-import moment from 'moment';
 import MyCell from 'shared/components/MyCell';
+import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
+import moment from 'moment';
+import { ESTADO, TIPOS_CUENTA_RECAUDO } from 'shared/constants/ListaValores';
+import Search from '@material-ui/icons/Search';
 import MySearcher from 'shared/components/MySearcher';
-import ProyectoCreador from './ProyectoCreador';
-import Description from '@material-ui/icons/Description'
-import { Money, Comment, Check } from '@material-ui/icons';
-const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
+import MyProjectSearcher from 'shared/components/MyProjectSearcher';
 
-const stateColor = [
-  {id: 'SOL', value: '#79E145'},
-  {id: 'EST', value: '#2397E2'},
-  {id: 'APR', value: '#9C00B2'},
-  {id: 'FOR', value: '#671DE1'},
-  {id: 'DES', value: '#ECA313'},
-  {id: 'REC', value: '#B20A0A'},
-  {id: 'CAN', value: '#B20A0A'},
-  {id: 'CON', value: '#B20A0A'},
-]
+const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
 
-const setCellColor = (value) => {
-  const state = stateColor.find((state) => state.id === value);
-  if(state){
-    return state.value;
-  }
-  return 'transparent';
-}
+const {
+  theme: {palette},
+} = defaultConfig;
+
 const cells = [
   {
-    id: 'id',
+    id: 'proyecto_id',
     typeHead: 'numeric',
-    label: 'Id Proyecto',
+    label: 'Proyecto Nro.',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'identificacion',
+    typeHead: 'numeric',
+    label: 'Identificación',
     value: (value) => value,
     align: 'right',
     mostrarInicio: true,
@@ -93,270 +75,45 @@ const cells = [
   {
     id: 'solicitante',
     typeHead: 'string',
-    label: 'Solicitante',
+    label: 'Nombre Solicitante',
     value: (value) => value,
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'proyectosEstadoProyecto',
+    id: 'desembolsosFechaDesembolso',
     typeHead: 'string',
-    label: 'Estado Proyecto',
-    value: (value) => ESTADOS_PROYECTO.map((estadoProyecto) => (estadoProyecto.id === value ? estadoProyecto.nombre : '')),
-    align: 'left',
-    mostrarInicio: true,
-    cellColor: (value) => setCellColor(value),
-  },
-  {
-    id: 'proyectosFechaSolicitud',
-    typeHead: 'string',
-    label: 'Fecha Solicitud',
+    label: 'Fecha Desembolso',
     value: (value) => moment(value).format('DD-MM-YYYY'),
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'proyectosTipoProyecto',
-    typeHead: 'string',
-    label: 'Tipo Proyecto',
-    value: (value) => TIPOS_PROYECTO.map((tipoProyecto) => (tipoProyecto.id === value ? tipoProyecto.nombre : '')),
-    align: 'left',
+    id: 'desembolsosValorDesembolso',
+    typeHead: 'numeric',
+    label: 'Valor Desembolso',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
     mostrarInicio: true,
   },
   {
-    id: 'tipo_programa',
+    id: 'desembolsosFechaNormalizacionP',
     typeHead: 'string',
-    label: 'Tipo Programa',
+    label: 'Fecha Normalización Pago',
+    value: (value) => moment(value).format('DD-MM-YYYY'),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'desembolsosDescripcionDes',
+    typeHead: 'string',
+    label: 'Descripcion Desembolso',
     value: (value) => value,
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'proyectosRemitido',
-    typeHead: 'string',
-    label: 'Remitido',
-    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'remitente',
-    typeHead: 'string',
-    label: 'Remitente',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'pais',
-    typeHead: 'string',
-    label: 'Pais',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'departamento',
-    typeHead: 'string',
-    label: 'Departamento',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'ciudad',
-    typeHead: 'string',
-    label: 'Ciudad',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'comuna',
-    typeHead: 'string',
-    label: 'Comuna',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'barrio',
-    typeHead: 'string',
-    label: 'Barrio',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosZona',
-    typeHead: 'string',
-    label: 'Zona',
-    value: (value) => ZONA.map((zona) => (zona.id === value ? zona.nombre : '')),
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosDireccion',
-    typeHead: 'string',
-    label: 'Dirección',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosVisitaDomiciliaria',
-    typeHead: 'string',
-    label: 'Visita Domic.',
-    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosFechaVisitaDom',
-    typeHead: 'string',
-    label: 'Fecha Visita Domic.',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosPagoEstudioCre',
-    typeHead: 'string',
-    label: 'Pago Estudio Cré.',
-    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosReqLicenciaCon',
-    typeHead: 'string',
-    label: 'Requiere Lic. Cond.',
-    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosFechaInicioEstudio',
-    typeHead: 'string',
-    label: 'Fecha Inicio Estudio',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosFechaAproRec',
-    typeHead: 'string',
-    label: 'Fecha Aprob. Rec.',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosFechaEstInicioObr',
-    typeHead: 'string',
-    label: 'Fecha Inicio Obra',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorProyecto',
-    typeHead: 'numeric',
-    label: 'Valor Proyecto',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorSolicitud',
-    typeHead: 'numeric',
-    label: 'Valor Solicitud',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorRecursosSol',
-    typeHead: 'numeric',
-    label: 'Valor Recursos Solic.',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorSubsidios',
-    typeHead: 'numeric',
-    label: 'Valor Subsidios',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorDonaciones',
-    typeHead: 'numeric',
-    label: 'Valor Donaciones',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorCuotaAprobada',
-    typeHead: 'numeric',
-    label: 'Valor Cuota Aprob.',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorCapPagoMen',
-    typeHead: 'numeric',
-    label: 'Valor Cap. Pago Mens.',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorAprobado',
-    typeHead: 'numeric',
-    label: 'Valor Aprobado',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosValorSeguroVida',
-    typeHead: 'numeric',
-    label: 'Valor Seg. de Vida',
-    value: (value) => currencyFormatter.format(value),
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosTasaInteresNMV',
-    typeHead: 'numeric',
-    label: 'Tasa Int. NMV',
-    value: (value) => value,
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosTasaInteresEA',
-    typeHead: 'numeric',
-    label: 'Tasa EA',
-    value: (value) => value,
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosNumeroCuotas',
-    typeHead: 'numeric',
-    label: 'Num. Cuotas',
-    value: (value) => value,
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'banco',
+    id: 'bancosDescripcion',
     typeHead: 'string',
     label: 'Banco',
     value: (value) => value,
@@ -364,92 +121,46 @@ const cells = [
     mostrarInicio: false,
   },
   {
-    id: 'proyectosTipoCuentaRecaudo',
+    id: 'desembolsosTipoCuentaDes',
     typeHead: 'string',
-    label: 'Tipo Cuenta Rec.',
-    value: (value) => TIPOS_CUENTA_RECAUDO.map((tipoCuentaRecaudo) => (tipoCuentaRecaudo.id === value ? tipoCuentaRecaudo.nombre : '')),
+    label: 'Tipo Cuenta',
+    value: (value) => TIPOS_CUENTA_RECAUDO.map((tipoCuenta) => (tipoCuenta.id === value ? tipoCuenta.nombre : '')),
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'proyectosNumCuentaRecaudo',
-    typeHead: 'numeric',
-    label: 'Num. Cuenta Rec.',
-    value: (value) => value,
-    align: 'right',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosEstadoFormalizacion',
+    id: 'desembolsosNumeroCuentaDes',
     typeHead: 'string',
-    label: 'Id Proyecto',
-    value: (value) => ESTADOS_FORMALIZACION.map((estadoForm) => (estadoForm.id === value ? estadoForm.nombre : '')),
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosFechaAutNotaria',
-    typeHead: 'string',
-    label: 'Fecha Aut. Notaría',
+    label: 'Núm. Cuenta',
     value: (value) => value,
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'proyectosFechaFirEscrituras',
+    id: 'desembolsosNumeroComEgreso',
     typeHead: 'string',
-    label: 'Fecha Fir Escrituras',
+    label: 'Núm. Comprobante',
     value: (value) => value,
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'proyectosFechaIngresosReg',
+    id: 'desembolsosPlanDefinitivo',
     typeHead: 'string',
-    label: 'Fecha Ingresos Reg.',
-    value: (value) => value,
+    label: 'Plan Definitivo',
+    value: (value) => (value === 1 ? 'Sí' : 'No'),
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'proyectosAutorizacionDes',
+    id: 'desembolsosEstado',
     typeHead: 'string',
-    label: 'Autor. Desembolso',
-    value: (value) => DATO_BOOLEAN.map((dato) => (dato.id === value ? dato.nombre : '')),
+    label: 'Estado',
+    value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
     align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosFechaAutDes',
-    typeHead: 'string',
-    label: 'Fecha Aut. Desembolso',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosFechaCancelacion',
-    typeHead: 'string',
-    label: 'Fecha Cancelación',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'orientador',
-    typeHead: 'string',
-    label: 'Asesor',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'proyectosObservaciones',
-    typeHead: 'string',
-    label: 'Observaciones',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
+    mostrarInicio: true,
+    cellColor: (value) =>
+      value === 1 ? palette.secondary.main : palette.secondary.red,
   },
   {
     id: 'usuario_modificacion_nombre',
@@ -490,7 +201,7 @@ const cells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {classes, order, orderBy, onRequestSort, columnasMostradas, buscador} = props;
+  const {classes, order, orderBy, onRequestSort, columnasMostradas} = props;
 
   return (
     <TableHead>
@@ -498,10 +209,9 @@ function EnhancedTableHead(props) {
         <TableCell
           align='center'
           style={{fontWeight: 'bold'}}
-          className={classes.headCellWoMargin}>
+          className={classes.headCell}>
           {'Acciones'}
         </TableCell>
-
         {columnasMostradas.map((cell) => {
           if (cell.mostrar) {
             return (
@@ -520,7 +230,6 @@ function EnhancedTableHead(props) {
                 <TableSortLabel
                   active={orderBy === cell.id}
                   direction={orderBy === cell.id ? order : 'asc'}
-                  // onClick={createSortHandler(cell.id)}
                   onClick={() => {
                     onRequestSort(cell.id);
                   }}>
@@ -539,34 +248,6 @@ function EnhancedTableHead(props) {
             return <th key={cell.id}></th>;
           }
         })}
-        {buscador ? ('') : (
-          <>
-            <TableCell
-              align='center'
-              style={{fontWeight: 'bold'}}
-              className={classes.headCellWoMargin}>
-              {'Documentos'}
-            </TableCell>
-            <TableCell
-              align='center'
-              style={{fontWeight: 'bold'}}
-              className={classes.headCellWoMargin}>
-              {'Plan Amort. Inic.'}
-            </TableCell>
-            <TableCell
-              align='center'
-              style={{fontWeight: 'bold'}}
-              className={classes.headCellWoMargin}>
-              {'Plan Amort. Def.'}
-            </TableCell>
-            <TableCell
-              align='center'
-              style={{fontWeight: 'bold'}}
-              className={classes.headCellWoMargin}>
-              {'Bitácoras'}
-            </TableCell>
-          </>
-        )}
       </TableRow>
     </TableHead>
   );
@@ -626,16 +307,6 @@ const useToolbarStyles = makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
-  exportButton: {
-    backgroundColor: '#4caf50',
-    color: 'white',
-    boxShadow:
-      '0px 3px 5px -1px rgb(0 0 0 / 30%), 0px 6px 10px 0px rgb(0 0 0 / 20%), 0px 1px 18px 0px rgb(0 0 0 / 16%)',
-    '&:hover': {
-      backgroundColor: theme.palette.colorHover,
-      cursor: 'pointer',
-    },
-  },
   horizontalBottoms: {
     width: 'min-content',
     display: 'flex',
@@ -656,17 +327,10 @@ const useToolbarStyles = makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
-  x: {
-    position: 'absolute',
-    color: '#4caf50',
-    fontSize: '14px',
-    top: '19px',
-    fontWeight: 'bold',
-  },
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '4fr 4fr 4fr 4fr 1fr',
+    gridTemplateColumns: 'repeat(4, 1fr)',
     gap: '20px',
   },
   pairFilters: {
@@ -682,19 +346,21 @@ const EnhancedTableToolbar = (props) => {
   const {
     numSelected,
     titulo,
-    onOpenAddProyecto,
+    onOpenAddDesembolso,
     handleOpenPopoverColumns,
     queryFilter,
-    solicitanteFiltro,
-    tipoFiltro,
-    fechaFiltro,
+    proyectoFiltro,
+    fechaDesdeFiltro,
+    fechaHastaFiltro,
     estadoFiltro,
+    solicitanteFiltro,
     limpiarFiltros,
     permisos,
     handleOnClose,
     handleOnOpen,
+    handleOpenProjectSearcher,
+    setSelectedProyecto,
     showSearch,
-    buscador,
     setSelectePersona
   } = props;
   return (
@@ -720,39 +386,7 @@ const EnhancedTableToolbar = (props) => {
               component='div'>
               {titulo}
             </Typography>
-            { buscador ? (''): (
             <Box className={classes.horizontalBottoms}>
-              <Formik>
-                <Form>
-                  {permisos.indexOf('Exportar') >= 0 && (
-                    <Tooltip
-                      title='Exportar'
-                      component='a'
-                      className={classes.linkDocumento}
-                      href={
-                        defaultConfig.API_URL +
-                        '/personas/informe-personas' +
-                        '?nombre=' +
-                        solicitanteFiltro +
-                        '&tipo=' +
-                        tipoFiltro +
-                        '&fecha=' +
-                        fechaFiltro +
-                        '&estado=' +
-                        estadoFiltro
-                      }>
-                      <IconButton
-                        className={classes.exportButton}
-                        aria-label='filter list'>
-                        <Box component='span' className={classes.x}>
-                          X
-                        </Box>
-                        <InsertDriveFile />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Form>
-              </Formik>
               <Tooltip
                 title='Mostrar/Ocultar Columnas'
                 onClick={handleOpenPopoverColumns}>
@@ -763,9 +397,7 @@ const EnhancedTableToolbar = (props) => {
                 </IconButton>
               </Tooltip>
               {permisos.indexOf('Crear') >= 0 && (
-                <Tooltip
-                  title='Crear Proyecto'
-                  onClick={onOpenAddProyecto}>
+                <Tooltip title='Crear Desembolso' onClick={onOpenAddDesembolso}>
                   <IconButton
                     className={classes.createButton}
                     aria-label='filter list'>
@@ -774,9 +406,25 @@ const EnhancedTableToolbar = (props) => {
                 </Tooltip>
               )}
             </Box>
-            )}
           </Box>
           <Box className={classes.contenedorFiltros}>
+            <TextField
+              label='Número Proyecto'
+              name='proyectoFiltro'
+              id='proyectoFiltro'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleOpenProjectSearcher}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+              onChange={queryFilter}
+              value={proyectoFiltro}
+            />
+            { showSearch.proyecto && <MyProjectSearcher showForm={showSearch.proyecto} handleOnClose={handleOnClose} getValue={setSelectedProyecto}/> }
             <TextField
               label='Solicitante'
               name='solicitanteFiltro'
@@ -793,15 +441,39 @@ const EnhancedTableToolbar = (props) => {
               onChange={queryFilter}
               value={solicitanteFiltro}
             />
-            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
+            { showSearch.persona && <MySearcher showForm={showSearch.persona} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
+            <Box/>
+            <Box/>
             <TextField
-              label='Estado Proyecto'
+              label='Fecha Desde Desembolso'
+              name='fechaDesdeFiltro'
+              id='fechaDesdeFiltro'
+              type={'date'}
+              InputLabelProps={{
+                shrink: true
+              }}
+              onChange={queryFilter}
+              value={fechaDesdeFiltro}>
+            </TextField>
+            <TextField
+              label='Fecha Hasta Desembolso'
+              name='fechaHastaFiltro'
+              id='fechaHastaFiltro'
+              type={'date'}
+              InputLabelProps={{
+                shrink: true
+              }}
+              onChange={queryFilter}
+              value={fechaHastaFiltro}>
+            </TextField>
+            <TextField
+              label='Estado Desembolso'
               name='estadoFiltro'
               id='estadoFiltro'
               select={true}
               onChange={queryFilter}
               value={estadoFiltro}>
-              {ESTADOS_PROYECTO.map((estado) => {
+              {ESTADO.map((estado) => {
                 return (
                   <MenuItem
                     value={estado.id}
@@ -812,36 +484,6 @@ const EnhancedTableToolbar = (props) => {
                   </MenuItem>
                 );
               })}
-            </TextField>
-            <TextField
-              label='Tipo Proyecto'
-              name='tipoFiltro'
-              id='tipoFiltro'
-              select
-              onChange={queryFilter}
-              value={tipoFiltro}>
-              {TIPOS_PROYECTO.map((tipo) => {
-              return (
-                <MenuItem
-                  value={tipo.id}
-                  key={tipo.id}
-                  id={tipo.id}
-                  className={classes.pointer}>
-                  {tipo.nombre}
-                </MenuItem>
-              );
-            })}
-            </TextField>
-            <TextField
-              label='Fecha Solicitud'
-              name='fechaFiltro'
-              id='fechaFiltro'
-              type={'date'}
-              InputLabelProps={{
-                shrink: true
-              }}
-              onChange={queryFilter}
-              value={fechaFiltro}>
             </TextField>
             <Box display='grid'>
               <Box display='flex' mb={2}>
@@ -854,8 +496,6 @@ const EnhancedTableToolbar = (props) => {
                 </Tooltip>
               </Box>
             </Box>
-          </Box>
-          <Box className={classes.contenedorFiltros}>
           </Box>
         </>
       )}
@@ -875,14 +515,11 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onOpenAddProyecto: PropTypes.func.isRequired,
+  onOpenAddDesembolso: PropTypes.func.isRequired,
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
-  solicitanteFiltro: PropTypes.string.isRequired,
-  tipoFiltro: PropTypes.string.isRequired,
-  fechaFiltro: PropTypes.string.isRequired,
-  estadoFiltro: PropTypes.string.isRequired,
+  proyectoFiltro: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -893,14 +530,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '15px',
     paddingRight: '15px',
     marginTop: '5px',
-  },
-  linkDocumento: {
-    textDecoration: 'underline',
-    color: 'blue',
-    textAlign: 'center',
-    '&:hover': {
-      cursor: 'pointer',
-    },
   },
   root: {
     width: '100%%',
@@ -913,32 +542,12 @@ const useStyles = makeStyles((theme) => ({
   headCell: {
     padding: '0px 0px 0px 15px',
   },
-  headCellWoMargin: {
-    padding: '0px',
-    width: 'max-content',
-    fontSize: '14px',
-    [theme.breakpoints.up('xl')]: {
-      fontSize: '14px',
-    },
-  },
   row: {
     padding: 'none',
   },
   cell: (props) => ({
-    fontSize: '13px',
-    [theme.breakpoints.up('xl')]: {
-      fontSize: '14px',
-    },
-    padding: props.vp + ' 0px ' + props.vp + ' 10px',
+    padding: props.vp + ' 0px ' + props.vp + ' 15px',
     whiteSpace: 'nowrap',
-  }),
-  cell2: (props) => ({
-    fontSize: '13px',
-    [theme.breakpoints.up('xl')]: {
-      fontSize: '14px',
-    },
-    padding: props.vp + ' 0px ' + props.vp + ' 10px',
-    whiteSpace: 'wrap',
   }),
   cellWidth: (props) => ({
     minWidth: props.width,
@@ -948,8 +557,8 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
   }),
   acciones: (props) => ({
-    padding: props.vp + ' 0px ' + props.vp + ' 10px',
-    minWidth: '120px',
+    padding: props.vp + ' 0px ' + props.vp + ' 15px',
+    minWidth: '100px',
   }),
   paper: {
     width: '100%',
@@ -972,10 +581,6 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   generalIcons: {
-    height: '20px',
-    [theme.breakpoints.up('xl')]: {
-      height: '25px',
-    },
     '&:hover': {
       color: theme.palette.colorHover,
       cursor: 'pointer',
@@ -989,9 +594,6 @@ const useStyles = makeStyles((theme) => ({
   },
   deleteIcon: {
     color: theme.palette.primary.main,
-  },
-  descargarIcon: {
-    color: theme.palette.enviaEmailBottoms,
   },
   popoverColumns: {
     display: 'grid',
@@ -1010,8 +612,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Proyecto = (props) => {
-  const {buscador, onSelectProyecto} = props;
+const Desembolso = (props) => {
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
@@ -1020,16 +621,23 @@ const Proyecto = (props) => {
   );
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(1);
+  // const [dense, setDense] = React.useState(false);
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-  const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState({
+    persona: false,
+    proyecto: false
+  });
 
+  const [accion, setAccion] = useState('ver');
+  const [desembolsoSeleccionado, setDesembolsoSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({proyectoReducer}) => proyectoReducer,
+    ({desembolsoReducer}) => desembolsoReducer,
   );
 
   const {message, error, messageType} = useSelector(({common}) => common);
+
   useEffect(() => {
     if (message || error) {
       if (messageType === DELETE_TYPE) {
@@ -1040,16 +648,16 @@ const Proyecto = (props) => {
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-  const [solicitanteFiltro, setSolicitanteFiltro] = useState('');
-  const [tipoFiltro, setTipoFiltro] = useState('');
-  const [fechaFiltro, setFechaFiltro] = useState('');
+  const [proyectoFiltro, setProyectoFiltro] = useState('');
+  const [fechaDesdeFiltro, setFechaDesdeFiltro] = useState('');
+  const [fechaHastaFiltro, setFechaHastaFiltro] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
-
-  const debouncedName = useDebounce(solicitanteFiltro, 800);
-  const debouncedFamily = useDebounce(tipoFiltro, 800);
-  const debouncedApCategory = useDebounce(fechaFiltro, 800);
-  const debouncedStatus = useDebounce(estadoFiltro, 800);
-
+  const [solicitanteFiltro, setSolicitanteFiltro] = useState('');
+  const debouncedName = useDebounce(proyectoFiltro, 800);
+  const debouncedInitialDate = useDebounce(fechaDesdeFiltro, 800);
+  const debouncedFinalDate = useDebounce(fechaHastaFiltro, 800);
+  const debouncedSolicitante = useDebounce(solicitanteFiltro, 800);
+  // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
 
@@ -1102,50 +710,52 @@ const Proyecto = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(
-      onGetColeccion(
-        page,
-        rowsPerPage,
-        orderByToSend,
-        solicitanteFiltro,
-        tipoFiltro,
-        estadoFiltro,
-        fechaFiltro,
-      ),
-    );
-  }, [ //eslint-disable-line
-    dispatch,
-    page,
-    rowsPerPage,
-    debouncedName,
-    debouncedFamily,
-    debouncedApCategory,
-    debouncedStatus,
-    orderByToSend,
-  ]);
+    dispatch(onGetColeccion(
+      page, 
+      rowsPerPage, 
+      orderByToSend, 
+      proyectoFiltro, 
+      fechaDesdeFiltro, 
+      fechaHastaFiltro, 
+      estadoFiltro, 
+      solicitanteFiltro
+    ));
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch, 
+    page, 
+    rowsPerPage, 
+    debouncedName, 
+    orderByToSend, 
+    showForm,
+    debouncedInitialDate,
+    debouncedFinalDate,
+    debouncedSolicitante,
+    estadoFiltro,
+  ]); 
 
   const updateColeccion = () => {
     setPage(1);
-    dispatch(
-      onGetColeccion(
-        page,
-        rowsPerPage,
-        orderByToSend,
-        solicitanteFiltro,
-        tipoFiltro,
-        estadoFiltro,
-        fechaFiltro,
-      ),
-    );
+    dispatch(onGetColeccion(
+      page, 
+      rowsPerPage, 
+      orderByToSend, 
+      proyectoFiltro, 
+      fechaDesdeFiltro, 
+      fechaHastaFiltro, 
+      estadoFiltro, 
+      solicitanteFiltro
+    ));
   };
+
   useEffect(() => {
     setPage(1);
   }, [
-    debouncedName,
-    orderByToSend,
-    debouncedFamily,
-    debouncedApCategory,
-    debouncedStatus,
+    debouncedName, 
+    orderByToSend, 
+    debouncedInitialDate,
+    debouncedFinalDate,
+    debouncedSolicitante,
+    estadoFiltro
   ]);
 
   const queryFilter = (e) => {
@@ -1153,11 +763,14 @@ const Proyecto = (props) => {
       case 'solicitanteFiltro':
         setSolicitanteFiltro(e.target.value);
         break;
-      case 'tipoFiltro':
-        setTipoFiltro(e.target.value);
+      case 'proyectoFiltro':
+        setProyectoFiltro(e.target.value);
         break;
-      case 'fechaFiltro':
-        setFechaFiltro(e.target.value);
+      case 'fechaDesdeFiltro':
+        setFechaDesdeFiltro(e.target.value);
+        break;
+      case 'fechaHastaFiltro':
+        setFechaHastaFiltro(e.target.value);
         break;
       case 'estadoFiltro':
         setEstadoFiltro(e.target.value);
@@ -1168,9 +781,10 @@ const Proyecto = (props) => {
   };
 
   const limpiarFiltros = () => {
+    setProyectoFiltro('');
     setSolicitanteFiltro('');
-    setTipoFiltro('');
-    setFechaFiltro('');
+    setFechaDesdeFiltro('');
+    setFechaHastaFiltro('');
     setEstadoFiltro('');
   };
 
@@ -1190,8 +804,10 @@ const Proyecto = (props) => {
     }
   };
 
-  const onOpenEditProyecto = (id, state) => {
-    history.push(history.location.pathname + '/editar/' + id, {state});
+  const onOpenEditDesembolso = (id) => {
+    setDesembolsoSeleccionado(id);
+    setAccion('editar');
+    setShowForm(true);
   };
 
   const handleClosePopover = () => {
@@ -1230,14 +846,16 @@ const Proyecto = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewProyecto = (id, state) => {
-    history.push(history.location.pathname + '/ver/' + id, {state});
+  const onOpenViewDesembolso = (id) => {
+    setDesembolsoSeleccionado(id);
+    setAccion('ver');
+    setShowForm(true);
   };
 
-  const onDeleteProyecto = (id) => {
+  const onDeleteDesembolso = (id) => {
     Swal.fire({
       title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar El Proyecto?',
+      text: '¿Seguro Que Desea Eliminar El Desembolso?',
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -1252,20 +870,16 @@ const Proyecto = (props) => {
     });
   };
 
-  const onGoDocumentosProyecto = (proyecto_id) => {
-    history.push('/documentos-proyecto/'+proyecto_id);
-  };
-
-  const onGoPlanAmortizacion = (proyecto_id) => {
-    history.push('/plan-amortizacion/'+proyecto_id);
-  };
-
-  const onOpenAddProyecto = () => {
+  const onOpenAddDesembolso = () => {
+    setDesembolsoSeleccionado(0);
+    setAccion('crear');
     setShowForm(true);
   };
 
   const handleOnClose = () => {
     setShowForm(false);
+    setDesembolsoSeleccionado(0);
+    setAccion('ver');
   };
 
   const handleSelectAllClick = (event) => {
@@ -1286,14 +900,6 @@ const Proyecto = (props) => {
     setPage(1);
   };
 
-  const handleCloseSearcher = () => {
-    setShowSearch(false);
-  }
-
-  const handleOpenSearcher = () => {
-    setShowSearch(true);
-  }
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const [showTable, setShowTable] = useState(true);
@@ -1305,8 +911,26 @@ const Proyecto = (props) => {
     }
   }, [rows]);
 
+  const handleCloseSearcher = () => {
+    setShowSearch({persona: false, proyecto: false});
+  }
+  const handleOpenSearcher = () => {
+    setShowSearch({ 
+      persona: true,
+      proyecto: false
+    });
+  }
+  const handleOpenProjectSearcher = () => {
+    setShowSearch({ 
+      persona: false,
+      proyecto: true
+    });
+  }
   const setSelectePersona = (id) => {
     setSolicitanteFiltro(id);
+  }
+  const setSelectedProyecto = (id) => {
+    setProyectoFiltro(id);
   }
 
   return (
@@ -1315,21 +939,23 @@ const Proyecto = (props) => {
         {permisos && (
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onOpenAddProyecto={onOpenAddProyecto}
+            onOpenAddDesembolso={onOpenAddDesembolso}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
-            solicitanteFiltro={solicitanteFiltro}
-            tipoFiltro={tipoFiltro}
-            fechaFiltro={fechaFiltro}
+            proyectoFiltro={proyectoFiltro}
+            fechaDesdeFiltro={fechaDesdeFiltro}
+            fechaHastaFiltro={fechaHastaFiltro}
             estadoFiltro={estadoFiltro}
+            solicitanteFiltro={solicitanteFiltro}
             permisos={permisos}
             titulo={titulo}
             handleOnClose={handleCloseSearcher}
             handleOnOpen={handleOpenSearcher}
+            handleOpenProjectSearcher={handleOpenProjectSearcher}
             showSearch={showSearch}
             setSelectePersona={setSelectePersona}
-            buscador={buscador}
+            setSelectedProyecto={setSelectedProyecto}
           />
         )}
         {showTable && permisos ? (
@@ -1376,137 +1002,72 @@ const Proyecto = (props) => {
                   onRequestSort={changeOrderBy}
                   rowCount={rows.length}
                   columnasMostradas={columnasMostradas}
-                  buscador={buscador}
                 />
                 <TableBody>
-                  {
-                    rows.map((row, index) => {
-                      const isItemSelected = isSelected(row.name);
+                  {rows.map((row, index) => {
+                    const isItemSelected = isSelected(row.name);
 
-                      return (
-                        <TableRow
-                          hover
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={row.id}
-                          selected={isItemSelected}
-                          className={classes.row}>
-                          <TableCell
-                            align='center'
-                            className={classes.acciones}>
-                            { buscador ? (
-                              <Tooltip
-                                title={'Seleccionar'}>
-                                <Check
-                                  onClick={() => onSelectProyecto(row.id)}
-                                  className={`${classes.generalIcons} ${classes.editIcon}`}></Check>
-                              </Tooltip>
-                            ) : ( 
-                              <>
-                                {permisos.indexOf('Modificar') >= 0 && (
-                                  <Tooltip
-                                    title={<IntlMessages id='boton.editar' />}>
-                                    <EditIcon
-                                      onClick={() => onOpenEditProyecto(row.id, row.proyectosEstadoProyecto)}
-                                      className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
-                                  </Tooltip>
-                                )}
-                                {permisos.indexOf('Listar') >= 0 && (
-                                  <Tooltip title={<IntlMessages id='boton.ver' />}>
-                                    <VisibilityIcon
-                                      onClick={() => onOpenViewProyecto(row.id, row.proyectosEstadoProyecto)}
-                                      className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                                  </Tooltip>
-                                )}
-                                {permisos.indexOf('Eliminar') >= 0 && (
-                                  <Tooltip
-                                    title={<IntlMessages id='boton.eliminar' />}>
-                                    <DeleteIcon
-                                      onClick={() => onDeleteProyecto(row.id)}
-                                      className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
-                                  </Tooltip>
-                                )}
-                              </> 
-                            )}
-                          </TableCell>
-
-                          {columnasMostradas.map((columna) => {
-                            if (columna.mostrar) {
-                              return (
-                                <MyCell
-                                  useStyles={useStyles}
-                                  key={row.id + columna.id}
-                                  align={columna.align}
-                                  width={columna.width}
-                                  claseBase={classes.cell}
-                                  value={columna.value(row[columna.id])}
-                                  cellColor={
-                                    columna.cellColor
-                                      ? columna.cellColor(row[columna.id])
-                                      : ''
-                                  }
-                                />
-                              );
-                            } else {
-                              return <th key={row.id + columna.id}></th>;
-                            }
-                          })}
-                          { buscador ? (''): (
-                            <>
-                              <TableCell align='center' className={classes.cell}>
-                                <Tooltip title={'Documentos'}>
-                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Description 
-                                      style={{
-                                        color: '#001597'
-                                      }}
-                                      onClick={() => onGoDocumentosProyecto(row.id)}
-                                      className={`${classes.generalIcons}`}/>
-                                  </Box>
-                                </Tooltip>
-                              </TableCell>
-                              <TableCell align='center' className={classes.cell2}>
-                                <Tooltip title={'Plan Amort. Ini.'}>
-                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Money 
-                                      style={{
-                                        color: '#ff9800'
-                                      }}
-                                      onClick={() => onGoPlanAmortizacion(row.id)}
-                                      className={`${classes.generalIcons}`}/>
-                                  </Box>
-                                </Tooltip>
-                              </TableCell>
-                              <TableCell align='center' className={classes.cell2}>
-                                <Tooltip title={'Plan Amort. Def.'}>
-                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Money 
-                                      style={{
-                                        color: '#009705'
-                                      }}
-                                      onClick={() => console.log(row.id)}
-                                      className={`${classes.generalIcons}`}/>
-                                  </Box>
-                                </Tooltip>
-                              </TableCell>
-                              <TableCell align='center' className={classes.cell2}>
-                                <Tooltip title={'Bitácoras'}>
-                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Comment 
-                                      onClick={() => console.log(row.id)}
-                                      className={`${classes.generalIcons}`}/>
-                                  </Box>
-                                </Tooltip>
-                              </TableCell>
-                            </>
+                    return (
+                      <TableRow
+                        hover
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                        className={classes.row}>
+                        <TableCell align='center' className={classes.acciones}>
+                          {permisos.indexOf('Modificar') >= 0 && (
+                            <Tooltip title={<IntlMessages id='boton.editar' />}>
+                              <EditIcon
+                                onClick={() => onOpenEditDesembolso(row.id)}
+                                className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                            </Tooltip>
                           )}
-                        </TableRow>
-                      );
-                    })
-                  }
+                          {permisos.indexOf('Listar') >= 0 && (
+                            <Tooltip title={<IntlMessages id='boton.ver' />}>
+                              <VisibilityIcon
+                                onClick={() => onOpenViewDesembolso(row.id)}
+                                className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
+                            </Tooltip>
+                          )}
+                          {permisos.indexOf('Eliminar') >= 0 && (
+                            <Tooltip
+                              title={<IntlMessages id='boton.eliminar' />}>
+                              <DeleteIcon
+                                onClick={() => onDeleteDesembolso(row.id)}
+                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
+                            </Tooltip>
+                          )}
+                        </TableCell>
+
+                        {columnasMostradas.map((columna) => {
+                          if (columna.mostrar) {
+                            return (
+                              <MyCell
+                                useStyles={useStyles}
+                                key={row.id + columna.id}
+                                align={columna.align}
+                                width={columna.width}
+                                claseBase={classes.cell}
+                                value={columna.value(row[columna.id])}
+                                cellColor={
+                                  columna.cellColor
+                                    ? columna.cellColor(row[columna.id])
+                                    : ''
+                                }
+                              />
+                            );
+                          } else {
+                            return <th key={row.id + columna.id}></th>;
+                          }
+                        })}
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
+
             <Box className={classes.paginacion}>
               <Box>
                 <p>{textoPaginacion}</p>
@@ -1554,8 +1115,10 @@ const Proyecto = (props) => {
       </Paper>
 
       {showForm ? (
-        <ProyectoCreador
+        <DesembolsoCreador
           showForm={showForm}
+          desembolso={desembolsoSeleccionado}
+          accion={accion}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}
           titulo={titulo}
@@ -1615,4 +1178,4 @@ const Proyecto = (props) => {
   );
 };
 
-export default Proyecto;
+export default Desembolso;

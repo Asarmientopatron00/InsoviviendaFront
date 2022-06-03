@@ -367,3 +367,11 @@ export const SHOW_DONACION = 'show_donacion';
 export const UPDATE_DONACION = 'update_donacion';
 export const CREATE_DONACION = 'create_donacion';
 export const DELETE_DONACION = 'delete_donacion';
+
+// DESEMBOLSOS
+export const GET_COLECCION_DESEMBOLSO = 'get_coleccion_desembolso';
+export const GET_COLECCION_LIGERA_DESEMBOLSO = 'get_coleccion_ligera_desembolso';
+export const SHOW_DESEMBOLSO = 'show_desembolso';
+export const UPDATE_DESEMBOLSO = 'update_desembolso';
+export const CREATE_DESEMBOLSO = 'create_desembolso';
+export const DELETE_DESEMBOLSO = 'delete_desembolso';

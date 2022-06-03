@@ -34,7 +34,12 @@ export const proyectosConfigs = [
         exact: true,
         path: '/donaciones',
         component: React.lazy(() => import('./Donacion')),
-     },
+      },
+      {
+        exact: true,
+        path: '/desembolsos',
+        component: React.lazy(() => import('./Desembolso')),
+      },
     ],
   }
 ];
