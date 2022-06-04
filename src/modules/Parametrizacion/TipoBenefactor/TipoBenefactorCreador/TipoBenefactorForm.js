@@ -118,14 +118,16 @@ const TipoBenefactorForm = (props) => {
          </Scrollbar>
          <Box className={classes.bottomsGroup}>
             {accion !== 'ver' 
-               ? (   <Button className={`${classes.btnRoot} ${classes.btnPrymary}`} 
+               ? (   <Button 
+                        className={`${classes.btnRoot} ${classes.btnPrymary}`} 
                         variant='contained' 
                         type='submit'>
                         <IntlMessages id='boton.submit' />
-                        </Button> ) 
+                     </Button> ) 
                : ('')
             }
-            <Button className={`${classes.btnRoot} ${classes.btnSecundary}`} 
+            <Button 
+               className={`${classes.btnRoot} ${classes.btnSecundary}`} 
                onClick={handleOnClose}>
                <IntlMessages id='boton.cancel' />
             </Button>
