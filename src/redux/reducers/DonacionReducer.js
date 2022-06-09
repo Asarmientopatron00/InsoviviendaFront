@@ -1,10 +1,10 @@
 import { 
-   GET_COLECCION_BENEFACTOR,
-   GET_COLECCION_LIGERA_BENEFACTOR,
-   SHOW_BENEFACTOR,
-   UPDATE_BENEFACTOR,
-   DELETE_BENEFACTOR,
-   CREATE_BENEFACTOR,
+   GET_COLECCION_DONACION,
+   GET_COLECCION_LIGERA_DONACION,
+   SHOW_DONACION,
+   UPDATE_DONACION,
+   DELETE_DONACION,
+   CREATE_DONACION,
 } from '../../shared/constants/ActionTypes';
 
 const initialState = { 
@@ -19,10 +19,10 @@ const initialState = {
    total: 1,
 };
 
-const BenefactorReducer = (state = initialState, action) => 
+const DonacionReducer = (state = initialState, action) => 
 {
    switch (action.type) {
-      case GET_COLECCION_BENEFACTOR: 
+      case GET_COLECCION_DONACION: 
          return { 
             ...state, 
             rows: action.payload.data.datos, 
@@ -33,27 +33,27 @@ const BenefactorReducer = (state = initialState, action) =>
             ultima_pagina: action.payload.data.ultima_pagina, 
             total: action.payload.data.total, 
          };
-      case GET_COLECCION_LIGERA_BENEFACTOR: 
+      case GET_COLECCION_LIGERA_DONACION: 
          return { 
             ...state, 
             ligera: action.payload.data, 
          };
-      case SHOW_BENEFACTOR: 
+      case SHOW_DONACION: 
          return { 
             ...state, 
             selectedRow: action.payload, 
          };
-      case UPDATE_BENEFACTOR: 
+      case UPDATE_DONACION: 
          return { 
             ...state, 
             selectedRow: action.payload.datos, 
          };
-      case DELETE_BENEFACTOR: 
+      case DELETE_DONACION: 
          return { 
             ...state, 
             selectedRow: action.payload.datos, 
          };
-      case CREATE_BENEFACTOR: 
+      case CREATE_DONACION: 
          return { 
             ...state, 
             selectedRow: action.payload.datos, 
@@ -63,4 +63,4 @@ const BenefactorReducer = (state = initialState, action) =>
    }
 };
 
-export default BenefactorReducer;
+export default DonacionReducer;

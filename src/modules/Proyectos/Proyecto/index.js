@@ -60,7 +60,7 @@ import MyCell from 'shared/components/MyCell';
 import MySearcher from 'shared/components/MySearcher';
 import ProyectoCreador from './ProyectoCreador';
 import Description from '@material-ui/icons/Description'
-import { Money } from '@material-ui/icons';
+import { Money, Comment, Check } from '@material-ui/icons';
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
 const stateColor = [
@@ -77,7 +77,6 @@ const stateColor = [
 const setCellColor = (value) => {
   const state = stateColor.find((state) => state.id === value);
   if(state){
-    console.log(state.value);
     return state.value;
   }
   return 'transparent';
@@ -491,7 +490,7 @@ const cells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {classes, order, orderBy, onRequestSort, columnasMostradas} = props;
+  const {classes, order, orderBy, onRequestSort, columnasMostradas, buscador} = props;
 
   return (
     <TableHead>
@@ -540,24 +539,34 @@ function EnhancedTableHead(props) {
             return <th key={cell.id}></th>;
           }
         })}
-        <TableCell
-          align='center'
-          style={{fontWeight: 'bold'}}
-          className={classes.headCellWoMargin}>
-          {'Documentos'}
-        </TableCell>
-        <TableCell
-          align='center'
-          style={{fontWeight: 'bold'}}
-          className={classes.headCellWoMargin}>
-          {'Plan Amort. Inic.'}
-        </TableCell>
-        <TableCell
-          align='center'
-          style={{fontWeight: 'bold'}}
-          className={classes.headCellWoMargin}>
-          {'Plan Amort. Def.'}
-        </TableCell>
+        {buscador ? ('') : (
+          <>
+            <TableCell
+              align='center'
+              style={{fontWeight: 'bold'}}
+              className={classes.headCellWoMargin}>
+              {'Documentos'}
+            </TableCell>
+            <TableCell
+              align='center'
+              style={{fontWeight: 'bold'}}
+              className={classes.headCellWoMargin}>
+              {'Plan Amort. Inic.'}
+            </TableCell>
+            <TableCell
+              align='center'
+              style={{fontWeight: 'bold'}}
+              className={classes.headCellWoMargin}>
+              {'Plan Amort. Def.'}
+            </TableCell>
+            <TableCell
+              align='center'
+              style={{fontWeight: 'bold'}}
+              className={classes.headCellWoMargin}>
+              {'Bitácoras'}
+            </TableCell>
+          </>
+        )}
       </TableRow>
     </TableHead>
   );
@@ -685,6 +694,7 @@ const EnhancedTableToolbar = (props) => {
     handleOnClose,
     handleOnOpen,
     showSearch,
+    buscador,
     setSelectePersona
   } = props;
   return (
@@ -710,6 +720,7 @@ const EnhancedTableToolbar = (props) => {
               component='div'>
               {titulo}
             </Typography>
+            { buscador ? (''): (
             <Box className={classes.horizontalBottoms}>
               <Formik>
                 <Form>
@@ -763,6 +774,7 @@ const EnhancedTableToolbar = (props) => {
                 </Tooltip>
               )}
             </Box>
+            )}
           </Box>
           <Box className={classes.contenedorFiltros}>
             <TextField
@@ -920,6 +932,14 @@ const useStyles = makeStyles((theme) => ({
     padding: props.vp + ' 0px ' + props.vp + ' 10px',
     whiteSpace: 'nowrap',
   }),
+  cell2: (props) => ({
+    fontSize: '13px',
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '14px',
+    },
+    padding: props.vp + ' 0px ' + props.vp + ' 10px',
+    whiteSpace: 'wrap',
+  }),
   cellWidth: (props) => ({
     minWidth: props.width,
   }),
@@ -991,6 +1011,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Proyecto = (props) => {
+  const {buscador, onSelectProyecto} = props;
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
@@ -1235,6 +1256,10 @@ const Proyecto = (props) => {
     history.push('/documentos-proyecto/'+proyecto_id);
   };
 
+  const onGoPlanAmortizacion = (proyecto_id) => {
+    history.push('/plan-amortizacion/'+proyecto_id);
+  };
+
   const onOpenAddProyecto = () => {
     setShowForm(true);
   };
@@ -1304,6 +1329,7 @@ const Proyecto = (props) => {
             handleOnOpen={handleOpenSearcher}
             showSearch={showSearch}
             setSelectePersona={setSelectePersona}
+            buscador={buscador}
           />
         )}
         {showTable && permisos ? (
@@ -1350,6 +1376,7 @@ const Proyecto = (props) => {
                   onRequestSort={changeOrderBy}
                   rowCount={rows.length}
                   columnasMostradas={columnasMostradas}
+                  buscador={buscador}
                 />
                 <TableBody>
                   {
@@ -1367,28 +1394,39 @@ const Proyecto = (props) => {
                           <TableCell
                             align='center'
                             className={classes.acciones}>
-                            {permisos.indexOf('Modificar') >= 0 && (
+                            { buscador ? (
                               <Tooltip
-                                title={<IntlMessages id='boton.editar' />}>
-                                <EditIcon
-                                  onClick={() => onOpenEditProyecto(row.id, row.proyectosEstadoProyecto)}
-                                  className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                                title={'Seleccionar'}>
+                                <Check
+                                  onClick={() => onSelectProyecto(row.id)}
+                                  className={`${classes.generalIcons} ${classes.editIcon}`}></Check>
                               </Tooltip>
-                            )}
-                            {permisos.indexOf('Listar') >= 0 && (
-                              <Tooltip title={<IntlMessages id='boton.ver' />}>
-                                <VisibilityIcon
-                                  onClick={() => onOpenViewProyecto(row.id, row.proyectosEstadoProyecto)}
-                                  className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                              </Tooltip>
-                            )}
-                            {permisos.indexOf('Eliminar') >= 0 && (
-                              <Tooltip
-                                title={<IntlMessages id='boton.eliminar' />}>
-                                <DeleteIcon
-                                  onClick={() => onDeleteProyecto(row.id)}
-                                  className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
-                              </Tooltip>
+                            ) : ( 
+                              <>
+                                {permisos.indexOf('Modificar') >= 0 && (
+                                  <Tooltip
+                                    title={<IntlMessages id='boton.editar' />}>
+                                    <EditIcon
+                                      onClick={() => onOpenEditProyecto(row.id, row.proyectosEstadoProyecto)}
+                                      className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                                  </Tooltip>
+                                )}
+                                {permisos.indexOf('Listar') >= 0 && (
+                                  <Tooltip title={<IntlMessages id='boton.ver' />}>
+                                    <VisibilityIcon
+                                      onClick={() => onOpenViewProyecto(row.id, row.proyectosEstadoProyecto)}
+                                      className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
+                                  </Tooltip>
+                                )}
+                                {permisos.indexOf('Eliminar') >= 0 && (
+                                  <Tooltip
+                                    title={<IntlMessages id='boton.eliminar' />}>
+                                    <DeleteIcon
+                                      onClick={() => onDeleteProyecto(row.id)}
+                                      className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
+                                  </Tooltip>
+                                )}
+                              </> 
                             )}
                           </TableCell>
 
@@ -1413,36 +1451,55 @@ const Proyecto = (props) => {
                               return <th key={row.id + columna.id}></th>;
                             }
                           })}
-                          <TableCell align='center' className={classes.cell}>
-                            <Tooltip title={'Documentos'}>
-                              <Description 
-                                style={{
-                                  color: '#001597'
-                                }}
-                                onClick={() => onGoDocumentosProyecto(row.id)}
-                                className={`${classes.generalIcons}`}/>
-                            </Tooltip>
-                          </TableCell>
-                          <TableCell align='center' className={classes.cell}>
-                            <Tooltip title={'Plan Amort. Ini.'}>
-                              <Money 
-                                style={{
-                                  color: '#ff9800'
-                                }}
-                                onClick={() => console.log(row.id)}
-                                className={`${classes.generalIcons}`}/>
-                            </Tooltip>
-                          </TableCell>
-                          <TableCell align='center' className={classes.cell}>
-                            <Tooltip title={'Plan Amort. Def.'}>
-                              <Money 
-                                style={{
-                                  color: '#009705'
-                                }}
-                                onClick={() => console.log(row.id)}
-                                className={`${classes.generalIcons}`}/>
-                            </Tooltip>
-                          </TableCell>
+                          { buscador ? (''): (
+                            <>
+                              <TableCell align='center' className={classes.cell}>
+                                <Tooltip title={'Documentos'}>
+                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Description 
+                                      style={{
+                                        color: '#001597'
+                                      }}
+                                      onClick={() => onGoDocumentosProyecto(row.id)}
+                                      className={`${classes.generalIcons}`}/>
+                                  </Box>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell align='center' className={classes.cell2}>
+                                <Tooltip title={'Plan Amort. Ini.'}>
+                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Money 
+                                      style={{
+                                        color: '#ff9800'
+                                      }}
+                                      onClick={() => onGoPlanAmortizacion(row.id)}
+                                      className={`${classes.generalIcons}`}/>
+                                  </Box>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell align='center' className={classes.cell2}>
+                                <Tooltip title={'Plan Amort. Def.'}>
+                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Money 
+                                      style={{
+                                        color: '#009705'
+                                      }}
+                                      onClick={() => console.log(row.id)}
+                                      className={`${classes.generalIcons}`}/>
+                                  </Box>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell align='center' className={classes.cell2}>
+                                <Tooltip title={'Bitácoras'}>
+                                  <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Comment 
+                                      onClick={() => console.log(row.id)}
+                                      className={`${classes.generalIcons}`}/>
+                                  </Box>
+                                </Tooltip>
+                              </TableCell>
+                            </>
+                          )}
                         </TableRow>
                       );
                     })

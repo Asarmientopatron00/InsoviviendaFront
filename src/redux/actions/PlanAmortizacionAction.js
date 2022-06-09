@@ -1,7 +1,6 @@
 import {
-  GET_COLECCION_DOCUMENTOS_PROYECTO,
-  UPDATE_DOCUMENTOS_PROYECTO,
-  SHOW_MESSAGE,
+  GET_COLECCION_PLAN_AMORTIZACION,
+  GET_COLECCION_HEADERS_PLAN_AMORTIZACION,
   FETCH_ERROR,
   FETCH_START,
   FETCH_SUCCESS,
@@ -23,7 +22,7 @@ export const onGetColeccion = (
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .get('documentos-proyecto/'+proyecto_id, {
+      .get('plan-amortizacion/'+proyecto_id, {
         params: {
           page: page,
           limite: rowsPerPage,
@@ -33,7 +32,7 @@ export const onGetColeccion = (
       .then((data) => {
         if (data.status === 200) {
           dispatch({type: FETCH_SUCCESS});
-          dispatch({type: GET_COLECCION_DOCUMENTOS_PROYECTO, payload: data});
+          dispatch({type: GET_COLECCION_PLAN_AMORTIZACION, payload: data});
         } else {
           dispatch({
             type: FETCH_ERROR,
@@ -46,34 +45,32 @@ export const onGetColeccion = (
       });
   };
 };
+export const onGetHeaders = (
+  proyecto_id
+) => {
+  const {messages} = appIntl();
 
-export const onUpdate = (params, handleOnClose, updateColeccion) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .put('documentos-proyecto/' + params.id, params)
+      .get('plan-amortizacion/'+proyecto_id, {
+        params: {
+          headerInfo: true,
+        },
+      })
       .then((data) => {
         if (data.status === 200) {
           dispatch({type: FETCH_SUCCESS});
-          dispatch({
-            type: UPDATE_DOCUMENTOS_PROYECTO,
-            payload: data.data,
-          });
-          updateColeccion();
-          handleOnClose();
-          dispatch({
-            type: SHOW_MESSAGE,
-            payload: [data.data.mensajes[0], data.data.mensajes[1]],
-          });
+          dispatch({type: GET_COLECCION_HEADERS_PLAN_AMORTIZACION, payload: data});
         } else {
           dispatch({
             type: FETCH_ERROR,
-            payload: data.data.mensajes[0],
+            payload: messages['message.somethingWentWrong'],
           });
         }
       })
       .catch((error) => {
-        dispatch({type: FETCH_ERROR, payload: error.response.data.mensajes[0]});
+        dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
 };

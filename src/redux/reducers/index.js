@@ -15,13 +15,16 @@ import AuditoriaProcesoReducer from './AuditoriaProcesoReducer';
 // PersonasEntidades
 import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
+import BenefactorReducer from './BenefactorReducer';
 import OrientadorReducer from './OrientadorReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
-import BenefactorReducer from './BenefactorReducer';
 import DocumentosProyectoReducer from './DocumentosProyectoReducer';
 import BitacoraProyectoReducer from './BitacoraProyectoReducer';
 import OrientacionReducer from './OrientacionReducer';
+import PlanAmortizacionReducer from './PlanAmortizacionReducer';
+import DonacionReducer from './DonacionReducer';
+import DesembolsoReducer from './DesembolsoReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import TipoParentescoReducer from './TipoParentescoReducer';
@@ -104,6 +107,9 @@ const reducers = (history) =>
     tipoGastoReducer: TipoGastoReducer,
     documentosProyectoReducer: DocumentosProyectoReducer,
     bitacoraProyectoReducer: BitacoraProyectoReducer,
+    planAmortizacionReducer: PlanAmortizacionReducer,
+    donacionReducer: DonacionReducer,
+    desembolsoReducer: DesembolsoReducer,
   });
 
 export default reducers;

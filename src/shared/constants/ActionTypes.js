@@ -361,3 +361,23 @@ export const SHOW_ORIENTACION = 'show_orientacion';
 export const UPDATE_ORIENTACION = 'update_orientacion';
 export const CREATE_ORIENTACION = 'create_orientacion';
 export const DELETE_ORIENTACION = 'delete_orientacion';
+
+// PLAN AMORTIZACION
+export const GET_COLECCION_PLAN_AMORTIZACION = 'get_coleccion_plan_amortizacion';
+export const GET_COLECCION_HEADERS_PLAN_AMORTIZACION = 'get_coleccion_headers_plan_amortizacion';
+
+// DONACIONES
+export const GET_COLECCION_DONACION = 'get_coleccion_donacion';
+export const GET_COLECCION_LIGERA_DONACION = 'get_coleccion_ligera_donacion';
+export const SHOW_DONACION = 'show_donacion';
+export const UPDATE_DONACION = 'update_donacion';
+export const CREATE_DONACION = 'create_donacion';
+export const DELETE_DONACION = 'delete_donacion';
+
+// DESEMBOLSOS
+export const GET_COLECCION_DESEMBOLSO = 'get_coleccion_desembolso';
+export const GET_COLECCION_LIGERA_DESEMBOLSO = 'get_coleccion_ligera_desembolso';
+export const SHOW_DESEMBOLSO = 'show_desembolso';
+export const UPDATE_DESEMBOLSO = 'update_desembolso';
+export const CREATE_DESEMBOLSO = 'create_desembolso';
+export const DELETE_DESEMBOLSO = 'delete_desembolso';

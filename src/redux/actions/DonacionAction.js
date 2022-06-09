@@ -1,10 +1,10 @@
 import {  
-   GET_COLECCION_BENEFACTOR,
-   GET_COLECCION_LIGERA_BENEFACTOR,
-   SHOW_BENEFACTOR,
-   UPDATE_BENEFACTOR,
-   DELETE_BENEFACTOR,
-   CREATE_BENEFACTOR,
+   GET_COLECCION_DONACION,
+   GET_COLECCION_LIGERA_DONACION,
+   SHOW_DONACION,
+   UPDATE_DONACION,
+   DELETE_DONACION,
+   CREATE_DONACION,
    FETCH_ERROR,
    FETCH_START,
    FETCH_SUCCESS,
@@ -17,29 +17,32 @@ import {appIntl} from '../../@crema/utility/Utils';
 export const onGetColeccion = (
    currentPage,
    rowsPerPage,
-   nombre,
+   nombreFiltro,
+   benefactorFiltro,
    orderByToSend,
 ) => {
    const {messages} = appIntl();
    const page = currentPage ? currentPage : 0;
-   const nombreAux = nombre ? nombre : '';
+   const nombreFiltroAux = nombreFiltro ? nombreFiltro : '';
+   const benefactorFiltroAux = benefactorFiltro ? benefactorFiltro : '';
    const ordenar_por = orderByToSend ? orderByToSend : '';
 
    return (dispatch) => {
       dispatch({ type: FETCH_START });
       jwtAxios
-         .get('benefactores', { 
+         .get('donaciones', { 
             params: { 
                page: page,
                limite: rowsPerPage,
-               nombre: nombreAux,
+               nombre: nombreFiltroAux,
+               benefactor: benefactorFiltroAux,
                ordenar_por: ordenar_por,
             },
          })
          .then((data) => { 
             if (data.status === 200) {
                dispatch({ type: FETCH_SUCCESS });
-               dispatch({ type: GET_COLECCION_BENEFACTOR, payload: data });
+               dispatch({ type: GET_COLECCION_DONACION, payload: data });
             } 
             else 
                dispatch({ type: FETCH_ERROR, payload: messages['message.somethingWentWrong'], });
@@ -55,7 +58,7 @@ export const onGetColeccionLigera = () => {
    return (dispatch) => {
       dispatch({ type: FETCH_START });
       jwtAxios
-         .get('benefactores', { 
+         .get('donaciones', { 
             params: { 
                ligera: true, 
             }, 
@@ -63,7 +66,7 @@ export const onGetColeccionLigera = () => {
          .then((data) => { 
             if (data.status === 200) {
                dispatch({ type: FETCH_SUCCESS });
-               dispatch({ type: GET_COLECCION_LIGERA_BENEFACTOR, payload: data });
+               dispatch({ type: GET_COLECCION_LIGERA_DONACION, payload: data });
             } 
             else 
                dispatch({ type: FETCH_ERROR, payload: messages['message.somethingWentWrong'], });
@@ -80,11 +83,11 @@ export const onShow = (id) => {
       if (id !== 0) {
          dispatch({ type: FETCH_START });
          jwtAxios
-            .get('benefactores/' + id)
+            .get('donaciones/' + id)
             .then((data) => { 
                if (data.status === 200) {
                   dispatch({ type: FETCH_SUCCESS });
-                  dispatch({ type: SHOW_BENEFACTOR, payload: data.data });
+                  dispatch({ type: SHOW_DONACION, payload: data.data });
                } 
                else 
                   dispatch({ type: FETCH_ERROR, payload: messages['message.somethingWentWrong'], });
@@ -100,11 +103,11 @@ export const onUpdate = (params, handleOnClose, updateColeccion) => {
    return (dispatch) => {
       dispatch({ type: FETCH_START });
       jwtAxios
-         .put('benefactores/' + params.id, params)
+         .put('donaciones/' + params.id, params)
          .then((data) => { 
             if (data.status === 200) {
                dispatch({ type: FETCH_SUCCESS });
-               dispatch({ type: UPDATE_BENEFACTOR, payload: data.data, });
+               dispatch({ type: UPDATE_DONACION, payload: data.data, });
                updateColeccion();
                handleOnClose();
                dispatch({ type: SHOW_MESSAGE, payload: [data.data.mensajes[0], data.data.mensajes[1]], });
@@ -120,12 +123,12 @@ export const onDelete = (id) => {
    return (dispatch) => {
       dispatch({ type: FETCH_START });
       jwtAxios
-         .delete('benefactores/' + id)
+         .delete('donaciones/' + id)
          .then((data) => { 
             if (data.status === 200) {
                dispatch({ type: FETCH_SUCCESS });
                dispatch({ type: SHOW_MESSAGE, payload: [data.data.mensajes[0], data.data.mensajes[1]], });
-               dispatch({ type: DELETE_BENEFACTOR, payload: data.data });
+               dispatch({ type: DELETE_DONACION, payload: data.data });
             } 
             else 
                dispatch({ type: FETCH_ERROR, payload: data.data.mensajes[0] });
@@ -143,11 +146,11 @@ export const onCreate = (params, handleOnClose, updateColeccion) => {
    return (dispatch) => {
       dispatch({ type: FETCH_START });
       jwtAxios
-         .post('benefactores', params)
+         .post('donaciones', params)
          .then((data) => { 
             if (data.status === 201) {
                dispatch({ type: FETCH_SUCCESS });
-               dispatch({ type: CREATE_BENEFACTOR, payload: data.data, });
+               dispatch({ type: CREATE_DONACION, payload: data.data, });
                updateColeccion();
                handleOnClose();
                dispatch({ type: SHOW_MESSAGE, payload: [data.data.mensajes[0], data.data.mensajes[1]], });

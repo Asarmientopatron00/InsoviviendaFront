@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, InputAdornment} from '@material-ui/core';
+import {Box, Button, MenuItem, InputAdornment} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
@@ -21,12 +21,11 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import Search from '@material-ui/icons/Search';
-import OrientacionCreador from './OrientacionCreador';
+import DesembolsoCreador from './DesembolsoCreador';
 import {
   onGetColeccion,
   onDelete,
-} from '../../../redux/actions/OrientacionAction';
+} from '../../../redux/actions/DesembolsoAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -35,8 +34,6 @@ import TuneIcon from '@material-ui/icons/Tune';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
 import Swal from 'sweetalert2';
-import MenuItem from '@material-ui/core/MenuItem';
-import {ESTADO} from 'shared/constants/ListaValores';
 import {
   UPDATE_TYPE,
   CREATE_TYPE,
@@ -47,10 +44,12 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
-import { Autocomplete } from '@material-ui/lab';
-import {onGetColeccionLigera as onGetColeccionLigeraTipoAsesoria} from 'redux/actions/TipoAsesoriaAction';
-import {onGetColeccionLigera as onGetColeccionLigeraAsesores} from 'redux/actions/OrientadorAction';
+import { ESTADO, TIPOS_CUENTA_RECAUDO } from 'shared/constants/ListaValores';
+import Search from '@material-ui/icons/Search';
 import MySearcher from 'shared/components/MySearcher';
+import MyProjectSearcher from 'shared/components/MyProjectSearcher';
+
+const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
 
 const {
   theme: {palette},
@@ -58,66 +57,108 @@ const {
 
 const cells = [
   {
-    id: 'nombre',
+    id: 'proyecto_id',
+    typeHead: 'numeric',
+    label: 'Proyecto Nro.',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'identificacion',
+    typeHead: 'numeric',
+    label: 'Identificación',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'solicitante',
     typeHead: 'string',
-    label: 'Tipo Asesoria',
+    label: 'Nombre Solicitante',
     value: (value) => value,
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'nombreOrientador',
+    id: 'desembolsosFechaDesembolso',
     typeHead: 'string',
-    label: 'Asesor',
-    value: (value) => value,
+    label: 'Fecha Desembolso',
+    value: (value) => moment(value).format('DD-MM-YYYY'),
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'fechaOrientacion',
-    typeHead: 'string',
-    label: 'Fecha Asesoria',
-    value: (value) => moment(value).format('YYYY-MM-DD'),
-    align: 'left',
+    id: 'desembolsosValorDesembolso',
+    typeHead: 'numeric',
+    label: 'Valor Desembolso',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
     mostrarInicio: true,
   },
   {
-    id: 'nombrePersona',
+    id: 'desembolsosFechaNormalizacionP',
     typeHead: 'string',
-    label: 'Nombre Persona',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: true,
-  },
-  {
-    id: 'orientacionesSolicitud',
-    typeHead: 'string',
-    label: 'Solicitud Asesoria',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: true,
-  },{
-    id: 'orientacionesNota',
-    typeHead: 'string',
-    label: 'Nota',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },{
-    id: 'orientacionesRespuesta',
-    typeHead: 'string',
-    label: 'Respuesta',
-    value: (value) => value,
+    label: 'Fecha Normalización Pago',
+    value: (value) => moment(value).format('DD-MM-YYYY'),
     align: 'left',
     mostrarInicio: false,
   },
   {
-    id: 'estado',
-    typeHead: 'boolean',
+    id: 'desembolsosDescripcionDes',
+    typeHead: 'string',
+    label: 'Descripcion Desembolso',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'bancosDescripcion',
+    typeHead: 'string',
+    label: 'Banco',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'desembolsosTipoCuentaDes',
+    typeHead: 'string',
+    label: 'Tipo Cuenta',
+    value: (value) => TIPOS_CUENTA_RECAUDO.map((tipoCuenta) => (tipoCuenta.id === value ? tipoCuenta.nombre : '')),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'desembolsosNumeroCuentaDes',
+    typeHead: 'string',
+    label: 'Núm. Cuenta',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'desembolsosNumeroComEgreso',
+    typeHead: 'string',
+    label: 'Núm. Comprobante',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'desembolsosPlanDefinitivo',
+    typeHead: 'string',
+    label: 'Plan Definitivo',
+    value: (value) => (value === 1 ? 'Sí' : 'No'),
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'desembolsosEstado',
+    typeHead: 'string',
     label: 'Estado',
     value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
-    align: 'center',
-    mostrarInicio: false,
+    align: 'left',
+    mostrarInicio: true,
     cellColor: (value) =>
       value === 1 ? palette.secondary.main : palette.secondary.red,
   },
@@ -289,8 +330,8 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: 'repeat(4,1fr)',
-    gap: '10px',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '20px',
   },
   pairFilters: {
     display: 'flex',
@@ -305,23 +346,23 @@ const EnhancedTableToolbar = (props) => {
   const {
     numSelected,
     titulo,
-    onOpenAddOrientacion,
+    onOpenAddDesembolso,
     handleOpenPopoverColumns,
     queryFilter,
-    setTipoAsesoriasFiltro,
-    tipos_orientacion,
-    setIdentificacionOrientadorFiltro,
-    orientadores,
-    fechaOrientacionFiltro,
-    estadoFiltro, 
+    proyectoFiltro,
+    fechaDesdeFiltro,
+    fechaHastaFiltro,
+    estadoFiltro,
+    solicitanteFiltro,
     limpiarFiltros,
     permisos,
     handleOnClose,
     handleOnOpen,
+    handleOpenProjectSearcher,
+    setSelectedProyecto,
     showSearch,
-    setSelectePersona,
-    identificacionPersonaFiltro
- } = props;
+    setSelectePersona
+  } = props;
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -356,7 +397,7 @@ const EnhancedTableToolbar = (props) => {
                 </IconButton>
               </Tooltip>
               {permisos.indexOf('Crear') >= 0 && (
-                <Tooltip title='Crear Asesorias' onClick={onOpenAddOrientacion}>
+                <Tooltip title='Crear Desembolso' onClick={onOpenAddDesembolso}>
                   <IconButton
                     className={classes.createButton}
                     aria-label='filter list'>
@@ -367,40 +408,66 @@ const EnhancedTableToolbar = (props) => {
             </Box>
           </Box>
           <Box className={classes.contenedorFiltros}>
-            <Autocomplete
-              id='tipoAsesoriasFiltro'
-              onChange={(event, newValue) => newValue&&setTipoAsesoriasFiltro(newValue.id)}
-              clearOnBlur
-              handleHomeEndKeys
-              selectOnFocus
-              options={tipos_orientacion}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} label='Tipo Asesoria'/>}
-            />
-            <Autocomplete
-              id='identificacionOrientadorFiltro'
-              onChange={(event, newValue) => newValue&&setIdentificacionOrientadorFiltro(newValue.identificacion)}
-              clearOnBlur
-              handleHomeEndKeys
-              selectOnFocus
-              options={orientadores}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} label='Nombre Asesor(a)'/>}
-            />
             <TextField
-              label = 'Fecha Asesoria'
-              name='fechaOrientacionFiltro'
-              id='fechaOrientacionFiltro'
-              onChange={queryFilter}
-              value={fechaOrientacionFiltro}
-              className={classes.inputFiltros}
-              type = 'date'
-              InputLabelProps={{
-                shrink: true,
+              label='Número Proyecto'
+              name='proyectoFiltro'
+              id='proyectoFiltro'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleOpenProjectSearcher}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
               }}
+              onChange={queryFilter}
+              value={proyectoFiltro}
             />
+            { showSearch.proyecto && <MyProjectSearcher showForm={showSearch.proyecto} handleOnClose={handleOnClose} getValue={setSelectedProyecto}/> }
             <TextField
-              label='Estado'
+              label='Solicitante'
+              name='solicitanteFiltro'
+              id='solicitanteFiltro'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleOnOpen}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+              onChange={queryFilter}
+              value={solicitanteFiltro}
+            />
+            { showSearch.persona && <MySearcher showForm={showSearch.persona} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
+            <Box/>
+            <Box/>
+            <TextField
+              label='Fecha Desde Desembolso'
+              name='fechaDesdeFiltro'
+              id='fechaDesdeFiltro'
+              type={'date'}
+              InputLabelProps={{
+                shrink: true
+              }}
+              onChange={queryFilter}
+              value={fechaDesdeFiltro}>
+            </TextField>
+            <TextField
+              label='Fecha Hasta Desembolso'
+              name='fechaHastaFiltro'
+              id='fechaHastaFiltro'
+              type={'date'}
+              InputLabelProps={{
+                shrink: true
+              }}
+              onChange={queryFilter}
+              value={fechaHastaFiltro}>
+            </TextField>
+            <TextField
+              label='Estado Desembolso'
               name='estadoFiltro'
               id='estadoFiltro'
               select={true}
@@ -418,23 +485,6 @@ const EnhancedTableToolbar = (props) => {
                 );
               })}
             </TextField>
-            <TextField
-              label='Asesorado'
-              name='identificacionPersonaFiltro'
-              id='identificacionPersonaFiltro'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton onClick={handleOnOpen}>
-                      <Search/>
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              onChange={queryFilter}
-              value={identificacionPersonaFiltro}
-            />
-            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
             <Box display='grid'>
               <Box display='flex' mb={2}>
                 <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
@@ -465,11 +515,11 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onOpenAddOrientacion: PropTypes.func.isRequired,
+  onOpenAddDesembolso: PropTypes.func.isRequired,
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
-  
+  proyectoFiltro: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -562,7 +612,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Orientacion = (props) => {
+const Desembolso = (props) => {
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
@@ -575,12 +625,15 @@ const Orientacion = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-  const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState({
+    persona: false,
+    proyecto: false
+  });
 
   const [accion, setAccion] = useState('ver');
-  const [OrientacionSeleccionado, setOrientacionSeleccionado] = useState(0);
+  const [desembolsoSeleccionado, setDesembolsoSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({orientacionReducer}) => orientacionReducer,
+    ({desembolsoReducer}) => desembolsoReducer,
   );
 
   const {message, error, messageType} = useSelector(({common}) => common);
@@ -588,30 +641,25 @@ const Orientacion = (props) => {
   useEffect(() => {
     if (message || error) {
       if (messageType === DELETE_TYPE) {
-        Swal.fire('Eliminada', message, 'success');
+        Swal.fire('Eliminado', message, 'success');
         updateColeccion();
       }
     }
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
- 
-  const [tipoAsesoriasFiltro, setTipoAsesoriasFiltro] = useState('');
-  const [identificacionOrientadorFiltro, setIdentificacionOrientadorFiltro] = useState('');
-  const [fechaOrientacionFiltro, setFechaOrientacionFiltro] = useState('');
-  const [identificacionPersonaFiltro, setIdentificacionPersonaFiltro] = useState('');
+  const [proyectoFiltro, setProyectoFiltro] = useState('');
+  const [fechaDesdeFiltro, setFechaDesdeFiltro] = useState('');
+  const [fechaHastaFiltro, setFechaHastaFiltro] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
-  
-  const debouncedTipoAsesoria = useDebounce(tipoAsesoriasFiltro, 800);
-  const debouncedNameAsesor = useDebounce(identificacionOrientadorFiltro, 800);
-  const debouncedIdPersona = useDebounce(identificacionPersonaFiltro, 800);
-  
+  const [solicitanteFiltro, setSolicitanteFiltro] = useState('');
+  const debouncedName = useDebounce(proyectoFiltro, 800);
+  const debouncedInitialDate = useDebounce(fechaDesdeFiltro, 800);
+  const debouncedFinalDate = useDebounce(fechaHastaFiltro, 800);
+  const debouncedSolicitante = useDebounce(solicitanteFiltro, 800);
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
-
-  const tipos_orientacion = useSelector(({tipoAsesoriaReducer}) => tipoAsesoriaReducer.ligera);
-  const orientadores = useSelector(({orientadorReducer}) => orientadorReducer.ligera);
 
   let columnasMostradasInicial = [];
 
@@ -662,79 +710,70 @@ const Orientacion = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(
-      onGetColeccion(
-        page, 
-        rowsPerPage, 
-        tipoAsesoriasFiltro,
-        identificacionOrientadorFiltro,
-        fechaOrientacionFiltro,
-        identificacionPersonaFiltro,
-        estadoFiltro, 
-        orderByToSend,
-        ),
-      );
-  }, [ // eslint-disable-line react-hooks/exhaustive-deps
-      dispatch, 
+    dispatch(onGetColeccion(
       page, 
-      rowsPerPage,
-      debouncedTipoAsesoria,
-      debouncedNameAsesor,
-      fechaOrientacionFiltro,
-      debouncedIdPersona,
-      estadoFiltro,  
+      rowsPerPage, 
       orderByToSend, 
-      showForm,
-    ]); // eslint-disable-line react-hooks/exhaustive-deps
+      proyectoFiltro, 
+      fechaDesdeFiltro, 
+      fechaHastaFiltro, 
+      estadoFiltro, 
+      solicitanteFiltro
+    ));
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch, 
+    page, 
+    rowsPerPage, 
+    debouncedName, 
+    orderByToSend, 
+    showForm,
+    debouncedInitialDate,
+    debouncedFinalDate,
+    debouncedSolicitante,
+    estadoFiltro,
+  ]); 
 
   const updateColeccion = () => {
     setPage(1);
     dispatch(onGetColeccion(
       page, 
       rowsPerPage, 
-      tipoAsesoriasFiltro,
-      identificacionOrientadorFiltro,
-      fechaOrientacionFiltro,
-      identificacionPersonaFiltro,
+      orderByToSend, 
+      proyectoFiltro, 
+      fechaDesdeFiltro, 
+      fechaHastaFiltro, 
       estadoFiltro, 
-      orderByToSend,
-      ),
-    );
+      solicitanteFiltro
+    ));
   };
+
   useEffect(() => {
     setPage(1);
-  }, [debouncedTipoAsesoria,
-      debouncedNameAsesor,
-      fechaOrientacionFiltro,
-      debouncedIdPersona,
-      estadoFiltro,  
-      orderByToSend,
+  }, [
+    debouncedName, 
+    orderByToSend, 
+    debouncedInitialDate,
+    debouncedFinalDate,
+    debouncedSolicitante,
+    estadoFiltro
   ]);
-
-  useEffect(() => {
-    dispatch(onGetColeccionLigeraTipoAsesoria());
-  },[]) //eslint-disable-line
-
-  useEffect(() => {
-    dispatch(onGetColeccionLigeraAsesores());
-  },[]) //eslint-disable-line
 
   const queryFilter = (e) => {
     switch (e.target.name) {
-      case 'tipoAsesoriasFiltro':
-        setTipoAsesoriasFiltro(e.target.value);
+      case 'solicitanteFiltro':
+        setSolicitanteFiltro(e.target.value);
         break;
-      case 'identificacionOrientadorFiltro':
-        setIdentificacionOrientadorFiltro(e.target.value);
+      case 'proyectoFiltro':
+        setProyectoFiltro(e.target.value);
         break;
-      case 'fechaOrientacionFiltro':
-        setFechaOrientacionFiltro(e.target.value);
+      case 'fechaDesdeFiltro':
+        setFechaDesdeFiltro(e.target.value);
+        break;
+      case 'fechaHastaFiltro':
+        setFechaHastaFiltro(e.target.value);
         break;
       case 'estadoFiltro':
         setEstadoFiltro(e.target.value);
-        break;
-      case 'identificacionPersonaFiltro':
-        setIdentificacionPersonaFiltro(e.target.value);
         break;
       default:
         break;
@@ -742,11 +781,11 @@ const Orientacion = (props) => {
   };
 
   const limpiarFiltros = () => {
-    setTipoAsesoriasFiltro('');
-    setIdentificacionOrientadorFiltro('');
-    setFechaOrientacionFiltro('');
+    setProyectoFiltro('');
+    setSolicitanteFiltro('');
+    setFechaDesdeFiltro('');
+    setFechaHastaFiltro('');
     setEstadoFiltro('');
-    setIdentificacionPersonaFiltro('');
   };
 
   const changeOrderBy = (id) => {
@@ -765,8 +804,8 @@ const Orientacion = (props) => {
     }
   };
 
-  const onOpenEditOrientacion = (id) => {
-    setOrientacionSeleccionado(id);
+  const onOpenEditDesembolso = (id) => {
+    setDesembolsoSeleccionado(id);
     setAccion('editar');
     setShowForm(true);
   };
@@ -807,16 +846,16 @@ const Orientacion = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewOrientacion = (id) => {
-    setOrientacionSeleccionado(id);
+  const onOpenViewDesembolso = (id) => {
+    setDesembolsoSeleccionado(id);
     setAccion('ver');
     setShowForm(true);
   };
 
-  const onDeleteOrientacion = (id) => {
+  const onDeleteDesembolso = (id) => {
     Swal.fire({
       title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar La Asesoria?',
+      text: '¿Seguro Que Desea Eliminar El Desembolso?',
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -831,15 +870,15 @@ const Orientacion = (props) => {
     });
   };
 
-  const onOpenAddOrientacion = () => {
-    setOrientacionSeleccionado(0);
+  const onOpenAddDesembolso = () => {
+    setDesembolsoSeleccionado(0);
     setAccion('crear');
     setShowForm(true);
   };
 
   const handleOnClose = () => {
     setShowForm(false);
-    setOrientacionSeleccionado(0);
+    setDesembolsoSeleccionado(0);
     setAccion('ver');
   };
 
@@ -873,15 +912,25 @@ const Orientacion = (props) => {
   }, [rows]);
 
   const handleCloseSearcher = () => {
-    setShowSearch(false);
+    setShowSearch({persona: false, proyecto: false});
   }
-
   const handleOpenSearcher = () => {
-    setShowSearch(true);
+    setShowSearch({ 
+      persona: true,
+      proyecto: false
+    });
   }
-
+  const handleOpenProjectSearcher = () => {
+    setShowSearch({ 
+      persona: false,
+      proyecto: true
+    });
+  }
   const setSelectePersona = (id) => {
-    setIdentificacionPersonaFiltro(id);
+    setSolicitanteFiltro(id);
+  }
+  const setSelectedProyecto = (id) => {
+    setProyectoFiltro(id);
   }
 
   return (
@@ -890,25 +939,23 @@ const Orientacion = (props) => {
         {permisos && (
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onOpenAddOrientacion={onOpenAddOrientacion}
+            onOpenAddDesembolso={onOpenAddDesembolso}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
-            tipoAsesoriasFiltro = {tipoAsesoriasFiltro}
-            setTipoAsesoriasFiltro = {setTipoAsesoriasFiltro}
-            identificacionOrientadorFiltro = {identificacionOrientadorFiltro} 
-            setIdentificacionOrientadorFiltro = {setIdentificacionOrientadorFiltro} 
-            identificacionPersonaFiltro = {identificacionPersonaFiltro}
-            fechaOrientacionFiltro = {fechaOrientacionFiltro}
-            estadoFiltro = {estadoFiltro}
+            proyectoFiltro={proyectoFiltro}
+            fechaDesdeFiltro={fechaDesdeFiltro}
+            fechaHastaFiltro={fechaHastaFiltro}
+            estadoFiltro={estadoFiltro}
+            solicitanteFiltro={solicitanteFiltro}
             permisos={permisos}
-            tipos_orientacion = {tipos_orientacion}
-            orientadores = {orientadores}
             titulo={titulo}
             handleOnClose={handleCloseSearcher}
             handleOnOpen={handleOpenSearcher}
+            handleOpenProjectSearcher={handleOpenProjectSearcher}
             showSearch={showSearch}
             setSelectePersona={setSelectePersona}
+            setSelectedProyecto={setSelectedProyecto}
           />
         )}
         {showTable && permisos ? (
@@ -972,14 +1019,14 @@ const Orientacion = (props) => {
                           {permisos.indexOf('Modificar') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.editar' />}>
                               <EditIcon
-                                onClick={() => onOpenEditOrientacion(row.id)}
+                                onClick={() => onOpenEditDesembolso(row.id)}
                                 className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
                             </Tooltip>
                           )}
                           {permisos.indexOf('Listar') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.ver' />}>
                               <VisibilityIcon
-                                onClick={() => onOpenViewOrientacion(row.id)}
+                                onClick={() => onOpenViewDesembolso(row.id)}
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                             </Tooltip>
                           )}
@@ -987,7 +1034,7 @@ const Orientacion = (props) => {
                             <Tooltip
                               title={<IntlMessages id='boton.eliminar' />}>
                               <DeleteIcon
-                                onClick={() => onDeleteOrientacion(row.id)}
+                                onClick={() => onDeleteDesembolso(row.id)}
                                 className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
                             </Tooltip>
                           )}
@@ -1068,9 +1115,9 @@ const Orientacion = (props) => {
       </Paper>
 
       {showForm ? (
-        <OrientacionCreador
+        <DesembolsoCreador
           showForm={showForm}
-          Orientacion={OrientacionSeleccionado}
+          desembolso={desembolsoSeleccionado}
           accion={accion}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}
@@ -1131,4 +1178,4 @@ const Orientacion = (props) => {
   );
 };
 
-export default Orientacion;
+export default Desembolso;

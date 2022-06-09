@@ -35,6 +35,9 @@ const validationSchema = yup.object({
   persona_id: yup
       .number()
       .required('Requerido'),
+  persona_identificacion: yup
+      .number()
+      .required('Requerido'),
   orientacionesSolicitud: yup.string().required('Requerido'),
   orientacionesNota: yup.string().required('Requerido'),
   orientacionesRespuesta: yup.string().required('Requerido'),
@@ -87,7 +90,7 @@ const OrientacionCreador = (props) => {
     dispatch(onGetColeccionLigera()); 
     dispatch(onGetColeccionLigeraAsesor());
     dispatch(onGetColeccionLigeraPersona());
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (accion === 'crear') {
     initializeSelectedRow();
@@ -118,8 +121,7 @@ const OrientacionCreador = (props) => {
         TransitionComponent={Transition}
         aria-describedby='simple-modal-description'
         className={classes.dialogBox}
-        disableBackdropClick={true}
-        maxWidth={'lg'}>
+        maxWidth={'md'}>
         <Scrollbar>
           <Formik
             initialStatus={true}
@@ -129,7 +131,6 @@ const OrientacionCreador = (props) => {
               id: selectedRow ? selectedRow.id : '',
               tipo_orientacion_id: selectedRow ? selectedRow.tipo_orientacion_id: '',
               orientador_id: selectedRow ? selectedRow.orientador_id: '',
-
               orientacionesFechaOrientacion: selectedRow
                 ? selectedRow.orientacionesFechaOrientacion
                   ? moment(selectedRow.orientacionesFechaOrientacion).format('YYYY-MM-DD')
@@ -139,6 +140,12 @@ const OrientacionCreador = (props) => {
                 ? selectedRow.persona_id
                   ? selectedRow.persona_id
                   : ''
+                : '',
+              persona_identificacion: selectedRow
+                ? selectedRow?.persona?.identificacion??''
+                : '',
+              nombrePersona: selectedRow
+                ? selectedRow?.persona?.nombre??''
                 : '',
               orientacionesSolicitud: selectedRow
                 ? selectedRow.orientacionesSolicitud
@@ -173,15 +180,17 @@ const OrientacionCreador = (props) => {
               }
               setSubmitting(false);
             }}>
-            {({initialValues}) => (
+            {({initialValues, setFieldValue, values}) => (
               <OrientacionForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
+                setFieldValue={setFieldValue}
                 accion={accion}
                 initialValues={initialValues}
-                tiposAsesorias = {tiposAsesorias}
-                asesores = {asesores}
-                personas = {personas}
+                tiposAsesorias={tiposAsesorias}
+                asesores={asesores}
+                personas={personas}
+                values={values}
               />
             )}
           </Formik>

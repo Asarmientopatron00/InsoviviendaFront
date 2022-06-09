@@ -61,6 +61,14 @@ const cells = [
     mostrarInicio: true,
   },
   {
+    id: 'tiDoPrEtapa',
+    typeHead: 'string',
+    label: 'Etapa',
+    value: (value) => ESTADOS_PROYECTO.map((estadoProyecto) => (estadoProyecto.id === value ? estadoProyecto.nombre : '')),
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
     id: 'tiDoPrRequerido',
     typeHead: 'boolean',
     label: 'Requerido',
@@ -96,7 +104,7 @@ const cells = [
     label: 'Estado',
     value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
     align: 'center',
-    mostrarInicio: false,
+    mostrarInicio: true,
     cellColor: (value) =>
       value === 1 ? palette.secondary.main : palette.secondary.red,
   },
@@ -500,7 +508,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TiposIdentificacion = (props) => {
+const DocumentosProyecto = (props) => {
   const {proyecto_id} = useParams();
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
@@ -516,7 +524,7 @@ const TiposIdentificacion = (props) => {
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
 
   const [accion, setAccion] = useState('ver');
-  const [tipoIdentificacionSeleccionado, setTipoIdentificacionSeleccionado] = useState(0);
+  const [documentoProyectoSeleccionado, setDocumentoProyectoSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
     ({documentosProyectoReducer}) => documentosProyectoReducer,
   );
@@ -565,14 +573,12 @@ const TiposIdentificacion = (props) => {
 
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
-  const [titulo, setTitulo] = useState('');
 
   useEffect(() => {
     user &&
       user.permisos.forEach((modulo) => {
         modulo.opciones.forEach((opcion) => {
           if (opcion.url === '/proyectos') {
-            setTitulo(opcion.nombre);
             const permisoAux = [];
             opcion.permisos.forEach((permiso) => {
               if (permiso.permitido) {
@@ -613,8 +619,8 @@ const TiposIdentificacion = (props) => {
     }
   };
 
-  const onOpenEditTipoIdentificacion = (id) => {
-    setTipoIdentificacionSeleccionado(id);
+  const onOpenEditDocumentoProyecto = (id) => {
+    setDocumentoProyectoSeleccionado(id);
     setAccion('editar');
     setShowForm(true);
   };
@@ -655,37 +661,15 @@ const TiposIdentificacion = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewTipoIdentificacion = (id) => {
-    setTipoIdentificacionSeleccionado(id);
+  const onOpenViewDocumentoProyecto = (id) => {
+    setDocumentoProyectoSeleccionado(id);
     setAccion('ver');
     setShowForm(true);
   };
 
-  const onDelete = (id) => {
-    console.log('Borrando')
-  }
-
-  const onDeleteTipoIdentificacion = (id) => {
-    Swal.fire({
-      title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar El Tipo de Identificación?',
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'NO',
-      confirmButtonText: 'SI',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(onDelete(id));
-      }
-    });
-  };
-
   const handleOnClose = () => {
     setShowForm(false);
-    setTipoIdentificacionSeleccionado(0);
+    setDocumentoProyectoSeleccionado(0);
     setAccion('ver');
   };
 
@@ -794,23 +778,15 @@ const TiposIdentificacion = (props) => {
                           {permisos.indexOf('ModificarDocPro') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.editar' />}>
                               <EditIcon
-                                onClick={() => onOpenEditTipoIdentificacion(row.id)}
+                                onClick={() => onOpenEditDocumentoProyecto(row)}
                                 className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
                             </Tooltip>
                           )}
                           {permisos.indexOf('ListarDocPro') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.ver' />}>
                               <VisibilityIcon
-                                onClick={() => onOpenViewTipoIdentificacion(row.id)}
+                                onClick={() => onOpenViewDocumentoProyecto(row)}
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('EliminarDocPro') >= 0 && (
-                            <Tooltip
-                              title={<IntlMessages id='boton.eliminar' />}>
-                              <DeleteIcon
-                                onClick={() => onDeleteTipoIdentificacion(row.id)}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
                             </Tooltip>
                           )}
                         </TableCell>
@@ -892,11 +868,10 @@ const TiposIdentificacion = (props) => {
       {showForm ? (
         <DocumentosProyectoCreador
           showForm={showForm}
-          tipoIdentificacion={tipoIdentificacionSeleccionado}
+          documentoProyecto={documentoProyectoSeleccionado}
           accion={accion}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}
-          titulo={titulo}
         />
       ) : (
         ''
@@ -953,4 +928,4 @@ const TiposIdentificacion = (props) => {
   );
 };
 
-export default TiposIdentificacion;
+export default DocumentosProyecto;

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, InputAdornment} from '@material-ui/core';
+import {Box, Button} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
@@ -19,107 +19,118 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
-import Search from '@material-ui/icons/Search';
-import OrientacionCreador from './OrientacionCreador';
 import {
   onGetColeccion,
-  onDelete,
-} from '../../../redux/actions/OrientacionAction';
+  onGetHeaders
+  // onDelete,
+} from '../../../redux/actions/PlanAmortizacionAction';
 import {useDispatch, useSelector} from 'react-redux';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import Popover from '@material-ui/core/Popover';
 import TuneIcon from '@material-ui/icons/Tune';
-import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
-import Swal from 'sweetalert2';
-import MenuItem from '@material-ui/core/MenuItem';
-import {ESTADO} from 'shared/constants/ListaValores';
 import {
   UPDATE_TYPE,
   CREATE_TYPE,
-  DELETE_TYPE,
 } from 'shared/constants/Constantes';
 import {MessageView} from '../../../@crema';
-import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
-import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
-import { Autocomplete } from '@material-ui/lab';
-import {onGetColeccionLigera as onGetColeccionLigeraTipoAsesoria} from 'redux/actions/TipoAsesoriaAction';
-import {onGetColeccionLigera as onGetColeccionLigeraAsesores} from 'redux/actions/OrientadorAction';
-import MySearcher from 'shared/components/MySearcher';
-
-const {
-  theme: {palette},
-} = defaultConfig;
+import { useParams } from 'react-router-dom';
+import { MenuItem } from '@material-ui/core';
+import { ESTADOS_PROYECTO } from 'shared/constants/ListaValores';
+import { ArrowBackIos } from '@material-ui/icons';
+import { history } from 'redux/store';
+const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
 
 const cells = [
   {
-    id: 'nombre',
-    typeHead: 'string',
-    label: 'Tipo Asesoria',
+    id: 'plaAmoNumeroCuota',
+    typeHead: 'numeric',
+    label: 'Cuota',
     value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'plaAmoFechaVencimientoCuota',
+    typeHead: 'string',
+    label: 'Fecha Vencimiento',
+    value: (value) => value?moment(value).format('DD-MM-YYYY'):'',
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'nombreOrientador',
-    typeHead: 'string',
-    label: 'Asesor',
+    id: 'plaAmoValorSaldoCapital',
+    typeHead: 'numeric',
+    label: 'Saldo Capital',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'plaAmoValorCapitalCuota',
+    typeHead: 'numeric',
+    label: 'Capital Cuota',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'plaAmoValorInteresCuota',
+    typeHead: 'numeric',
+    label: 'Interés Cuota',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'plaAmoValorSeguroCuota',
+    typeHead: 'numeric',
+    label: 'Seguro Cuota',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'totalCuota',
+    typeHead: 'numeric',
+    label: 'Total Cuota',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'plaAmoValorInteresMora',
+    typeHead: 'numeric',
+    label: 'Interés Mora',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'plaAmoDiasMora',
+    typeHead: 'numeric',
+    label: 'Días Mora',
     value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'plaAmoFechaUltimoPagoCuota',
+    typeHead: 'string',
+    label: 'Fecha Pago',
+    value: (value) => value?moment(value).format('DD-MM-YYYY'):'',
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'fechaOrientacion',
-    typeHead: 'string',
-    label: 'Fecha Asesoria',
-    value: (value) => moment(value).format('YYYY-MM-DD'),
-    align: 'left',
-    mostrarInicio: true,
-  },
-  {
-    id: 'nombrePersona',
-    typeHead: 'string',
-    label: 'Nombre Persona',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: true,
-  },
-  {
-    id: 'orientacionesSolicitud',
-    typeHead: 'string',
-    label: 'Solicitud Asesoria',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: true,
-  },{
-    id: 'orientacionesNota',
-    typeHead: 'string',
-    label: 'Nota',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },{
-    id: 'orientacionesRespuesta',
-    typeHead: 'string',
-    label: 'Respuesta',
-    value: (value) => value,
-    align: 'left',
-    mostrarInicio: false,
-  },
-  {
-    id: 'estado',
+    id: 'plaAmoCuotaCancelada',
     typeHead: 'boolean',
-    label: 'Estado',
-    value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
+    label: 'Cancelada',
+    value: (value) => (value === 'S' ? 'Sí' : 'No'),
     align: 'center',
-    mostrarInicio: false,
-    cellColor: (value) =>
-      value === 1 ? palette.secondary.main : palette.secondary.red,
+    mostrarInicio: true,
   },
   {
     id: 'usuario_modificacion_nombre',
@@ -165,13 +176,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow className={classes.head}>
-        <TableCell
-          align='center'
-          style={{fontWeight: 'bold'}}
-          className={classes.headCell}>
-          {'Acciones'}
-        </TableCell>
-        {columnasMostradas.map((cell) => {
+        {columnasMostradas.map((cell, index) => {
           if (cell.mostrar) {
             return (
               <TableCell
@@ -184,7 +189,7 @@ function EnhancedTableHead(props) {
                     ? 'right'
                     : 'center'
                 }
-                className={classes.cell}
+                className={index === 1 || index === 8 ? classes.cell2 : classes.cell}
                 sortDirection={orderBy === cell.id ? order : false}>
                 <TableSortLabel
                   active={orderBy === cell.id}
@@ -289,8 +294,8 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: 'repeat(4,1fr)',
-    gap: '10px',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '20px',
   },
   pairFilters: {
     display: 'flex',
@@ -304,24 +309,21 @@ const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const {
     numSelected,
-    titulo,
-    onOpenAddOrientacion,
     handleOpenPopoverColumns,
-    queryFilter,
-    setTipoAsesoriasFiltro,
-    tipos_orientacion,
-    setIdentificacionOrientadorFiltro,
-    orientadores,
-    fechaOrientacionFiltro,
-    estadoFiltro, 
-    limpiarFiltros,
-    permisos,
-    handleOnClose,
-    handleOnOpen,
-    showSearch,
-    setSelectePersona,
-    identificacionPersonaFiltro
- } = props;
+    onGoBack,
+    row
+  } = props;
+
+  const getName = (row) => {
+    if(row){
+      const firstName = row.personasNombres;
+      const lastFirstName = row.personasPrimerApellido;
+      const lastSecondName = row.personasSegundoApellido;
+      const fullName = [firstName, lastFirstName, lastSecondName].filter(Boolean).join(' ');
+      return fullName;
+    }
+    return '';
+  }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -338,13 +340,29 @@ const EnhancedTableToolbar = (props) => {
       ) : (
         <>
           <Box className={classes.titleTop}>
-            <Typography
-              className={classes.title}
-              variant='h6'
-              id='tableTitle'
-              component='div'>
-              {titulo}
-            </Typography>
+            <Box
+              style={{
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <Tooltip title='Volver'>
+                <ArrowBackIos
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: 30
+                  }}
+                  onClick={onGoBack}
+                />
+              </Tooltip>
+              <Typography
+                className={classes.title}
+                variant='h6'
+                id='tableTitle'
+                component='div'>
+                Proyectos - Plan Amortización
+              </Typography>
+            </Box>
             <Box className={classes.horizontalBottoms}>
               <Tooltip
                 title='Mostrar/Ocultar Columnas'
@@ -355,58 +373,31 @@ const EnhancedTableToolbar = (props) => {
                   <TuneIcon />
                 </IconButton>
               </Tooltip>
-              {permisos.indexOf('Crear') >= 0 && (
-                <Tooltip title='Crear Asesorias' onClick={onOpenAddOrientacion}>
-                  <IconButton
-                    className={classes.createButton}
-                    aria-label='filter list'>
-                    <AddIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
             </Box>
           </Box>
           <Box className={classes.contenedorFiltros}>
-            <Autocomplete
-              id='tipoAsesoriasFiltro'
-              onChange={(event, newValue) => newValue&&setTipoAsesoriasFiltro(newValue.id)}
-              clearOnBlur
-              handleHomeEndKeys
-              selectOnFocus
-              options={tipos_orientacion}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} label='Tipo Asesoria'/>}
-            />
-            <Autocomplete
-              id='identificacionOrientadorFiltro'
-              onChange={(event, newValue) => newValue&&setIdentificacionOrientadorFiltro(newValue.identificacion)}
-              clearOnBlur
-              handleHomeEndKeys
-              selectOnFocus
-              options={orientadores}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} label='Nombre Asesor(a)'/>}
-            />
             <TextField
-              label = 'Fecha Asesoria'
-              name='fechaOrientacionFiltro'
-              id='fechaOrientacionFiltro'
-              onChange={queryFilter}
-              value={fechaOrientacionFiltro}
+              label='Número Proyecto'
+              name='numeroProyecto'
+              value={row?.id??''}
+              disabled
               className={classes.inputFiltros}
-              type = 'date'
-              InputLabelProps={{
-                shrink: true,
-              }}
             />
             <TextField
-              label='Estado'
-              name='estadoFiltro'
-              id='estadoFiltro'
-              select={true}
-              onChange={queryFilter}
-              value={estadoFiltro}>
-              {ESTADO.map((estado) => {
+              label='Fecha Solicitud'
+              name='fechaSolicitud'
+              type={'date'}
+              value={moment(row?.proyectosFechaSolicitud??'').format('YYYY-MM-DD')}
+              disabled
+              className={classes.inputFiltros}
+            />
+            <TextField
+              label='Estado Proyecto'
+              name='estado'
+              select
+              disabled
+              value={row?.proyectosEstadoProyecto??''}>
+              {ESTADOS_PROYECTO.map((estado) => {
                 return (
                   <MenuItem
                     value={estado.id}
@@ -418,34 +409,22 @@ const EnhancedTableToolbar = (props) => {
                 );
               })}
             </TextField>
+          </Box>  
+          <Box className={classes.contenedorFiltros}>
             <TextField
-              label='Asesorado'
-              name='identificacionPersonaFiltro'
-              id='identificacionPersonaFiltro'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton onClick={handleOnOpen}>
-                      <Search/>
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              onChange={queryFilter}
-              value={identificacionPersonaFiltro}
+              label='Solicitante'
+              name='identificacion'
+              value={row?.solicitante?.personasIdentificacion??''}
+              disabled
+              className={classes.inputFiltros}
             />
-            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
-            <Box display='grid'>
-              <Box display='flex' mb={2}>
-                <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
-                  <IconButton
-                    className={classes.clearButton}
-                    aria-label='filter list'>
-                    <ClearAllIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Box>
+            <TextField
+              label='Nombre'
+              name='solicitante'
+              value={getName(row?.solicitante??'')}
+              disabled
+              className={classes.inputFiltros}
+            />
           </Box>
         </>
       )}
@@ -465,11 +444,7 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onOpenAddOrientacion: PropTypes.func.isRequired,
   handleOpenPopoverColumns: PropTypes.func.isRequired,
-  queryFilter: PropTypes.func.isRequired,
-  limpiarFiltros: PropTypes.func.isRequired,
-  
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -498,6 +473,10 @@ const useStyles = makeStyles((theme) => ({
   cell: (props) => ({
     padding: props.vp + ' 0px ' + props.vp + ' 15px',
     whiteSpace: 'nowrap',
+  }),
+  cell2: (props) => ({
+    padding: props.vp + ' 0px ' + props.vp + ' 15px',
+    whiteSpace: 'wrap',
   }),
   cellWidth: (props) => ({
     minWidth: props.width,
@@ -562,8 +541,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Orientacion = (props) => {
-  const [showForm, setShowForm] = useState(false);
+const PlanAmortizacion = (props) => {
+  const {proyecto_id} = useParams();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [orderByToSend, setOrderByToSend] = React.useState(
@@ -575,43 +554,19 @@ const Orientacion = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-  const [showSearch, setShowSearch] = useState(false);
 
-  const [accion, setAccion] = useState('ver');
-  const [OrientacionSeleccionado, setOrientacionSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({orientacionReducer}) => orientacionReducer,
+    ({planAmortizacionReducer}) => planAmortizacionReducer,
   );
 
-  const {message, error, messageType} = useSelector(({common}) => common);
+  const headers = useSelector(({planAmortizacionReducer}) => planAmortizacionReducer.ligera);
 
-  useEffect(() => {
-    if (message || error) {
-      if (messageType === DELETE_TYPE) {
-        Swal.fire('Eliminada', message, 'success');
-        updateColeccion();
-      }
-    }
-  }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
+  const {message, messageType} = useSelector(({common}) => common);
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
- 
-  const [tipoAsesoriasFiltro, setTipoAsesoriasFiltro] = useState('');
-  const [identificacionOrientadorFiltro, setIdentificacionOrientadorFiltro] = useState('');
-  const [fechaOrientacionFiltro, setFechaOrientacionFiltro] = useState('');
-  const [identificacionPersonaFiltro, setIdentificacionPersonaFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-  
-  const debouncedTipoAsesoria = useDebounce(tipoAsesoriasFiltro, 800);
-  const debouncedNameAsesor = useDebounce(identificacionOrientadorFiltro, 800);
-  const debouncedIdPersona = useDebounce(identificacionPersonaFiltro, 800);
-  
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
-
-  const tipos_orientacion = useSelector(({tipoAsesoriaReducer}) => tipoAsesoriaReducer.ligera);
-  const orientadores = useSelector(({orientadorReducer}) => orientadorReducer.ligera);
 
   let columnasMostradasInicial = [];
 
@@ -641,14 +596,12 @@ const Orientacion = (props) => {
 
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
-  const [titulo, setTitulo] = useState('');
 
   useEffect(() => {
     user &&
       user.permisos.forEach((modulo) => {
         modulo.opciones.forEach((opcion) => {
-          if (opcion.url === props.route.path) {
-            setTitulo(opcion.nombre);
+          if (opcion.url === '/proyectos') {
             const permisoAux = [];
             opcion.permisos.forEach((permiso) => {
               if (permiso.permitido) {
@@ -662,92 +615,12 @@ const Orientacion = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(
-      onGetColeccion(
-        page, 
-        rowsPerPage, 
-        tipoAsesoriasFiltro,
-        identificacionOrientadorFiltro,
-        fechaOrientacionFiltro,
-        identificacionPersonaFiltro,
-        estadoFiltro, 
-        orderByToSend,
-        ),
-      );
-  }, [ // eslint-disable-line react-hooks/exhaustive-deps
-      dispatch, 
-      page, 
-      rowsPerPage,
-      debouncedTipoAsesoria,
-      debouncedNameAsesor,
-      fechaOrientacionFiltro,
-      debouncedIdPersona,
-      estadoFiltro,  
-      orderByToSend, 
-      showForm,
-    ]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const updateColeccion = () => {
-    setPage(1);
-    dispatch(onGetColeccion(
-      page, 
-      rowsPerPage, 
-      tipoAsesoriasFiltro,
-      identificacionOrientadorFiltro,
-      fechaOrientacionFiltro,
-      identificacionPersonaFiltro,
-      estadoFiltro, 
-      orderByToSend,
-      ),
-    );
-  };
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedTipoAsesoria,
-      debouncedNameAsesor,
-      fechaOrientacionFiltro,
-      debouncedIdPersona,
-      estadoFiltro,  
-      orderByToSend,
-  ]);
+    dispatch(onGetColeccion(page, rowsPerPage, orderByToSend, proyecto_id));
+  }, [dispatch, page, rowsPerPage, orderByToSend]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    dispatch(onGetColeccionLigeraTipoAsesoria());
+    dispatch(onGetHeaders(proyecto_id));
   },[]) //eslint-disable-line
-
-  useEffect(() => {
-    dispatch(onGetColeccionLigeraAsesores());
-  },[]) //eslint-disable-line
-
-  const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'tipoAsesoriasFiltro':
-        setTipoAsesoriasFiltro(e.target.value);
-        break;
-      case 'identificacionOrientadorFiltro':
-        setIdentificacionOrientadorFiltro(e.target.value);
-        break;
-      case 'fechaOrientacionFiltro':
-        setFechaOrientacionFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      case 'identificacionPersonaFiltro':
-        setIdentificacionPersonaFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const limpiarFiltros = () => {
-    setTipoAsesoriasFiltro('');
-    setIdentificacionOrientadorFiltro('');
-    setFechaOrientacionFiltro('');
-    setEstadoFiltro('');
-    setIdentificacionPersonaFiltro('');
-  };
 
   const changeOrderBy = (id) => {
     if (orderBy === id) {
@@ -763,12 +636,6 @@ const Orientacion = (props) => {
       setOrderBy(id);
       setOrderByToSend(id + ':asc');
     }
-  };
-
-  const onOpenEditOrientacion = (id) => {
-    setOrientacionSeleccionado(id);
-    setAccion('editar');
-    setShowForm(true);
   };
 
   const handleClosePopover = () => {
@@ -807,41 +674,9 @@ const Orientacion = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewOrientacion = (id) => {
-    setOrientacionSeleccionado(id);
-    setAccion('ver');
-    setShowForm(true);
-  };
-
-  const onDeleteOrientacion = (id) => {
-    Swal.fire({
-      title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar La Asesoria?',
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'NO',
-      confirmButtonText: 'SI',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(onDelete(id));
-      }
-    });
-  };
-
-  const onOpenAddOrientacion = () => {
-    setOrientacionSeleccionado(0);
-    setAccion('crear');
-    setShowForm(true);
-  };
-
-  const handleOnClose = () => {
-    setShowForm(false);
-    setOrientacionSeleccionado(0);
-    setAccion('ver');
-  };
+  const onGoBack = () => {
+    history.push('/proyectos');
+  }
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -872,16 +707,12 @@ const Orientacion = (props) => {
     }
   }, [rows]);
 
-  const handleCloseSearcher = () => {
-    setShowSearch(false);
-  }
-
-  const handleOpenSearcher = () => {
-    setShowSearch(true);
-  }
-
-  const setSelectePersona = (id) => {
-    setIdentificacionPersonaFiltro(id);
+  const calcTotal = (row) => {
+    const total = 
+      parseFloat(row['plaAmoValorCapitalCuota']) + 
+      parseFloat(row['plaAmoValorInteresCuota']) +
+      parseFloat(row['plaAmoValorSeguroCuota']);
+    return total;
   }
 
   return (
@@ -890,25 +721,9 @@ const Orientacion = (props) => {
         {permisos && (
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onOpenAddOrientacion={onOpenAddOrientacion}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
-            queryFilter={queryFilter}
-            limpiarFiltros={limpiarFiltros}
-            tipoAsesoriasFiltro = {tipoAsesoriasFiltro}
-            setTipoAsesoriasFiltro = {setTipoAsesoriasFiltro}
-            identificacionOrientadorFiltro = {identificacionOrientadorFiltro} 
-            setIdentificacionOrientadorFiltro = {setIdentificacionOrientadorFiltro} 
-            identificacionPersonaFiltro = {identificacionPersonaFiltro}
-            fechaOrientacionFiltro = {fechaOrientacionFiltro}
-            estadoFiltro = {estadoFiltro}
-            permisos={permisos}
-            tipos_orientacion = {tipos_orientacion}
-            orientadores = {orientadores}
-            titulo={titulo}
-            handleOnClose={handleCloseSearcher}
-            handleOnOpen={handleOpenSearcher}
-            showSearch={showSearch}
-            setSelectePersona={setSelectePersona}
+            row={headers}
+            onGoBack={onGoBack}
           />
         )}
         {showTable && permisos ? (
@@ -968,30 +783,6 @@ const Orientacion = (props) => {
                         key={row.id}
                         selected={isItemSelected}
                         className={classes.row}>
-                        <TableCell align='center' className={classes.acciones}>
-                          {permisos.indexOf('Modificar') >= 0 && (
-                            <Tooltip title={<IntlMessages id='boton.editar' />}>
-                              <EditIcon
-                                onClick={() => onOpenEditOrientacion(row.id)}
-                                className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Listar') >= 0 && (
-                            <Tooltip title={<IntlMessages id='boton.ver' />}>
-                              <VisibilityIcon
-                                onClick={() => onOpenViewOrientacion(row.id)}
-                                className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Eliminar') >= 0 && (
-                            <Tooltip
-                              title={<IntlMessages id='boton.eliminar' />}>
-                              <DeleteIcon
-                                onClick={() => onDeleteOrientacion(row.id)}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
-                            </Tooltip>
-                          )}
-                        </TableCell>
 
                         {columnasMostradas.map((columna) => {
                           if (columna.mostrar) {
@@ -1002,7 +793,11 @@ const Orientacion = (props) => {
                                 align={columna.align}
                                 width={columna.width}
                                 claseBase={classes.cell}
-                                value={columna.value(row[columna.id])}
+                                value={columna.value(
+                                  columna.id === 'totalCuota' 
+                                    ? calcTotal(row)
+                                    : row[columna.id]
+                                  )}
                                 cellColor={
                                   columna.cellColor
                                     ? columna.cellColor(row[columna.id])
@@ -1067,19 +862,6 @@ const Orientacion = (props) => {
         )}
       </Paper>
 
-      {showForm ? (
-        <OrientacionCreador
-          showForm={showForm}
-          Orientacion={OrientacionSeleccionado}
-          accion={accion}
-          handleOnClose={handleOnClose}
-          updateColeccion={updateColeccion}
-          titulo={titulo}
-        />
-      ) : (
-        ''
-      )}
-
       <Popover
         id='popoverColumns'
         open={openPopOver}
@@ -1131,4 +913,4 @@ const Orientacion = (props) => {
   );
 };
 
-export default Orientacion;
+export default PlanAmortizacion;
