@@ -20,6 +20,7 @@ import OrientadorReducer from './OrientadorReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
 import DocumentosProyectoReducer from './DocumentosProyectoReducer';
+import BitacoraProyectoReducer from './BitacoraProyectoReducer';
 import OrientacionReducer from './OrientacionReducer';
 import PlanAmortizacionReducer from './PlanAmortizacionReducer';
 import DonacionReducer from './DonacionReducer';
@@ -110,6 +111,7 @@ const reducers = (history) =>
     donacionReducer: DonacionReducer,
     desembolsoReducer: DesembolsoReducer,
     pagoReducer: PagoReducer,
+    bitacoraProyectoReducer: BitacoraProyectoReducer,
   });
 
 export default reducers;

@@ -22,3 +22,4 @@ export * from './OrientadorAction';
 // Proyectos
 export * from './OrientacionAction';
 export * from './DonacionAction';
+export * from './BitacoraProyectoAction';
