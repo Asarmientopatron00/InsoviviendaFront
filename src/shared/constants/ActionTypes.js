@@ -349,6 +349,12 @@ export const DELETE_PARAMETRO_CONSTANTE = 'delete_parametro_constante';
 export const GET_COLECCION_DOCUMENTOS_PROYECTO = 'get_coleccion_documentos_proyecto';
 export const UPDATE_DOCUMENTOS_PROYECTO = 'update_documentos_proyecto';
 
+// BITACORAS PROYECTO
+export const GET_COLECCION_BITACORA_PROYECTO = 'get_coleccion_bitacora_proyecto';
+export const SHOW_BITACORA_PROYECTO = 'show_bitacora_proyecto';
+export const UPDATE_BITACORA_PROYECTO = 'update_bitacora_proyecto';
+export const CREATE_BITACORA_PROYECTO = 'create_bitacora_proyecto';
+
 // ORIENTACIONES
 export const GET_COLECCION_ORIENTACION = 'get_coleccion_orientacion';
 export const SHOW_ORIENTACION = 'show_orientacion';
