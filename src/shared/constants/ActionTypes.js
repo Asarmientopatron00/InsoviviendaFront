@@ -360,6 +360,10 @@ export const DELETE_ORIENTACION = 'delete_orientacion';
 export const GET_COLECCION_PLAN_AMORTIZACION = 'get_coleccion_plan_amortizacion';
 export const GET_COLECCION_HEADERS_PLAN_AMORTIZACION = 'get_coleccion_headers_plan_amortizacion';
 
+// PLAN AMORTIZACION DEFINITIVO
+export const GET_COLECCION_PLAN_AMORTIZACION_DEFINITIVO = 'get_coleccion_plan_amortizacion_definitivo';
+export const GET_COLECCION_HEADERS_PLAN_AMORTIZACION_DEFINITIVO = 'get_coleccion_headers_plan_amortizacion_definitivo';
+
 // DONACIONES
 export const GET_COLECCION_DONACION = 'get_coleccion_donacion';
 export const GET_COLECCION_LIGERA_DONACION = 'get_coleccion_ligera_donacion';
