@@ -24,6 +24,7 @@ import OrientacionReducer from './OrientacionReducer';
 import PlanAmortizacionReducer from './PlanAmortizacionReducer';
 import DonacionReducer from './DonacionReducer';
 import DesembolsoReducer from './DesembolsoReducer';
+import PagoReducer from './PagoReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import TipoParentescoReducer from './TipoParentescoReducer';
@@ -108,6 +109,7 @@ const reducers = (history) =>
     planAmortizacionReducer: PlanAmortizacionReducer,
     donacionReducer: DonacionReducer,
     desembolsoReducer: DesembolsoReducer,
+    pagoReducer: PagoReducer,
   });
 
 export default reducers;

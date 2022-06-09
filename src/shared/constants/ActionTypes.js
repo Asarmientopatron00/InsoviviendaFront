@@ -375,3 +375,11 @@ export const SHOW_DESEMBOLSO = 'show_desembolso';
 export const UPDATE_DESEMBOLSO = 'update_desembolso';
 export const CREATE_DESEMBOLSO = 'create_desembolso';
 export const DELETE_DESEMBOLSO = 'delete_desembolso';
+
+// PAGOS
+export const GET_COLECCION_PAGO = 'get_coleccion_pago';
+export const GET_COLECCION_LIGERA_PAGO = 'get_coleccion_ligera_pago';
+export const SHOW_PAGO = 'show_pago';
+export const UPDATE_PAGO = 'update_pago';
+export const CREATE_PAGO = 'create_pago';
+export const DELETE_PAGO = 'delete_pago';
