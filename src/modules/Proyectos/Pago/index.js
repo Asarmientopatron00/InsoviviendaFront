@@ -48,7 +48,7 @@ import moment from 'moment';
 import { ESTADO } from 'shared/constants/ListaValores';
 import Search from '@material-ui/icons/Search';
 import MyProjectSearcher from 'shared/components/MyProjectSearcher';
-import { Undo } from '@material-ui/icons';
+import { Undo, PictureAsPdf } from '@material-ui/icons';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
 
@@ -823,6 +823,10 @@ const Pago = (props) => {
     setProyectoFiltro(id);
   }
 
+  const onExportPago = (id) => {
+    window.location.href = defaultConfig.API_URL+'/pagos/'+id;
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -923,6 +927,15 @@ const Pago = (props) => {
                               <Undo
                                 onClick={() => onRevertPago(row.id)}
                                 className={`${classes.generalIcons} ${classes.deleteIcon}`}></Undo>
+                            </Tooltip>
+                          )}
+                          {permisos.indexOf('Exportar') >= 0 && row.pagosEstado === 1 && (
+                            <Tooltip
+                              title={<IntlMessages id='boton.exportar' />}>
+                              <PictureAsPdf
+                                onClick={() => onExportPago(row.id)}
+                                style={{color: 'darkred'}}
+                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></PictureAsPdf>
                             </Tooltip>
                           )}
                         </TableCell>
