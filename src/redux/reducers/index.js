@@ -23,6 +23,7 @@ import DocumentosProyectoReducer from './DocumentosProyectoReducer';
 import BitacoraProyectoReducer from './BitacoraProyectoReducer';
 import OrientacionReducer from './OrientacionReducer';
 import PlanAmortizacionReducer from './PlanAmortizacionReducer';
+import PlanAmortizacionDefinitivoReducer from './PlanAmortizacionDefinitivoReducer';
 import DonacionReducer from './DonacionReducer';
 import DesembolsoReducer from './DesembolsoReducer';
 import PagoReducer from './PagoReducer';
@@ -108,6 +109,7 @@ const reducers = (history) =>
     tipoGastoReducer: TipoGastoReducer,
     documentosProyectoReducer: DocumentosProyectoReducer,
     planAmortizacionReducer: PlanAmortizacionReducer,
+    planAmortizacionDefinitivoReducer: PlanAmortizacionDefinitivoReducer,
     donacionReducer: DonacionReducer,
     desembolsoReducer: DesembolsoReducer,
     pagoReducer: PagoReducer,

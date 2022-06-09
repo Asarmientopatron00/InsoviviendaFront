@@ -1260,6 +1260,10 @@ const Proyecto = (props) => {
     history.push('/plan-amortizacion/'+proyecto_id);
   };
 
+  const onGoPlanAmortizacionDefinitivo = (proyecto_id) => {
+    history.push('/plan-amortizacion-definitivo/'+proyecto_id);
+  };
+
   const onOpenAddProyecto = () => {
     setShowForm(true);
   };
@@ -1484,7 +1488,7 @@ const Proyecto = (props) => {
                                       style={{
                                         color: '#009705'
                                       }}
-                                      onClick={() => console.log(row.id)}
+                                      onClick={() => onGoPlanAmortizacionDefinitivo(row.id)}
                                       className={`${classes.generalIcons}`}/>
                                   </Box>
                                 </Tooltip>
