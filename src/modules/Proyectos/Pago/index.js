@@ -532,7 +532,7 @@ const Pago = (props) => {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [orderByToSend, setOrderByToSend] = React.useState(
-    'fecha_modificacion:desc',
+    'proyecto_id:asc',
   );
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(1);
