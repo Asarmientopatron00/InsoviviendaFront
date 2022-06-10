@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button} from '@material-ui/core';
+import {Box, Button, InputAdornment} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
@@ -47,6 +47,8 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
+import { Search } from '@material-ui/icons';
+import MySearcher from 'shared/components/MySearcher';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
@@ -171,7 +173,7 @@ const cells = [
       value: (value) => value,
       align: 'left',
       width: '140px',
-      mostrarInicio: true,
+      mostrarInicio: false,
    },
    {
       id: 'fecha_modificacion',
@@ -180,7 +182,7 @@ const cells = [
       value: (value) => moment(value).format('DD-MM-YYYY HH:mm:ss'),
       align: 'left',
       width: '180px',
-      mostrarInicio: true,
+      mostrarInicio: false,
    },
    {
       id: 'usuario_creacion_nombre',
@@ -358,10 +360,14 @@ const EnhancedTableToolbar = (props) => {
       onOpenAddDonacion,
       handleOpenPopoverColumns,
       queryFilter,
-      nombreFiltro,
+      identificacionFiltro,
       benefactorFiltro,
       limpiarFiltros,
       permisos,
+      handleOnClose,
+      handleOnOpen,
+      showSearch,
+      setSelectedPersona,
    } = props;
    return (
       <Toolbar
@@ -413,13 +419,22 @@ const EnhancedTableToolbar = (props) => {
                   </Box>
                   <Box className = {classes.contenedorFiltros}>
                      <TextField
-                        label = 'Nombres y/o Apellidos Persona'
-                        name = 'nombreFiltro'
-                        id = 'nombreFiltro'
-                        onChange = {queryFilter}
-                        value = {nombreFiltro}
-                        className = {classes.inputFiltros}
-                     />
+                        label='Beneficiario'
+                        name='identificacionFiltro'
+                        id='identificacionFiltro'
+                        InputProps={{
+                           endAdornment: (
+                              <InputAdornment position='end'>
+                              <IconButton onClick={handleOnOpen}>
+                                 <Search/>
+                              </IconButton>
+                              </InputAdornment>
+                           )
+                        }}
+                        onChange={queryFilter}
+                        value={identificacionFiltro}
+                        />
+                        { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectedPersona}/> }
                      <TextField
                         label = 'Nombres y/o Apellidos Benefactor'
                         name = 'benefactorFiltro'
@@ -468,7 +483,7 @@ EnhancedTableToolbar.propTypes = {
    handleOpenPopoverColumns: PropTypes.func.isRequired,
    queryFilter: PropTypes.func.isRequired,
    limpiarFiltros: PropTypes.func.isRequired,
-   nombreFiltro: PropTypes.string.isRequired,
+   identificacionFiltro: PropTypes.string.isRequired,
    benefactorFiltro: PropTypes.string.isRequired,
 };
 
@@ -573,6 +588,7 @@ const Donaciones = (props) => {
    const dense = true; //Borrar cuando se use el change
    const [rowsPerPage, setRowsPerPage] = React.useState(10);
    const rowsPerPageOptions = [5, 10, 15, 25, 50];
+   const [showSearch, setShowSearch] = useState(false);
 
    const [accion, setAccion] = useState('ver');
    const [donacionSeleccionado, setDonacionSeleccionado] = useState(0);
@@ -592,9 +608,9 @@ const Donaciones = (props) => {
    }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
    const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-   const [nombreFiltro, setNombreFiltro] = useState('');
+   const [identificacionFiltro, setIdentificacionFiltro] = useState('');
    const [benefactorFiltro, setBenefactorFiltro] = useState('');
-   const debouncedNombreFiltro = useDebounce(nombreFiltro, 800);
+   const debouncedIdentificacionFiltro = useDebounce(identificacionFiltro, 800);
    const debouncedBenefactorFiltro = useDebounce(benefactorFiltro, 800);
    // const {pathname} = useLocation();
    const [openPopOver, setOpenPopOver] = useState(false);
@@ -647,22 +663,22 @@ const Donaciones = (props) => {
    }, [user, props.route]);
 
    useEffect(() => {
-      dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, benefactorFiltro, orderByToSend));
-   }, [dispatch, page, rowsPerPage, debouncedNombreFiltro, debouncedBenefactorFiltro, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
+      dispatch(onGetColeccion(page, rowsPerPage, identificacionFiltro, benefactorFiltro, orderByToSend));
+   }, [dispatch, page, rowsPerPage, debouncedIdentificacionFiltro, debouncedBenefactorFiltro, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
 
    const updateColeccion = () => {
       setPage(1);
-      dispatch(onGetColeccion(page, rowsPerPage, nombreFiltro, benefactorFiltro, orderByToSend));
+      dispatch(onGetColeccion(page, rowsPerPage, identificacionFiltro, benefactorFiltro, orderByToSend));
    };
   
    useEffect(() => {
       setPage(1);
-   }, [debouncedNombreFiltro, debouncedBenefactorFiltro, orderByToSend]);
+   }, [debouncedIdentificacionFiltro, debouncedBenefactorFiltro, orderByToSend]);
 
    const queryFilter = (e) => {
       switch (e.target.name) {
-         case 'nombreFiltro':
-            setNombreFiltro(e.target.value);
+         case 'identificacionFiltro':
+            setIdentificacionFiltro(e.target.value);
             break;
          case 'benefactorFiltro':
             setBenefactorFiltro(e.target.value);
@@ -673,7 +689,7 @@ const Donaciones = (props) => {
    };
 
    const limpiarFiltros = () => {
-      setNombreFiltro('');
+      setIdentificacionFiltro('');
       setBenefactorFiltro('');
    };
 
@@ -798,6 +814,18 @@ const Donaciones = (props) => {
          setShowTable(true);
    }, [rows]);
 
+   const handleCloseSearcher = () => {
+      setShowSearch(false);
+    }
+  
+    const handleOpenSearcher = () => {
+      setShowSearch(true);
+    }
+  
+    const setSelectedPersona = (id) => {
+      setIdentificacionFiltro(id);
+    }
+
    return (
       <div className = {classes.root}>
          <Paper className = {classes.paper}>
@@ -808,10 +836,14 @@ const Donaciones = (props) => {
                   handleOpenPopoverColumns = {handleOpenPopoverColumns}
                   queryFilter = {queryFilter}
                   limpiarFiltros = {limpiarFiltros}
-                  nombreFiltro = {nombreFiltro}
+                  identificacionFiltro = {identificacionFiltro}
                   benefactorFiltro = {benefactorFiltro}
                   permisos = {permisos}
                   titulo = {titulo}
+                  handleOnClose={handleCloseSearcher}
+                  handleOnOpen={handleOpenSearcher}
+                  showSearch={showSearch}
+                  setSelectedPersona={setSelectedPersona}
                />)
             }
             { showTable && permisos 

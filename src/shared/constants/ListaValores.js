@@ -127,3 +127,8 @@ export const TIPOS_CUENTA_RECAUDO = [
   {id: 'AH', nombre: 'Ahorros', estado: 1},
   {id: 'CO', nombre: 'Corriente', estado: 1},
 ];
+
+export const ESTADOS_DONACIONES = [
+  {id: 'PD', nombre: 'Por Desembolsar', estado: 1},
+  {id: 'DE', nombre: 'Desembolsado', estado: 1},
+];

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button} from '@material-ui/core';
+import {Box, Button, InputAdornment, IconButton} from '@material-ui/core';
 import {Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import Scrollbar from '../../../../@crema/core/Scrollbar';
@@ -9,6 +9,10 @@ import {Fonts} from '../../../../shared/constants/AppEnums';
 import MyTextField from 'shared/components/MyTextField';
 import MyRadioField from 'shared/components/MyRadioField';
 import MyCurrencyField from 'shared/components/MyCurrencyField';
+import MySearcher from 'shared/components/MySearcher';
+import { Search } from '@material-ui/icons';
+import MySelectField from 'shared/components/MySelectField';
+import { ESTADOS_DONACIONES } from 'shared/constants/ListaValores';
 
 const options=[ 
    {value: '1', label: 'Activo'},
@@ -93,16 +97,39 @@ const DonacionForm=(props) => {
       benefactores, 
       tiposDonacion, 
       formasPago, 
-      bancos, 
+      bancos,
+      setFieldValue, 
+      values
    } = props;
 
    const [disabled, setDisabled]=useState(false);
+   const [showSearch, setShowSearch] = useState(false);
+
    useEffect(() => {
       if (accion === 'ver' || initialValues.estado === '0') 
          setDisabled(true);
    }, [initialValues.estado, accion]);
 
+   useEffect(() => {
+      if(values.persona_identificacion){
+        const persona = personas.find((persona) => persona.identificacion == values.persona_identificacion) //eslint-disable-line
+        setFieldValue('persona_id', persona?.id??'');
+      }
+    },[values.persona_identificacion]) //eslint-disable-line
+
    const classes=useStyles(props);
+
+   const handleCloseSearcher = () => {
+      setShowSearch(false);
+    }
+  
+    const handleOpenPersonaSearcher = () => {
+      setShowSearch(true);
+    }
+  
+    const setSelectedPersona = (id) => {
+      setFieldValue('persona_identificacion',id);
+    }
 
    return (
       <Form noValidate autoComplete='off' className={classes.root}>
@@ -114,15 +141,26 @@ const DonacionForm=(props) => {
 
                <Box px={{md: 5, lg: 8, xl: 10}}>
                   <Box className={classes.inputs_4_A}>
-                     <MyAutocomplete 
-                        className = {classes.myTextField} 
-                        label = 'Nombre' 
-                        name = 'persona_id' 
-                        disabled = {disabled} 
-                        options = {personas} 
-                        style = {{paddingRight: '10px'}}
-                        required
+                     <MyTextField
+                        label='Persona'
+                        name='persona_identificacion'
+                        InputProps={{
+                           endAdornment: (
+                           <InputAdornment position='end'>
+                              <IconButton 
+                              style={{
+                                 pointerEvents: disabled?'none':'auto'
+                              }}
+                              onClick={handleOpenPersonaSearcher}>
+                                 <Search/>
+                              </IconButton>
+                           </InputAdornment>
+                           )
+                        }}
+                        disabled={disabled}
+                        className={classes.myTextField}
                      />
+                     { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleCloseSearcher} getValue={setSelectedPersona}/> }
                      <MyAutocomplete 
                         className = {classes.myTextField} 
                         label = 'Benefactor' 
@@ -161,11 +199,12 @@ const DonacionForm=(props) => {
                         disabled={disabled}
                         required
                      />
-                     <MyTextField 
+                     <MySelectField 
                         className = {classes.myTextField} 
                         label = 'Estado donación' 
                         name = 'donacionesEstadoDonacion' 
                         disabled = {disabled} 
+                        options={ESTADOS_DONACIONES}
                         required
                      />
                      <MyAutocomplete 

@@ -17,13 +17,13 @@ import {appIntl} from '../../@crema/utility/Utils';
 export const onGetColeccion = (
    currentPage,
    rowsPerPage,
-   nombreFiltro,
+   identificacionFiltro,
    benefactorFiltro,
    orderByToSend,
 ) => {
    const {messages} = appIntl();
    const page = currentPage ? currentPage : 0;
-   const nombreFiltroAux = nombreFiltro ? nombreFiltro : '';
+   const IdentificacionFiltroAux = identificacionFiltro ? identificacionFiltro : '';
    const benefactorFiltroAux = benefactorFiltro ? benefactorFiltro : '';
    const ordenar_por = orderByToSend ? orderByToSend : '';
 
@@ -34,7 +34,7 @@ export const onGetColeccion = (
             params: { 
                page: page,
                limite: rowsPerPage,
-               nombre: nombreFiltroAux,
+               identificacion: IdentificacionFiltroAux,
                benefactor: benefactorFiltroAux,
                ordenar_por: ordenar_por,
             },

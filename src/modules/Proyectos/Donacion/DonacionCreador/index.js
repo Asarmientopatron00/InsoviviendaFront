@@ -148,6 +148,7 @@ const DonacionCreador = (props) => {
                      persona_id: selectedRow 
                         ? selectedRow.persona_id 
                         : '',
+                     persona_identificacion: selectedRow?.persona?.identificacion??'',
                      benefactor_id: selectedRow 
                         ? selectedRow.benefactor_id 
                         : '',
@@ -207,7 +208,7 @@ const DonacionCreador = (props) => {
                         setSubmitting(false);
                      }
                   }>
-                  {({initialValues}) => (
+                  {({initialValues, setFieldValue, values}) => (
                      <DonacionForm
                         handleOnClose = { handleOnClose } 
                         accion = { accion }
@@ -218,6 +219,8 @@ const DonacionCreador = (props) => {
                         tiposDonacion = { tiposDonacion }
                         formasPago = { formasPago }
                         bancos = { bancos }
+                        setFieldValue={setFieldValue}
+                        values={values}
                      />
                   )}
                </Formik>
