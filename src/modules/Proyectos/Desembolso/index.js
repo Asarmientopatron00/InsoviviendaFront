@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import { Form, Formik } from 'formik';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
@@ -43,6 +44,7 @@ import {MessageView} from '../../../@crema';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
+import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
 import moment from 'moment';
 import { ESTADO, TIPOS_CUENTA_RECAUDO } from 'shared/constants/ListaValores';
 import Search from '@material-ui/icons/Search';
@@ -339,6 +341,31 @@ const useToolbarStyles = makeStyles((theme) => ({
     gap: '20px',
     minWidth: '100px',
   },
+  linkDocumento: {
+    textDecoration: 'underline',
+    color: 'blue',
+    textAlign: 'center',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+  exportButton: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+    boxShadow:
+      '0px 3px 5px -1px rgb(0 0 0 / 30%), 0px 6px 10px 0px rgb(0 0 0 / 20%), 0px 1px 18px 0px rgb(0 0 0 / 16%)',
+    '&:hover': {
+      backgroundColor: theme.palette.colorHover,
+      cursor: 'pointer',
+    },
+  },
+  x: {
+    position: 'absolute',
+    color: '#4caf50',
+    fontSize: '14px',
+    top: '19px',
+    fontWeight: 'bold',
+  },  
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -387,6 +414,40 @@ const EnhancedTableToolbar = (props) => {
               {titulo}
             </Typography>
             <Box className={classes.horizontalBottoms}>
+              <Formik>
+                <Form>
+                  { permisos.indexOf('Exportar') >= 0 && (
+                    <Tooltip
+                      className = { classes.linkDocumento }
+                      title = 'Exportar'
+                      component = 'a'
+                      href = {
+                        defaultConfig.API_URL +
+                        '/proyectos/desembolso' +
+                        '?proyecto=' +
+                        proyectoFiltro +
+                        '&solicitante=' +
+                        solicitanteFiltro +
+                        '&fechaDesde=' +
+                        fechaDesdeFiltro +
+                        '&fechaHasta=' +
+                        fechaHastaFiltro +
+                        '&estado=' +
+                        estadoFiltro
+                        }>
+                      <IconButton
+                        className = { classes.exportButton }
+                        aria-label = 'filter list'>
+                        <Box component = 'span' className = { classes.x }>
+                          X
+                        </Box>
+                        <InsertDriveFile />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Form>
+              </Formik>
+
               <Tooltip
                 title='Mostrar/Ocultar Columnas'
                 onClick={handleOpenPopoverColumns}>
