@@ -1264,6 +1264,10 @@ const Proyecto = (props) => {
     history.push('/plan-amortizacion-definitivo/'+proyecto_id);
   };
 
+  const onGoBitacorasProyecto = (proyecto_id) => {
+    history.push('/bitacoras-proyecto/'+proyecto_id);
+  };
+
   const onOpenAddProyecto = () => {
     setShowForm(true);
   };
@@ -1497,7 +1501,7 @@ const Proyecto = (props) => {
                                 <Tooltip title={'Bitácoras'}>
                                   <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                     <Comment 
-                                      onClick={() => console.log(row.id)}
+                                      onClick={() => onGoBitacorasProyecto(row.id)}
                                       className={`${classes.generalIcons}`}/>
                                   </Box>
                                 </Tooltip>

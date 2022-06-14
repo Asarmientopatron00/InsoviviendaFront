@@ -51,10 +51,6 @@ const BitacoraProyectoCreador = (props) => {
     ({bitacoraProyectoReducer}) => bitacoraProyectoReducer.selectedRow,
   );
 
-  const proyectos = useSelector(
-    ({proyectoReducer}) => proyectoReducer.ligera,
-  );
-
   const initializeSelectedRow = () => {
     selectedRow = null;
   };
@@ -80,7 +76,7 @@ const BitacoraProyectoCreador = (props) => {
     if ((accion === 'editar') | (accion === 'ver')) {
       dispatch(onShow(proyecto_id, BitacoraProyecto));
     }
-  }, [accion, dispatch, BitacoraProyecto]);
+  }, [accion, dispatch, BitacoraProyecto]);  //eslint-disable-line
 
   return (
     showForm && (
@@ -135,7 +131,6 @@ const BitacoraProyectoCreador = (props) => {
                 setFieldValue={setFieldValue}
                 accion={accion}
                 initialValues={initialValues}
-                proyectos={proyectos}
                 values={values}
               />
             )}

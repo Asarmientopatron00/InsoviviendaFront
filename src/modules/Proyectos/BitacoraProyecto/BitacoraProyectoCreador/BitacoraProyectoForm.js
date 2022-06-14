@@ -79,11 +79,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BitacoraProyectoForm = (props) => {
-  const {handleOnClose, 
+  const {
+    handleOnClose, 
     titulo,
     accion, 
     initialValues, 
-    proyectos,
   } = props;
 
   const [disabled, setDisabled] = useState(false);

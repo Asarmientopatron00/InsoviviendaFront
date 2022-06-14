@@ -267,10 +267,7 @@ const EnhancedTableToolbar = (props) => {
     row,
     onGoBack,
     permisos,
-    titulo,
-    handleOnClose,
-    handleOnOpen,
-    showSearch
+    titulo
   } = props;
   return (
     <Toolbar
@@ -512,7 +509,6 @@ const useStyles = makeStyles((theme) => ({
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-  const [showSearch, setShowSearch] = useState(false);
 
   const [accion, setAccion] = useState('ver');
   const [bitacoraProyectoSeleccionado, setBitacoraProyectoSeleccionado] = useState(0);
@@ -723,15 +719,6 @@ const useStyles = makeStyles((theme) => ({
     }
   }, [rows]);
 
-  const handleCloseSearcher = () => {
-    setShowSearch(false);
-  }
-
-  const handleOpenSearcher = () => {
-    setShowSearch(true);
-  }
-
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -744,9 +731,6 @@ const useStyles = makeStyles((theme) => ({
             onGoBack={onGoBack}
             permisos={permisos}
             titulo={titulo}
-            handleOnClose={handleCloseSearcher}
-            handleOnOpen={handleOpenSearcher}
-            showSearch={showSearch}
           />
         )}
         {showTable && permisos ? (
