@@ -20,10 +20,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 import BitacoraProyectoCreador from './BitacoraProyectoCreador';
 import {
   onGetColeccion,
-} from '../../../redux/actions/BitacorasProyectoAction';
+  onDelete,
+} from '../../../redux/actions/BitacoraProyectoAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -55,7 +57,7 @@ const cells = [
     id: 'bitacorasFechaEvento',
     typeHead: 'string',
     label: 'Fecha Evento',
-    value: (value) => moment(value).format('YYYY-MM-DD'),
+    value: (value) => moment(value).format('DD-MM-YYYY'),
     align: 'left',
     mostrarInicio: true,
   },
@@ -262,8 +264,13 @@ const EnhancedTableToolbar = (props) => {
     numSelected,
     handleOpenPopoverColumns,
     onOpenAddBitacora,
+    row,
     onGoBack,
-    row
+    permisos,
+    titulo,
+    handleOnClose,
+    handleOnOpen,
+    showSearch
   } = props;
   return (
     <Toolbar
@@ -314,7 +321,7 @@ const EnhancedTableToolbar = (props) => {
                   <TuneIcon />
                 </IconButton>
               </Tooltip>
-              {permisos.indexOf('Crear') >= 0 && (
+              {permisos.indexOf('CrearBit') >= 0 && (
                 <Tooltip title='Crear Bitácoras' onClick={onOpenAddBitacora}>
                   <IconButton
                     className={classes.createButton}
@@ -491,7 +498,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-  const TiposIdentificacion = (props) => {
+  const BitacorasProyecto = (props) => {
   const {proyecto_id} = useParams();
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
@@ -505,9 +512,10 @@ const useStyles = makeStyles((theme) => ({
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
+  const [showSearch, setShowSearch] = useState(false);
 
   const [accion, setAccion] = useState('ver');
-  const [tipoIdentificacionSeleccionado, setTipoIdentificacionSeleccionado] = useState(0);
+  const [bitacoraProyectoSeleccionado, setBitacoraProyectoSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
     ({bitacoraProyectoReducer}) => bitacoraProyectoReducer,
   );
@@ -604,8 +612,8 @@ const useStyles = makeStyles((theme) => ({
     }
   };
 
-  const onOpenEditTipoIdentificacion = (id) => {
-    setTipoIdentificacionSeleccionado(id);
+  const onOpenEditBitacoraProyecto = (id) => {
+    setBitacoraProyectoSeleccionado(id);
     setAccion('editar');
     setShowForm(true);
   };
@@ -646,20 +654,16 @@ const useStyles = makeStyles((theme) => ({
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewTipoIdentificacion = (id) => {
-    setTipoIdentificacionSeleccionado(id);
+  const onOpenViewBitacoraProyecto = (id) => {
+    setBitacoraProyectoSeleccionado(id);
     setAccion('ver');
     setShowForm(true);
   };
 
-  const onDelete = (id) => {
-    console.log('Borrando')
-  }
-
-  const onDeleteTipoIdentificacion = (id) => {
+  const onDeleteBitacoraProyecto = (id) => {
     Swal.fire({
       title: 'Confirmar',
-      text: '¿Seguro Que Desea Eliminar El Tipo de Identificación?',
+      text: '¿Seguro Que Desea Eliminar la Bitácora?',
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -675,7 +679,7 @@ const useStyles = makeStyles((theme) => ({
   };
 
   const onOpenAddBitacora = () => {
-    setTipoIdentificacionSeleccionado(0);
+    setBitacoraProyectoSeleccionado(0);
     setAccion('crear');
     setShowForm(true);
   };
@@ -719,6 +723,15 @@ const useStyles = makeStyles((theme) => ({
     }
   }, [rows]);
 
+  const handleCloseSearcher = () => {
+    setShowSearch(false);
+  }
+
+  const handleOpenSearcher = () => {
+    setShowSearch(true);
+  }
+
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -729,6 +742,11 @@ const useStyles = makeStyles((theme) => ({
             onOpenAddBitacora={onOpenAddBitacora}
             row={rows[0]}
             onGoBack={onGoBack}
+            permisos={permisos}
+            titulo={titulo}
+            handleOnClose={handleCloseSearcher}
+            handleOnOpen={handleOpenSearcher}
+            showSearch={showSearch}
           />
         )}
         {showTable && permisos ? (
@@ -789,25 +807,25 @@ const useStyles = makeStyles((theme) => ({
                         selected={isItemSelected}
                         className={classes.row}>
                         <TableCell align='center' className={classes.acciones}>
-                          {permisos.indexOf('ModificarBitcPro') >= 0 && (
+                          {permisos.indexOf('ModificarBitPro') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.editar' />}>
                               <EditIcon
-                                onClick={() => onOpenEditTipoIdentificacion(row.id)}
+                                onClick={() => onOpenEditBitacoraProyecto(row.id)}
                                 className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
                             </Tooltip>
                           )}
                           {permisos.indexOf('ListarBitPro') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.ver' />}>
                               <VisibilityIcon
-                                onClick={() => onOpenViewTipoIdentificacion(row.id)}
+                                onClick={() => onOpenViewBitacoraProyecto(row.id)}
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                             </Tooltip>
                           )}
-                          {permisos.indexOf('EliminarDocPro') >= 0 && (
+                          {permisos.indexOf('EliminarBitPro') >= 0 && (
                             <Tooltip
                               title={<IntlMessages id='boton.eliminar' />}>
                               <DeleteIcon
-                                onClick={() => onDeleteTipoIdentificacion(row.id)}
+                                onClick={() => onDeleteBitacoraProyecto(row.id)}
                                 className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
                             </Tooltip>
                           )}
@@ -890,7 +908,8 @@ const useStyles = makeStyles((theme) => ({
       {showForm ? (
         <BitacoraProyectoCreador
           showForm={showForm}
-          tipoIdentificacion={tipoIdentificacionSeleccionado}
+          proyecto_id = {proyecto_id}
+          BitacoraProyecto={bitacoraProyectoSeleccionado}
           accion={accion}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}
@@ -951,4 +970,4 @@ const useStyles = makeStyles((theme) => ({
   );
 };
 
-export default TiposIdentificacion;
+export default BitacorasProyecto;
