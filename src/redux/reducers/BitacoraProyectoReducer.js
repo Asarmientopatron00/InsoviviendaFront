@@ -1,7 +1,9 @@
 import {
   GET_COLECCION_BITACORA_PROYECTO,
+  SHOW_BITACORA_PROYECTO,
   CREATE_BITACORA_PROYECTO,
-  UPDATE_BITACORA_PROYECTO
+  UPDATE_BITACORA_PROYECTO,
+  DELETE_BITACORA_PROYECTO,
 } from '../../shared/constants/ActionTypes';
 
 const initialState = {
@@ -30,6 +32,12 @@ const BitacoraProyectoReducer = (state = initialState, action) => {
         total: action.payload.data.total,
       };
 
+    case SHOW_BITACORA_PROYECTO:
+      return {
+        ...state,
+        selectedRow: action.payload,
+      };
+
     case UPDATE_BITACORA_PROYECTO:
       return {
         ...state,
@@ -37,6 +45,12 @@ const BitacoraProyectoReducer = (state = initialState, action) => {
       };
 
     case CREATE_BITACORA_PROYECTO:
+        return {
+          ...state,
+          selectedRow: action.payload.datos,
+        };
+
+    case DELETE_BITACORA_PROYECTO:
         return {
           ...state,
           selectedRow: action.payload.datos,

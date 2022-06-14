@@ -7,19 +7,83 @@ import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import MyTextField from 'shared/components/MyTextField';
 import MyRadioField from 'shared/components/MyRadioField';
-import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
 
 const options = [
   {value: '1', label: 'Activo'},
   {value: '0', label: 'Inactivo'},
 ];
 
+const useStyles = makeStyles((theme) => ({
+  bottomsGroup: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingBottom: '20px',
+    gap: '10px',
+    backgroundColor: 'white',
+    paddingRight: '20px',
+    position: 'sticky',
+    left: 0,
+    bottom: 0,
+  },
+  myTextField: {
+    width: '100%',
+    marginBottom: 5,
+    [theme.breakpoints.up('xl')]: {
+      marginBottom: 5,
+    },
+    height: '60px',
+    paddingRight: '20px',
+  },
+  MySelectField: {
+    width: 'auto',
+    marginBottom: 16,
+    [theme.breakpoints.up('xl')]: {
+      marginBottom: 24,
+    },
+    color: theme.palette.primary.main,
+    '&:target': {
+      color: theme.palette.primary.main,
+    },
+  },
+  btnRoot: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.colorHover,
+      cursor: 'pointer',
+    },
+  },
+  btnPrymary: {
+    backgroundColor: theme.palette.secondary.main,
+  },
+  btnSecundary: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  widthFull: {
+    width: '100%',
+  },
+  pointer: {
+    cursor: 'pointer',
+  },
+  inputs_3: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+  },
+  inputs_2_modified: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '1fr 2fr',
+  },
+}));
+
 const BitacoraProyectoForm = (props) => {
   const {handleOnClose, 
+    titulo,
     accion, 
     initialValues, 
-    titulo, 
-    proyectos
+    proyectos,
   } = props;
 
   const [disabled, setDisabled] = useState(false);
@@ -28,60 +92,6 @@ const BitacoraProyectoForm = (props) => {
       setDisabled(true);
     }
   }, [initialValues.bitacorasEstado, accion]);
-
-  const useStyles = makeStyles((theme) => ({
-    bottomsGroup: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      paddingBottom: '20px',
-      gap: '10px',
-      backgroundColor: 'white',
-      paddingRight: '20px',
-      position: 'sticky',
-      left: 0,
-      bottom: 0,
-    },
-    myTextField: {
-      width: '100%',
-      marginBottom: 5,
-      [theme.breakpoints.up('xl')]: {
-        marginBottom: 5,
-      },
-      height: '60px',
-    },
-    MySelectField: {
-      width: 'auto',
-      marginBottom: 16,
-      [theme.breakpoints.up('xl')]: {
-        marginBottom: 24,
-      },
-      color: theme.palette.primary.main,
-      '&:target': {
-        color: theme.palette.primary.main,
-      },
-    },
-    btnRoot: {
-      paddingLeft: 15,
-      paddingRight: 15,
-      color: 'white',
-      '&:hover': {
-        backgroundColor: theme.palette.colorHover,
-        cursor: 'pointer',
-      },
-    },
-    btnPrymary: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-    btnSecundary: {
-      backgroundColor: theme.palette.primary.main,
-    },
-    widthFull: {
-      width: '100%',
-    },
-    pointer: {
-      cursor: 'pointer',
-    },
-  }));
 
   const classes = useStyles(props);
 
@@ -98,17 +108,11 @@ const BitacoraProyectoForm = (props) => {
           </Box>
 
           <Box px={{md: 5, lg: 8, xl: 10}}>
-            <MyAutocomplete
-              options={proyectos}
-              style={{
-                paddingRight: '10px'
-              }}
-              name='proyecto_id'
-              inputValue={initialValues.proyecto_id}
-              label='Proyectos'
+            <MyTextField
               className={classes.myTextField}
-              required
-              disabled={disabled}
+              label='Numero Proyecto'
+              name='proyecto_id'
+              disabled
             />
             <MyTextField
               className={classes.myTextField}

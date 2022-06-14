@@ -8,25 +8,27 @@ import {
   onShow,
   onUpdate,
   onCreate,
-} from '../../../../redux/actions/BitacoraAction';
+} from '../../../../redux/actions/BitacoraProyectoAction';
 import Slide from '@material-ui/core/Slide';
 import BitacoraProyectoForm from './BitacoraProyectoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
+import moment from 'moment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='down' ref={ref} {...props} />;
 });
 
 const validationSchema = yup.object({
-  tipIdeDescripcion: yup.string().required('Requerido'),
+  proyecto_id: yup.number().required('Requerido'),
 });
 
 const BitacoraProyectoCreador = (props) => {
-  const {bitacora, handleOnClose, accion, updateColeccion, titulo} = props;
+  const {BitacoraProyecto, proyecto_id, handleOnClose, accion, updateColeccion, titulo} = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
+
   const useStyles = makeStyles((theme) => ({
     dialogBox: {
       position: 'relative',
@@ -44,8 +46,13 @@ const BitacoraProyectoCreador = (props) => {
   const classes = useStyles(props);
 
   let selectedRow = useRef();
+
   selectedRow = useSelector(
-    ({bitacoraReducer}) => bitacoraReducer.selectedRow,
+    ({bitacoraProyectoReducer}) => bitacoraProyectoReducer.selectedRow,
+  );
+
+  const proyectos = useSelector(
+    ({proyectoReducer}) => proyectoReducer.ligera,
   );
 
   const initializeSelectedRow = () => {
@@ -71,9 +78,9 @@ const BitacoraProyectoCreador = (props) => {
 
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
-      dispatch(onShow(bitacora));
+      dispatch(onShow(proyecto_id, BitacoraProyecto));
     }
-  }, [accion, dispatch, bitacora]);
+  }, [accion, dispatch, BitacoraProyecto]);
 
   return (
     showForm && (
@@ -84,8 +91,7 @@ const BitacoraProyectoCreador = (props) => {
         TransitionComponent={Transition}
         aria-describedby='simple-modal-description'
         className={classes.dialogBox}
-        disableBackdropClick={true}
-        maxWidth={'sm'}>
+        maxWidth={'md'}>
         <Scrollbar>
           <Formik
             initialStatus={true}
@@ -93,18 +99,18 @@ const BitacoraProyectoCreador = (props) => {
             validateOnBlur={false}
             initialValues={{
               id: selectedRow ? selectedRow.id : '',
-              proyecto_id: selectedRow ? selectedRow.proyecto_id: '',
+              proyecto_id: proyecto_id,
               bitacorasFechaEvento: selectedRow
-              ? selectedRow.bitacorasFechaEvento
-                ? moment(selectedRow.bitacorasFechaEvento).format('YYYY-MM-DD')
-                : ''
-              : '',
+                ? selectedRow.bitacorasFechaEvento
+                  ? moment(selectedRow.bitacorasFechaEvento).format('YYYY-MM-DD')
+                  : ''
+                : '',
               bitacorasObservaciones: selectedRow
                 ? selectedRow.bitacorasObservaciones
                   ? selectedRow.bitacorasObservaciones
                   : ''
                 : '',
-                bitacorasEstado: selectedRow
+              bitacorasEstado: selectedRow
                 ? selectedRow.bitacorasEstado === 1
                   ? '1'
                   : '0'
@@ -122,13 +128,15 @@ const BitacoraProyectoCreador = (props) => {
               }
               setSubmitting(false);
             }}>
-            {({initialValues}) => (
+            {({initialValues, setFieldValue, values}) => (
               <BitacoraProyectoForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
+                setFieldValue={setFieldValue}
                 accion={accion}
                 initialValues={initialValues}
                 proyectos={proyectos}
+                values={values}
               />
             )}
           </Formik>
