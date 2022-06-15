@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, MenuItem, InputAdornment} from '@material-ui/core';
+import {Box, Button} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
@@ -19,20 +19,16 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
-import PagoCreador from './PagoCreador';
+import PagoDetalleCreador from './PagoDetalleCreador';
 import {
   onGetColeccion,
-  // onRevert,
-  onRevert,
-} from '../../../redux/actions/PagoAction';
+  // onDelete,
+} from '../../../redux/actions/PagoDetalleAction';
 import {useDispatch, useSelector} from 'react-redux';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+// import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import Popover from '@material-ui/core/Popover';
 import TuneIcon from '@material-ui/icons/Tune';
-import ClearAllIcon from '@material-ui/icons/ClearAll';
 import TextField from '@material-ui/core/TextField';
 import Swal from 'sweetalert2';
 import {
@@ -41,57 +37,96 @@ import {
   DELETE_TYPE,
 } from 'shared/constants/Constantes';
 import {MessageView} from '../../../@crema';
-import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
-import { ESTADO } from 'shared/constants/ListaValores';
-import Search from '@material-ui/icons/Search';
-import MyProjectSearcher from 'shared/components/MyProjectSearcher';
-import { Undo, PictureAsPdf, Info } from '@material-ui/icons';
-import {history} from 'redux/store';
-
-const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
+import { useParams } from 'react-router-dom';
+import { MenuItem } from '@material-ui/core';
+import { ESTADOS_PROYECTO } from 'shared/constants/ListaValores';
+import { ArrowBackIos } from '@material-ui/icons';
+import { history } from 'redux/store';
 
 const {
   theme: {palette},
 } = defaultConfig;
 
+const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
+
 const cells = [
   {
-    id: 'proyecto_id',
+    id: 'pagDetNumeroCuota',
     typeHead: 'numeric',
-    label: 'Proyecto Nro.',
+    label: 'Núm. Cuota',
     value: (value) => value,
     align: 'right',
     mostrarInicio: true,
   },
   {
-    id: 'pagosDescripcionPago',
+    id: 'pagDetFechaVencimientoCuota',
     typeHead: 'string',
-    label: 'Descripción Pago',
+    label: 'Fecha Venc. Cuota',
     value: (value) => value,
     align: 'left',
     mostrarInicio: true,
   },
   {
-    id: 'pagosFechaPago',
-    typeHead: 'string',
-    label: 'Fecha Pago',
-    value: (value) => moment(value).format('DD-MM-YYYY'),
-    align: 'left',
-    mostrarInicio: true,
-  },
-  {
-    id: 'pagosValorTotalPago',
+    id: 'pagDetValorCapitalCuotaPagado',
     typeHead: 'numeric',
-    label: 'Valor Pago',
-    value: (value) => currencyFormatter.format(value),
+    label: 'Capital Cuota',
+    value: (value) =>  currencyFormatter.format(value),
     align: 'right',
     mostrarInicio: true,
   },
   {
-    id: 'pagosEstado',
+    id: 'pagDetValorSaldoCuotaPagado',
+    typeHead: 'numeric',
+    label: 'Saldo Cuota',
+    value: (value) =>  currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'pagDetValorInteresCuotaPagado',
+    typeHead: 'numeric',
+    label: 'Interés Cuota',
+    value: (value) =>  currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'pagDetValorSeguroCuotaPagado',
+    typeHead: 'numeric',
+    label: 'Seguro Cuota',
+    value: (value) =>  currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'pagDetValorInteresMoraPagado',
+    typeHead: 'numeric',
+    label: 'Interés Mora',
+    value: (value) =>  currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'totalPago',
+    typeHead: 'numeric',
+    label: 'Total Pago',
+    value: (value) =>  currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'pagDetDiasMora',
+    typeHead: 'numeric',
+    label: 'Días Mora',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'pagDetEstado',
     typeHead: 'string',
     label: 'Estado',
     value: (value) => (value === 1 ? 'Activo' : 'Inactivo'),
@@ -144,12 +179,12 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow className={classes.head}>
-        <TableCell
+        {/* <TableCell
           align='center'
           style={{fontWeight: 'bold'}}
           className={classes.headCell}>
           {'Acciones'}
-        </TableCell>
+        </TableCell> */}
         {columnasMostradas.map((cell) => {
           if (cell.mostrar) {
             return (
@@ -186,12 +221,6 @@ function EnhancedTableHead(props) {
             return <th key={cell.id}></th>;
           }
         })}
-        <TableCell
-          align='center'
-          style={{fontWeight: 'bold'}}
-          className={classes.headCellWoMargin}>
-          {'Detalles'}
-        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -274,7 +303,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '4fr 4fr 4fr 4fr 1fr',
+    gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '20px',
   },
   pairFilters: {
@@ -289,20 +318,9 @@ const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const {
     numSelected,
-    titulo,
-    onOpenAddPago,
     handleOpenPopoverColumns,
-    queryFilter,
-    proyectoFiltro,
-    fechaDesdeFiltro,
-    fechaHastaFiltro,
-    estadoFiltro,
-    limpiarFiltros,
-    permisos,
-    handleOnClose,
-    handleOnOpen,
-    setSelectedProyecto,
-    showSearch,
+    onGoBack,
+    row
   } = props;
   return (
     <Toolbar
@@ -320,13 +338,29 @@ const EnhancedTableToolbar = (props) => {
       ) : (
         <>
           <Box className={classes.titleTop}>
-            <Typography
-              className={classes.title}
-              variant='h6'
-              id='tableTitle'
-              component='div'>
-              {titulo}
-            </Typography>
+            <Box
+              style={{
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <Tooltip title='Volver'>
+                <ArrowBackIos
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: 30
+                  }}
+                  onClick={onGoBack}
+                />
+              </Tooltip>
+              <Typography
+                className={classes.title}
+                variant='h6'
+                id='tableTitle'
+                component='div'>
+                Pagos - Detalle
+              </Typography>
+            </Box>
             <Box className={classes.horizontalBottoms}>
               <Tooltip
                 title='Mostrar/Ocultar Columnas'
@@ -337,65 +371,31 @@ const EnhancedTableToolbar = (props) => {
                   <TuneIcon />
                 </IconButton>
               </Tooltip>
-              {permisos.indexOf('Crear') >= 0 && (
-                <Tooltip title='Crear Pago' onClick={onOpenAddPago}>
-                  <IconButton
-                    className={classes.createButton}
-                    aria-label='filter list'>
-                    <AddIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
             </Box>
           </Box>
           <Box className={classes.contenedorFiltros}>
             <TextField
               label='Número Proyecto'
-              name='proyectoFiltro'
-              id='proyectoFiltro'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton onClick={handleOnOpen}>
-                      <Search/>
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              onChange={queryFilter}
-              value={proyectoFiltro}
+              name='numeroProyecto'
+              value={row?.proyecto_id??''}
+              disabled
+              className={classes.inputFiltros}
             />
-            { showSearch && <MyProjectSearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectedProyecto}/> }
             <TextField
-              label='Fecha Desde Pago'
-              name='fechaDesdeFiltro'
-              id='fechaDesdeFiltro'
+              label='Fecha Solicitud'
+              name='fechaSolicitud'
               type={'date'}
-              InputLabelProps={{
-                shrink: true
-              }}
-              onChange={queryFilter}
-              value={fechaDesdeFiltro}>
-            </TextField>
+              value={moment(row?.fechaSolicitud??'').format('YYYY-MM-DD')}
+              disabled
+              className={classes.inputFiltros}
+            />
             <TextField
-              label='Fecha Hasta Pago'
-              name='fechaHastaFiltro'
-              id='fechaHastaFiltro'
-              type={'date'}
-              InputLabelProps={{
-                shrink: true
-              }}
-              onChange={queryFilter}
-              value={fechaHastaFiltro}>
-            </TextField>
-            <TextField
-              label='Estado Pago'
-              name='estadoFiltro'
-              id='estadoFiltro'
-              select={true}
-              onChange={queryFilter}
-              value={estadoFiltro}>
-              {ESTADO.map((estado) => {
+              label='Estado Proyecto'
+              name='estado'
+              select
+              disabled
+              value={row?.estado??''}>
+              {ESTADOS_PROYECTO.map((estado) => {
                 return (
                   <MenuItem
                     value={estado.id}
@@ -407,17 +407,39 @@ const EnhancedTableToolbar = (props) => {
                 );
               })}
             </TextField>
-            <Box display='grid'>
-              <Box display='flex' mb={2}>
-                <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
-                  <IconButton
-                    className={classes.clearButton}
-                    aria-label='filter list'>
-                    <ClearAllIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Box>
+          </Box>  
+          <Box className={classes.contenedorFiltros}>
+            <TextField
+              label='Solicitante'
+              name='identificacion'
+              value={row?.identificacion??''}
+              disabled
+              className={classes.inputFiltros}
+            />
+            <TextField
+              label='Nombre'
+              name='solicitante'
+              value={row?.solicitante??''}
+              disabled
+              className={classes.inputFiltros}
+            />
+          </Box>
+          <Box className={classes.contenedorFiltros}>
+            <TextField
+              label='Número Pago'
+              name='numeroPago'
+              value={row?.pago_id??''}
+              disabled
+              className={classes.inputFiltros}
+            />
+            <TextField
+              label='Fecha Pago'
+              name='fechaPago'
+              type={'date'}
+              value={moment(row?.fechaPago??'').format('YYYY-MM-DD')}
+              disabled
+              className={classes.inputFiltros}
+            />
           </Box>
         </>
       )}
@@ -437,11 +459,7 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onOpenAddPago: PropTypes.func.isRequired,
   handleOpenPopoverColumns: PropTypes.func.isRequired,
-  queryFilter: PropTypes.func.isRequired,
-  limpiarFiltros: PropTypes.func.isRequired,
-  proyectoFiltro: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -534,12 +552,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Pago = (props) => {
+const DocumentosProyecto = (props) => {
+  const {pago_id} = useParams();
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [orderByToSend, setOrderByToSend] = React.useState(
-    'proyecto_id:asc',
+    'pagDetNumeroCuota:asc',
   );
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(1);
@@ -547,12 +566,11 @@ const Pago = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-  const [showSearch, setShowSearch] = useState(false);
 
   const [accion, setAccion] = useState('ver');
-  const [pagoSeleccionado, setPagoSeleccionado] = useState(0);
+  const [pagoDetalleSeleccionado, setPagoDetalleSeleccionado] = useState(0);
   const {rows, desde, hasta, ultima_pagina, total} = useSelector(
-    ({pagoReducer}) => pagoReducer,
+    ({pagoDetalleReducer}) => pagoDetalleReducer,
   );
 
   const {message, error, messageType} = useSelector(({common}) => common);
@@ -560,20 +578,13 @@ const Pago = (props) => {
   useEffect(() => {
     if (message || error) {
       if (messageType === DELETE_TYPE) {
-        Swal.fire('Reversado', message, 'success');
+        Swal.fire('Eliminada', message, 'success');
         updateColeccion();
       }
     }
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-  const [proyectoFiltro, setProyectoFiltro] = useState('');
-  const [fechaDesdeFiltro, setFechaDesdeFiltro] = useState('');
-  const [fechaHastaFiltro, setFechaHastaFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-  const debouncedName = useDebounce(proyectoFiltro, 800);
-  const debouncedInitialDate = useDebounce(fechaDesdeFiltro, 800);
-  const debouncedFinalDate = useDebounce(fechaHastaFiltro, 800);
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
@@ -606,14 +617,12 @@ const Pago = (props) => {
 
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
-  const [titulo, setTitulo] = useState('');
 
   useEffect(() => {
     user &&
       user.permisos.forEach((modulo) => {
         modulo.opciones.forEach((opcion) => {
-          if (opcion.url === props.route.path) {
-            setTitulo(opcion.nombre);
+          if (opcion.url === '/proyectos') {
             const permisoAux = [];
             opcion.permisos.forEach((permiso) => {
               if (permiso.permitido) {
@@ -627,75 +636,16 @@ const Pago = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(onGetColeccion(
-      page, 
-      rowsPerPage, 
-      orderByToSend, 
-      proyectoFiltro, 
-      fechaDesdeFiltro, 
-      fechaHastaFiltro, 
-      estadoFiltro, 
-    ));
-  }, [ // eslint-disable-line react-hooks/exhaustive-deps
-    dispatch, 
-    page, 
-    rowsPerPage, 
-    debouncedName, 
-    orderByToSend, 
-    showForm,
-    debouncedInitialDate,
-    debouncedFinalDate,
-    estadoFiltro,
-  ]); 
+    dispatch(onGetColeccion(page, rowsPerPage, orderByToSend, pago_id));
+  }, [dispatch, page, rowsPerPage, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateColeccion = () => {
     setPage(1);
-    dispatch(onGetColeccion(
-      page, 
-      rowsPerPage, 
-      orderByToSend, 
-      proyectoFiltro, 
-      fechaDesdeFiltro, 
-      fechaHastaFiltro, 
-      estadoFiltro, 
-    ));
+    dispatch(onGetColeccion(page, rowsPerPage, orderByToSend, pago_id));
   };
-
   useEffect(() => {
     setPage(1);
-  }, [
-    debouncedName, 
-    orderByToSend, 
-    debouncedInitialDate,
-    debouncedFinalDate,
-    estadoFiltro
-  ]);
-
-  const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'proyectoFiltro':
-        setProyectoFiltro(e.target.value);
-        break;
-      case 'fechaDesdeFiltro':
-        setFechaDesdeFiltro(e.target.value);
-        break;
-      case 'fechaHastaFiltro':
-        setFechaHastaFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const limpiarFiltros = () => {
-    setProyectoFiltro('');
-    setFechaDesdeFiltro('');
-    setFechaHastaFiltro('');
-    setEstadoFiltro('');
-  };
+  }, [orderByToSend]);
 
   const changeOrderBy = (id) => {
     if (orderBy === id) {
@@ -711,12 +661,6 @@ const Pago = (props) => {
       setOrderBy(id);
       setOrderByToSend(id + ':asc');
     }
-  };
-
-  const onOpenEditPago = (id) => {
-    setPagoSeleccionado(id);
-    setAccion('editar');
-    setShowForm(true);
   };
 
   const handleClosePopover = () => {
@@ -755,41 +699,21 @@ const Pago = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const onOpenViewPago = (id) => {
-    setPagoSeleccionado(id);
-    setAccion('ver');
-    setShowForm(true);
-  };
-
-  const onRevertPago = (id) => {
-    Swal.fire({
-      title: 'Confirmar',
-      text: '¿Seguro Que Desea Reversar El Pago?',
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'NO',
-      confirmButtonText: 'SI',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(onRevert(id));
-      }
-    });
-  };
-
-  const onOpenAddPago = () => {
-    setPagoSeleccionado(0);
-    setAccion('crear');
-    setShowForm(true);
-  };
+  // const onOpenViewPagoDetalle = (id) => {
+  //   setPagoDetalleSeleccionado(id);
+  //   setAccion('ver');
+  //   setShowForm(true);
+  // };
 
   const handleOnClose = () => {
     setShowForm(false);
-    setPagoSeleccionado(0);
+    setPagoDetalleSeleccionado(0);
     setAccion('ver');
   };
+
+  const onGoBack = () => {
+    history.push('/pagos');
+  }
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -820,44 +744,25 @@ const Pago = (props) => {
     }
   }, [rows]);
 
-  const handleCloseSearcher = () => {
-    setShowSearch(false);
-  }
-  const handleOpenSearcher = () => {
-    setShowSearch(true);
-  }
-  const setSelectedProyecto = (id) => {
-    setProyectoFiltro(id);
-  }
-
-  const onExportPago = (id) => {
-    window.location.href = defaultConfig.API_URL+'/pagos/'+id;
+  const calcTotal = (row) => {
+    const total = 
+      parseFloat(row['pagDetValorCapitalCuotaPagado']) + 
+      parseFloat(row['pagDetValorSaldoCuotaPagado']) + 
+      parseFloat(row['pagDetValorInteresCuotaPagado']) + 
+      parseFloat(row['pagDetValorSeguroCuotaPagado']) + 
+      parseFloat(row['pagDetValorInteresMoraPagado']);
+    return total;
   }
 
-  const onGoPagosDetalle = (id) => {
-    history.push('/pagos-detalle/'+id);
-  }
- 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         {permisos && (
           <EnhancedTableToolbar
             numSelected={selected.length}
-            onOpenAddPago={onOpenAddPago}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
-            queryFilter={queryFilter}
-            limpiarFiltros={limpiarFiltros}
-            proyectoFiltro={proyectoFiltro}
-            fechaDesdeFiltro={fechaDesdeFiltro}
-            fechaHastaFiltro={fechaHastaFiltro}
-            estadoFiltro={estadoFiltro}
-            permisos={permisos}
-            titulo={titulo}
-            handleOnClose={handleCloseSearcher}
-            handleOnOpen={handleOpenSearcher}
-            showSearch={showSearch}
-            setSelectedProyecto={setSelectedProyecto}
+            row={rows[0]}
+            onGoBack={onGoBack}
           />
         )}
         {showTable && permisos ? (
@@ -917,39 +822,15 @@ const Pago = (props) => {
                         key={row.id}
                         selected={isItemSelected}
                         className={classes.row}>
-                        <TableCell align='center' className={classes.acciones}>
-                          {permisos.indexOf('Modificar') >= 0 && (
-                            <Tooltip title={<IntlMessages id='boton.editar' />}>
-                              <EditIcon
-                                onClick={() => onOpenEditPago(row.id)}
-                                className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Listar') >= 0 && (
+                        {/* <TableCell align='center' className={classes.acciones}>
+                          {permisos.indexOf('ListarDocPro') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.ver' />}>
                               <VisibilityIcon
-                                onClick={() => onOpenViewPago(row.id)}
+                                onClick={() => onOpenViewPagoDetalle(row)}
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                             </Tooltip>
                           )}
-                          {permisos.indexOf('Reversar') >= 0 && (
-                            <Tooltip
-                              title={<IntlMessages id='boton.reversar' />}>
-                              <Undo
-                                onClick={() => onRevertPago(row.id)}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></Undo>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Exportar') >= 0 && row.pagosEstado === 1 && (
-                            <Tooltip
-                              title={<IntlMessages id='boton.exportar' />}>
-                              <PictureAsPdf
-                                onClick={() => onExportPago(row.id)}
-                                style={{color: 'darkred'}}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></PictureAsPdf>
-                            </Tooltip>
-                          )}
-                        </TableCell>
+                        </TableCell> */}
 
                         {columnasMostradas.map((columna) => {
                           if (columna.mostrar) {
@@ -960,7 +841,11 @@ const Pago = (props) => {
                                 align={columna.align}
                                 width={columna.width}
                                 claseBase={classes.cell}
-                                value={columna.value(row[columna.id])}
+                                value={columna.value(
+                                  columna.id === 'totalPago' 
+                                    ? calcTotal(row)
+                                    : row[columna.id]
+                                  )}
                                 cellColor={
                                   columna.cellColor
                                     ? columna.cellColor(row[columna.id])
@@ -972,18 +857,6 @@ const Pago = (props) => {
                             return <th key={row.id + columna.id}></th>;
                           }
                         })}
-                        <TableCell align='center' className={classes.cell}>
-                          <Tooltip title={'Detalles'}>
-                            <Box style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                              <Info 
-                                style={{
-                                  color: '#001597'
-                                }}
-                                onClick={() => onGoPagosDetalle(row.id)}
-                                className={`${classes.generalIcons}`}/>
-                            </Box>
-                          </Tooltip>
-                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -1038,13 +911,12 @@ const Pago = (props) => {
       </Paper>
 
       {showForm ? (
-        <PagoCreador
+        <PagoDetalleCreador
           showForm={showForm}
-          pago={pagoSeleccionado}
+          pagoDetalle={pagoDetalleSeleccionado}
           accion={accion}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}
-          titulo={titulo}
         />
       ) : (
         ''
@@ -1093,13 +965,12 @@ const Pago = (props) => {
         }
         message={
           messageType === UPDATE_TYPE || messageType === CREATE_TYPE
-            ? message :
-              error ? 'El pago seleccionado ya ha sido reversado' : 
-              ''
+            ? message
+            : ''
         }
       />
     </div>
   );
 };
 
-export default Pago;
+export default DocumentosProyecto;

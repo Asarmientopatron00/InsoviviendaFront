@@ -394,3 +394,6 @@ export const SHOW_PAGO = 'show_pago';
 export const UPDATE_PAGO = 'update_pago';
 export const CREATE_PAGO = 'create_pago';
 export const DELETE_PAGO = 'delete_pago';
+
+// PAGOS DETALLE
+export const GET_COLECCION_PAGO_DETALLE = 'get_coleccion_pago_detalle';

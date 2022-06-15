@@ -27,6 +27,7 @@ import PlanAmortizacionDefinitivoReducer from './PlanAmortizacionDefinitivoReduc
 import DonacionReducer from './DonacionReducer';
 import DesembolsoReducer from './DesembolsoReducer';
 import PagoReducer from './PagoReducer';
+import PagoDetalleReducer from './PagoDetalleReducer';
 //Parametrizacion
 import TipoIdentificacionReducer from './TipoIdentificacionReducer';
 import TipoParentescoReducer from './TipoParentescoReducer';
@@ -114,6 +115,7 @@ const reducers = (history) =>
     desembolsoReducer: DesembolsoReducer,
     pagoReducer: PagoReducer,
     bitacoraProyectoReducer: BitacoraProyectoReducer,
+    pagoDetalleReducer: PagoDetalleReducer,
   });
 
 export default reducers;

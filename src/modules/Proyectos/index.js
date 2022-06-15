@@ -55,6 +55,11 @@ export const proyectosConfigs = [
         path: '/bitacoras-proyecto/:proyecto_id',
         component: React.lazy(() => import('./BitacoraProyecto')),
       },
+      {
+        exact: true,
+        path: '/pagos-detalle/:pago_id',
+        component: React.lazy(() => import('./PagoDetalle')),
+      },
     ],
   }
 ];
