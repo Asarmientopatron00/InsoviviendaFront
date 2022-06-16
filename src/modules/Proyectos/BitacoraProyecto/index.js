@@ -25,6 +25,7 @@ import BitacoraProyectoCreador from './BitacoraProyectoCreador';
 import {
   onGetColeccion,
   onDelete,
+  onGetHeaders,
 } from '../../../redux/actions/BitacoraProyectoAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -269,6 +270,17 @@ const EnhancedTableToolbar = (props) => {
     permisos,
     titulo
   } = props;
+
+  const getName = (row) => {
+    if(row){
+      const firstName = row.personasNombres;
+      const lastFirstName = row.personasPrimerApellido;
+      const lastSecondName = row.personasSegundoApellido;
+      const fullName = [firstName, lastFirstName, lastSecondName].filter(Boolean).join(' ');
+      return fullName;
+    }
+    return '';
+  }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -305,7 +317,7 @@ const EnhancedTableToolbar = (props) => {
                 variant='h6'
                 id='tableTitle'
                 component='div'>
-                {titulo}  
+                {titulo} - Bitácoras  
               </Typography>
             </Box>
             <Box className={classes.horizontalBottoms}>
@@ -318,7 +330,7 @@ const EnhancedTableToolbar = (props) => {
                   <TuneIcon />
                 </IconButton>
               </Tooltip>
-              {permisos.indexOf('CrearBit') >= 0 && (
+              {permisos.indexOf('CrearBitPro') >= 0 && (
                 <Tooltip title='Crear Bitácoras' onClick={onOpenAddBitacora}>
                   <IconButton
                     className={classes.createButton}
@@ -333,7 +345,7 @@ const EnhancedTableToolbar = (props) => {
             <TextField
               label='Número Proyecto'
               name='numeroProyecto'
-              value={row?.proyecto_id??''}
+              value={row?.id??''}
               disabled
               className={classes.inputFiltros}
             />
@@ -341,7 +353,7 @@ const EnhancedTableToolbar = (props) => {
               label='Fecha Solicitud'
               name='fechaSolicitud'
               type={'date'}
-              value={moment(row?.fechaSolicitud??'').format('YYYY-MM-DD')}
+              value={moment(row?.proyectosFechaSolicitud??'').format('YYYY-MM-DD')}
               disabled
               className={classes.inputFiltros}
               InputLabelProps={{
@@ -353,7 +365,7 @@ const EnhancedTableToolbar = (props) => {
               name='estado'
               select
               disabled
-              value={row?.estado??''}>
+              value={row?.proyectosEstadoProyecto??''}>
               {ESTADOS_PROYECTO.map((estado) => {
                 return (
                   <MenuItem
@@ -371,14 +383,14 @@ const EnhancedTableToolbar = (props) => {
             <TextField
               label='Solicitante'
               name='identificacion'
-              value={row?.identificacion??''}
+              value={row?.solicitante?.personasIdentificacion??''}
               disabled
               className={classes.inputFiltros}
             />
             <TextField
               label='Nombre'
               name='solicitante'
-              value={row?.solicitante??''}
+              value={getName(row?.solicitante??'')}
               disabled
               className={classes.inputFiltros}
             />
@@ -517,6 +529,7 @@ const useStyles = makeStyles((theme) => ({
   );
 
   const {message, error, messageType} = useSelector(({common}) => common);
+  const headers = useSelector(({bitacoraProyectoReducer}) => bitacoraProyectoReducer.ligera);
 
   useEffect(() => {
     if (message || error) {
@@ -591,6 +604,10 @@ const useStyles = makeStyles((theme) => ({
   useEffect(() => {
     setPage(1);
   }, [orderByToSend]);
+
+  useEffect(() => {
+    dispatch(onGetHeaders(proyecto_id));
+  },[]) //eslint-disable-line
 
   const changeOrderBy = (id) => {
     if (orderBy === id) {
@@ -727,7 +744,7 @@ const useStyles = makeStyles((theme) => ({
             numSelected={selected.length}
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             onOpenAddBitacora={onOpenAddBitacora}
-            row={rows[0]}
+            row={headers}
             onGoBack={onGoBack}
             permisos={permisos}
             titulo={titulo}

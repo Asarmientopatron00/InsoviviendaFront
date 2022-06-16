@@ -1,5 +1,6 @@
 import {
   GET_COLECCION_BITACORA_PROYECTO,
+  GET_COLECCION_HEADERS_BITACORA,
   SHOW_BITACORA_PROYECTO,
   CREATE_BITACORA_PROYECTO,
   UPDATE_BITACORA_PROYECTO,
@@ -39,6 +40,36 @@ export const onGetColeccion = (
         if (data.status === 200) {
           dispatch({type: FETCH_SUCCESS});
           dispatch({type: GET_COLECCION_BITACORA_PROYECTO, payload: data});
+        } else {
+          dispatch({
+            type: FETCH_ERROR,
+            payload: messages['message.somethingWentWrong'],
+          });
+        }
+      })
+      .catch((error) => {
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const onGetHeaders = (
+  proyecto_id
+) => {
+  const {messages} = appIntl();
+
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+    jwtAxios
+      .get('bitacoras-proyecto/'+proyecto_id, {
+        params: {
+          headerInfo: true,
+        },
+      })
+      .then((data) => {
+        if (data.status === 200) {
+          dispatch({type: FETCH_SUCCESS});
+          dispatch({type: GET_COLECCION_HEADERS_BITACORA, payload: data});
         } else {
           dispatch({
             type: FETCH_ERROR,

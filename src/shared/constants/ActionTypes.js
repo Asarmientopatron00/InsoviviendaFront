@@ -351,6 +351,7 @@ export const UPDATE_DOCUMENTOS_PROYECTO = 'update_documentos_proyecto';
 
 // BITACORAS PROYECTO
 export const GET_COLECCION_BITACORA_PROYECTO = 'get_coleccion_bitacora_proyecto';
+export const GET_COLECCION_HEADERS_BITACORA = 'get_coleccion_headers_bitacora';
 export const SHOW_BITACORA_PROYECTO = 'show_bitacora_proyecto';
 export const UPDATE_BITACORA_PROYECTO = 'update_bitacora_proyecto';
 export const CREATE_BITACORA_PROYECTO = 'create_bitacora_proyecto';

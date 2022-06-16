@@ -1,5 +1,6 @@
 import {
   GET_COLECCION_BITACORA_PROYECTO,
+  GET_COLECCION_HEADERS_BITACORA,
   SHOW_BITACORA_PROYECTO,
   CREATE_BITACORA_PROYECTO,
   UPDATE_BITACORA_PROYECTO,
@@ -30,6 +31,12 @@ const BitacoraProyectoReducer = (state = initialState, action) => {
         pagina_actual: action.payload.data.pagina_actual,
         ultima_pagina: action.payload.data.ultima_pagina,
         total: action.payload.data.total,
+      };
+
+    case GET_COLECCION_HEADERS_BITACORA:
+      return {
+        ...state,
+        ligera: action.payload.data,
       };
 
     case SHOW_BITACORA_PROYECTO:
