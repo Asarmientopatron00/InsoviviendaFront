@@ -48,8 +48,9 @@ import moment from 'moment';
 import { ESTADO } from 'shared/constants/ListaValores';
 import Search from '@material-ui/icons/Search';
 import MyProjectSearcher from 'shared/components/MyProjectSearcher';
-import { Undo, PictureAsPdf, Info } from '@material-ui/icons';
+import { Undo, PictureAsPdf, Info, InsertDriveFile } from '@material-ui/icons';
 import {history} from 'redux/store';
+import { Formik, Form } from 'formik';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
 
@@ -283,6 +284,23 @@ const useToolbarStyles = makeStyles((theme) => ({
     gap: '20px',
     minWidth: '100px',
   },
+  exportButton: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+    boxShadow:
+      '0px 3px 5px -1px rgb(0 0 0 / 30%), 0px 6px 10px 0px rgb(0 0 0 / 20%), 0px 1px 18px 0px rgb(0 0 0 / 16%)',
+    '&:hover': {
+      backgroundColor: theme.palette.colorHover,
+      cursor: 'pointer',
+    },
+  },
+  x: {
+      position: 'absolute',
+      color: '#4caf50',
+      fontSize: '14px',
+      top: '19px',
+      fontWeight: 'bold',
+    },
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -328,6 +346,37 @@ const EnhancedTableToolbar = (props) => {
               {titulo}
             </Typography>
             <Box className={classes.horizontalBottoms}>
+              <Formik>
+                <Form>
+                  {permisos.indexOf('Exportar') >= 0 && (
+                    <Tooltip
+                      title='Exportar'
+                      component='a'
+                      className={classes.linkDocumento}
+                      href={
+                        defaultConfig.API_URL +
+                        '/pagos' +
+                        '?proyecto=' +
+                        proyectoFiltro +
+                        '&fechaDesde=' +
+                        fechaDesdeFiltro +
+                        '&fechaHasta=' +
+                        fechaHastaFiltro +
+                        '&estado=' +
+                        estadoFiltro
+                      }>
+                      <IconButton
+                        className={classes.exportButton}
+                        aria-label='filter list'>
+                        <Box component='span' className={classes.x}>
+                          X
+                        </Box>
+                        <InsertDriveFile />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Form>
+              </Formik>
               <Tooltip
                 title='Mostrar/Ocultar Columnas'
                 onClick={handleOpenPopoverColumns}>
