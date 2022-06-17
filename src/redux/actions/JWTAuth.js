@@ -108,6 +108,41 @@ export const onResetCognitoPassword = (email, history) => {
   };
 };
 
+export const onSetNewCognitoPassword = (
+  token,
+  email,
+  password,
+  password_confirmation,
+  history,
+) => {
+  return (dispatch) => {
+    const params = {
+      token: token,
+      email: email,
+      password: password,
+      password_confirmation: password_confirmation,
+    };
+    dispatch({type: FETCH_START});
+    jwtAxios
+      .post('reset-password', params)
+      .then((data) => {
+        if (data) {
+          dispatch({type: FETCH_SUCCESS});
+          dispatch({
+            type: SHOW_MESSAGE,
+            payload: data.data.mensajes,
+          });
+          history.push('/signin');
+        } else {
+          dispatch({type: FETCH_ERROR, payload: data.mensajes});
+        }
+      })
+      .catch(function (error) {
+        dispatch({type: FETCH_ERROR, payload: error.response.data.mensajes[0]});
+      });
+  };
+};
+
 export const onJWTAuthSignout = () => {
   return (dispatch) => {
     dispatch({type: FETCH_START});

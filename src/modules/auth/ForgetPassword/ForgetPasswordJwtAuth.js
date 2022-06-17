@@ -97,8 +97,7 @@ const MyTextField = (props) => {
 const validationSchema = yup.object({
   email: yup
     .string()
-    .email(<IntlMessages id='validation.emailFormat' />)
-    .required(<IntlMessages id='validation.emailRequired' />),
+    .required(<IntlMessages id='validation.usernameRequired' />),
 });
 
 const ForgetPasswordJwtAuth = () => {
@@ -112,7 +111,7 @@ const ForgetPasswordJwtAuth = () => {
       <Box mb={{xs: 6, md: 8, xl: 18}} textAlign='center'>
         <img
           className={classes.image}
-          src={'/assets/images/logo-white-with-name.png'}
+          src={'/assets/images/logo-home.png'}
           alt='crema-logo'
         />
       </Box>
@@ -157,9 +156,9 @@ const ForgetPasswordJwtAuth = () => {
               <Form className={classes.form}>
                 <Box mb={{xs: 5, lg: 8}}>
                   <MyTextField
-                    placeholder='Email'
+                    placeholder='Usuario'
                     name='email'
-                    label={<IntlMessages id='common.emailAddress' />}
+                    label={<IntlMessages id='common.username' />}
                     className={classes.textField}
                     variant='outlined'
                   />

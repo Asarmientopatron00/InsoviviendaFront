@@ -28,6 +28,15 @@ export const authRouteConfig = [
   {
     routes: [
       {
+        exact: true,
+        path: '/reset-password/:token',
+        component: React.lazy(() => import('./ResetPasswordAwsCognito')),
+      },
+    ],
+  },
+  {
+    routes: [
+      {
         path: '/error-pages/error-404',
         component: React.lazy(() => import('../errorPages/Error404/index')),
       },
