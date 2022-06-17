@@ -1232,7 +1232,7 @@ const Desembolso = (props) => {
         message={
           messageType === UPDATE_TYPE || messageType === CREATE_TYPE
             ? message
-            : ''
+            : error
         }
       />
     </div>
