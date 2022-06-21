@@ -731,15 +731,15 @@ const EnhancedTableToolbar = (props) => {
                       className={classes.linkDocumento}
                       href={
                         defaultConfig.API_URL +
-                        '/personas/informe-personas' +
-                        '?nombre=' +
+                        '/proyectos/proyecto' + 
+                        '?solicitante=' +
                         solicitanteFiltro +
                         '&tipo=' +
                         tipoFiltro +
-                        '&fecha=' +
-                        fechaFiltro +
                         '&estado=' +
-                        estadoFiltro
+                        estadoFiltro +
+                        '&fecha=' +
+                        fechaFiltro
                       }>
                       <IconButton
                         className={classes.exportButton}
@@ -1008,6 +1008,23 @@ const useStyles = makeStyles((theme) => ({
   rowsPerPageOptions: {
     marginRight: '10px',
   },
+  exportButton: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+    boxShadow:
+       '0px 3px 5px -1px rgb(0 0 0 / 30%), 0px 6px 10px 0px rgb(0 0 0 / 20%), 0px 1px 18px 0px rgb(0 0 0 / 16%)',
+    '&:hover': {
+       backgroundColor: theme.palette.colorHover,
+       cursor: 'pointer',
+    },
+  },
+  x: {
+    position: 'absolute',
+    color: '#4caf50',
+    fontSize: '14px',
+    top: '19px',
+    fontWeight: 'bold',
+  },  
 }));
 
 const Proyecto = (props) => {
