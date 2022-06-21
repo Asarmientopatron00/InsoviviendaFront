@@ -991,7 +991,7 @@ const Pago = (props) => {
                           )}
                           {permisos.indexOf('Exportar') >= 0 && row.pagosEstado === 1 && (
                             <Tooltip
-                              title={<IntlMessages id='boton.exportar' />}>
+                              title={<IntlMessages id='boton.recibo' />}>
                               <PictureAsPdf
                                 onClick={() => onExportPago(row.id)}
                                 style={{color: 'darkred'}}

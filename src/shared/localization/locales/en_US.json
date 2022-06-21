@@ -11,6 +11,7 @@
   "boton.submit": "Save",
   "boton.reversar": "Revert",
   "boton.exportar": "Export",
+  "boton.recibo": "Invoice",
   "button.click_me": "Click Me",
   "dashboard.quickStats": "Quick Statistics",
   "dashboard.totalClients": "Total Clients",
