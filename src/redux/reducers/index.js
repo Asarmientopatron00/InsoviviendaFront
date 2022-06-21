@@ -58,6 +58,8 @@ import TipoBenefactorReducer from './TipoBenefactorReducer';
 import TipoDonacionReducer from './TipoDonacionReducer';
 import ParametroCorreoReducer from './ParametroCorreoReducer';
 import ParametroConstanteReducer from './ParametroConstanteReducer';
+// Procesos
+import CalculoMoraReducer from './CalculoMoraReducer';
 
 const reducers = (history) =>
   combineReducers({
@@ -116,6 +118,7 @@ const reducers = (history) =>
     pagoReducer: PagoReducer,
     bitacoraProyectoReducer: BitacoraProyectoReducer,
     pagoDetalleReducer: PagoDetalleReducer,
+    calculoMoraReducer: CalculoMoraReducer,
   });
 
 export default reducers;

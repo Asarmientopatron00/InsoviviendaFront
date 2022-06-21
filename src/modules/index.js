@@ -9,6 +9,7 @@ import {seguridadConfigs} from './Seguridad';
 import {personasEntidadesConfigs} from './PersonasEntidades';
 import {parametrizacionConfigs} from './Parametrizacion';
 import { proyectosConfigs } from './Proyectos';
+import { procesosConfigs } from './Procesos';
 
 const routeConfigs = [
   ...authRouteConfig,
@@ -17,6 +18,7 @@ const routeConfigs = [
   ...personasEntidadesConfigs,
   ...parametrizacionConfigs,
   ...proyectosConfigs,
+  ...procesosConfigs,
 ];
 
 const routes = [

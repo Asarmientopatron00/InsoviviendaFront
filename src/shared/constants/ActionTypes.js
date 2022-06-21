@@ -398,3 +398,6 @@ export const DELETE_PAGO = 'delete_pago';
 
 // PAGOS DETALLE
 export const GET_COLECCION_PAGO_DETALLE = 'get_coleccion_pago_detalle';
+
+// CALCULO MORA
+export const EXECUTE_CALCULO_MORA = 'execute_calculo_mora';
