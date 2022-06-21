@@ -1,6 +1,9 @@
 import React, {useContext} from 'react';
 import AppHeader from './AppHeader';
-import {ContentView, ThemeSetting} from '../../../index';
+import {
+  ContentView, 
+  // ThemeSetting
+} from '../../../index';
 import Box from '@material-ui/core/Box';
 import useStyles from './index.style';
 import clsx from 'clsx';
@@ -32,7 +35,7 @@ const HorLightNav = (props) => {
           <ContentView />
         </Box>
       </Box>
-      <ThemeSetting />
+      {/* <ThemeSetting /> */}
       <AppFooter />
       <AppFixedFooter />
     </Box>

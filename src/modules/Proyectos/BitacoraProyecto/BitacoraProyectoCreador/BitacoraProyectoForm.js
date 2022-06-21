@@ -66,10 +66,10 @@ const useStyles = makeStyles((theme) => ({
   pointer: {
     cursor: 'pointer',
   },
-  inputs_3: {
+  inputs_2: {
     width: '100%',
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateColumns: 'repeat(2, 1fr)',
   },
   inputs_2_modified: {
     width: '100%',
@@ -108,36 +108,44 @@ const BitacoraProyectoForm = (props) => {
           </Box>
 
           <Box px={{md: 5, lg: 8, xl: 10}}>
-            <MyTextField
-              className={classes.myTextField}
-              label='Numero Proyecto'
-              name='proyecto_id'
-              disabled
-            />
-            <MyTextField
-              className={classes.myTextField}
-              label='Fecha Evento Bitacora'
-              InputLabelProps={{
-                shrink: true,
-              }}
-              name='bitacorasFechaEvento'
-              disabled={disabled}
-              type='date'
-            />
-            <MyTextField
-              className={classes.myTextField}
-              label='Observaciones'
-              name='bitacorasObservaciones'
-              disabled={disabled}
-            />
-            <MyRadioField
-              label='Estado'
-              name='bitacorasEstado'
-              required
-              disabled={accion === 'ver'}
-              options={options}
-            />
-            
+            <Box className={classes.inputs_2}>
+              <MyTextField
+                className={classes.myTextField}
+                label='Numero Proyecto'
+                name='proyecto_id'
+                disabled
+              />
+              <MyTextField
+                className={classes.myTextField}
+                label='Fecha Evento Bitacora'
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                name='bitacorasFechaEvento'
+                disabled={disabled}
+                type='date'
+              />
+            </Box>
+            <Box>
+              <MyTextField
+                className={classes.myTextField}
+                label='Observaciones'
+                name='bitacorasObservaciones'
+                multiline
+                rows={4}
+                variant='outlined'
+                disabled={disabled}
+              />
+            </Box>
+            <Box style={{marginTop: 60}}>
+              <MyRadioField
+                label='Estado'
+                name='bitacorasEstado'
+                required
+                disabled={accion === 'ver'}
+                options={options}
+              />
+            </Box>
           </Box>
         </Box>
       </Scrollbar>
