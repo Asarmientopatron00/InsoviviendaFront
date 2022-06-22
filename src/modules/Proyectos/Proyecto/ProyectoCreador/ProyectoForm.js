@@ -140,8 +140,16 @@ const ProyectoForm = (props) => {
   useEffect(() => {
     if(values.persona_identificacion){
       const persona = personas.find((persona) => persona.identificacion == values.persona_identificacion) //eslint-disable-line
-      setFieldValue('nombrePersona', persona?.nombre??'');
-      setFieldValue('persona_id', persona?.id??'');
+      if(persona){
+        setFieldValue('nombrePersona', persona?.nombre??'');
+        setFieldValue('persona_id', persona?.id??'');
+        setFieldValue('pais_id', persona?.pais_id??'');
+        setFieldValue('departamento_id', persona?.departamento_id??'');
+        setFieldValue('ciudad_id', persona?.ciudad_id??'');
+        setFieldValue('comuna_id', persona?.comuna_id??'');
+        setFieldValue('barrio_id', persona?.barrio_id??'');
+        setFieldValue('proyectosDireccion', persona?.personasDireccion??'');
+      }
     }
   },[values.persona_identificacion]) //eslint-disable-line
   

@@ -342,7 +342,8 @@ const PersonaCreator = (props) => {
     tiposPiso,
     tiposPoblacion,
     tiposTecho,
-    tiposVivienda
+    tiposVivienda,
+    personas
   } = usePersonaFormData();
   const usuario = GetUsuario();
 
@@ -382,6 +383,7 @@ const PersonaCreator = (props) => {
         validateOnBlur={false}
         initialValues={{
           id: selectedRow ? (selectedRow.id ? selectedRow.id : '') : '',
+          identificacion_persona_asociada: '',
           personasIdentificacion: selectedRow
             ? selectedRow.personasIdentificacion
               ? selectedRow.personasIdentificacion
@@ -858,6 +860,7 @@ const PersonaCreator = (props) => {
               tiposPoblacion={tiposPoblacion}
               tiposTecho={tiposTecho}
               tiposVivienda={tiposVivienda}
+              personas={personas}
             />
             )}
           </>

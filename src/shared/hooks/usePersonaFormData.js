@@ -22,6 +22,7 @@ export const usePersonaFormData = () => {
     tiposTecho: [],
     tiposPiso: [],
     tiposDivision: [],
+    personas: [],
   });
 
   const getPersonaFormData = async () => {
@@ -43,6 +44,7 @@ export const usePersonaFormData = () => {
     const tiposTechoPromise = jwtAxios.get('tipos-techo', {params: {ligera: true}});
     const tiposPisoPromise = jwtAxios.get('tipos-piso', {params: {ligera: true}});
     const tiposDivisionPromise = jwtAxios.get('tipos-division', {params: {ligera: true}});
+    const personasPromise = jwtAxios.get('personas', {params: {ligera: true}});
 
     const [
       tiposIdentificacionResp,
@@ -90,10 +92,12 @@ export const usePersonaFormData = () => {
       tiposTechoResp,
       tiposPisoResp,
       tiposDivisionResp,
+      personasResp,
     ] = await Promise.all([
       tiposTechoPromise,
       tiposPisoPromise,
       tiposDivisionPromise,
+      personasPromise,
     ]);
 
     setState({
@@ -116,6 +120,7 @@ export const usePersonaFormData = () => {
       tiposTecho: tiposTechoResp.data,
       tiposPiso: tiposPisoResp.data,
       tiposDivision: tiposDivisionResp.data,
+      personas: personasResp.data,
     })
   };
 

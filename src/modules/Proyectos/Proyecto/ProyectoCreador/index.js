@@ -130,6 +130,12 @@ const ProyectoCreador = (props) => {
             orientador_identificacion: '',
             nombreOrientador: '',
             proyectosObservaciones: '',
+            pais_id: '',
+            departamento_id: '',
+            ciudad_id: '',
+            comuna_id: '',
+            barrio_id: '',
+            proyectosDireccion: '',
           }}
           validationSchema={validationSchema}
           onSubmit={(data, {setSubmitting}) => {

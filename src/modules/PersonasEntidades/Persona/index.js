@@ -88,7 +88,7 @@ const cells2 = [
   {
     id: 'personasCategoriaAportes',
     typeHead: 'string',
-    label: 'Categoria Aportes',
+    label: 'Categoría',
     value: (value) => CATEGORIA_APORTES.map((catAp) => (catAp.id === value ? catAp.nombre : '')),
     align: 'left',
     mostrarInicio: true,
@@ -121,14 +121,6 @@ const cells = [
     mostrarInicio: true,
   },
   {
-    id: 'personasCategoriaAportes',
-    typeHead: 'string',
-    label: 'Categoria Aportes',
-    value: (value) => CATEGORIA_APORTES.map((catAp) => (catAp.id === value ? catAp.nombre : '')),
-    align: 'left',
-    mostrarInicio: true,
-  },
-  {
     id: 'personasIdentificacion',
     typeHead: 'numeric',
     label: 'Identificacion',
@@ -149,6 +141,14 @@ const cells = [
     typeHead: 'string',
     label: 'Fecha Vinculacion',
     value: (value) => moment(value).format('YYYY-MM-DD'),
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'personasCategoriaAportes',
+    typeHead: 'string',
+    label: 'Categoría',
+    value: (value) => CATEGORIA_APORTES.map((catAp) => (catAp.id === value ? catAp.nombre : '')),
     align: 'left',
     mostrarInicio: true,
   },

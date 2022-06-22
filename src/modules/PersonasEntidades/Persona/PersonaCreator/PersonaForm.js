@@ -11,6 +11,8 @@ import MyCurrencyField from 'shared/components/MyCurrencyField';
 import Search from '@material-ui/icons/Search';
 import MySearcherFamily from 'shared/components/MyFamilySearcher';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
+import MySearcher from 'shared/components/MySearcher';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   bottomsGroup: {
@@ -136,10 +138,14 @@ const PersonaForm = (props) => {
     tiposPiso,
     tiposPoblacion,
     tiposTecho,
-    tiposVivienda
+    tiposVivienda,
+    personas,
   } = props;
 
-  const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState({
+    family: false,
+    persona: false
+  });
   const [disabled, setDisabled] = useState(false);
   const [parts, setParts] = useState({
     general: true,
@@ -215,16 +221,60 @@ const PersonaForm = (props) => {
     }
   },[values.familia_identificacion]) //eslint-disable-line
 
+  useEffect(() => {
+    if(values.identificacion_persona_asociada){
+      const persona = personas.find((person) => person.identificacion === values.identificacion_persona_asociada);
+      if(persona){
+        setFieldValue('departamento_id', persona?.departamento_id??'');
+        setFieldValue('ciudad_id', persona?.ciudad_id??'');
+        setFieldValue('comuna_id', persona?.comuna_id??'');
+        setFieldValue('barrio_id', persona?.barrio_id??'');
+        setFieldValue('personasDireccion', persona?.personasDireccion??'');
+        setFieldValue('personasZona', persona?.personasZona??'');
+        setFieldValue('personasEstrato', persona?.personasEstrato??'');
+        setFieldValue('personasTelefonoCasa', persona?.personasTelefonoCasa??'');
+        setFieldValue('personasTelefonoCelular', persona?.personasTelefonoCelular??'');
+        setFieldValue('tipo_vivienda_id', persona?.tipo_vivienda_id??'');
+        setFieldValue('personasTipoPropiedad', persona?.personasTipoPropiedad??'');
+        setFieldValue('personasNumeroEscritura', persona?.personasNumeroEscritura??'');
+        setFieldValue('personasNotariaEscritura', persona?.personasNotariaEscritura??'');
+        setFieldValue('personasFechaEscritura', moment(persona?.personasFechaEscritura??'').format('YYYY-MM-DD'));
+        setFieldValue('personasIndicativoPC', persona?.personasIndicativoPC??'');
+        setFieldValue('personasNumeroHabitaciones', persona?.personasNumeroHabitaciones??'');
+        setFieldValue('personasNumeroBanos', persona?.personasNumeroBanos??'');
+        setFieldValue('tipo_techo_id', persona?.tipo_techo_id??'');
+        setFieldValue('tipo_piso_id', persona?.tipo_piso_id??'');
+        setFieldValue('tipo_division_id', persona?.tipo_division_id??'');
+        setFieldValue('personasSala', persona?.personasSala??'');
+        setFieldValue('personasComedor', persona?.personasComedor??'');
+        setFieldValue('personasCocina', persona?.personasCocina??'');
+        setFieldValue('personasPatio', persona?.personasPatio??'');
+        setFieldValue('personasTerraza', persona?.personasTerraza??'');
+      }
+    }
+  },[values.identificacion_persona_asociada]) //eslint-disable-line
+
   const setSelecteFamilia = (id) => {
     setFieldValue('familia_identificacion', id);
   }
 
-  const handleOnOpen = () => {
-    setShowSearch(true);
+  const setSelectedPerson = (id) => {
+    setFieldValue('identificacion_persona_asociada', id);
+  }
+
+  const handleOnOpenFamilySearcher = () => {
+    setShowSearch({family: true, persona: false});
+  }
+
+  const handleOnOpenPersonSearcher = () => {
+    setShowSearch({family: false, persona: true});
   }
 
   const handleOnCloseSearch = () => {
-    setShowSearch(false);
+    setShowSearch({
+      family: false,
+      persona: false
+    });
   }
 
   const renderChevron = (state) => {
@@ -322,7 +372,7 @@ const PersonaForm = (props) => {
                   disabled={disabled}
                 />
                 <MySelectField
-                  label='Categoría Aportes'
+                  label='Categoría'
                   className={classes.myTextField}
                   disabled={disabled}
                   name='personasCategoriaAportes'
@@ -489,14 +539,14 @@ const PersonaForm = (props) => {
                       <InputAdornment position='end'>
                         <IconButton style={{
                           pointerEvents: disabled?'none':'auto'
-                        }} onClick={handleOnOpen}>
+                        }} onClick={handleOnOpenFamilySearcher}>
                           <Search/>
                         </IconButton>
                       </InputAdornment>
                     )
                   }}
                 />
-                { showSearch && <MySearcherFamily showForm={showSearch} handleOnClose={handleOnCloseSearch} getValue={setSelecteFamilia}/> }
+                { showSearch.family && <MySearcherFamily showForm={showSearch.family} handleOnClose={handleOnCloseSearch} getValue={setSelecteFamilia}/> }
                 <MyTextField
                   className={classes.myTextField}
                   label='Nombre Familia'
@@ -542,6 +592,28 @@ const PersonaForm = (props) => {
           </Box>
           { parts.vivienda && 
             <>
+              <Box className={classes.inputs_4}>
+                <MyTextField
+                  label='Persona Asociada'
+                  disabled={disabled}
+                  style={{
+                    marginRight: '20px'
+                  }}
+                  name='identificacion_persona_asociada'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton style={{
+                          pointerEvents: disabled?'none':'auto'
+                        }} onClick={handleOnOpenPersonSearcher}>
+                          <Search/>
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                { showSearch.persona && <MySearcher showForm={showSearch.persona} handleOnClose={handleOnCloseSearch} getValue={setSelectedPerson}/> }
+              </Box>
               <Box className={classes.inputs_4}>
                 <MyAutocomplete
                   label='Departamento'

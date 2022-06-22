@@ -8,6 +8,7 @@ export const CATEGORIA_APORTES = [
   {id: 'AG', nombre: 'Aportante Grupo Familiar', estado: 1},
   {id: 'NG', nombre: 'No Aportante Grupo Familiar', estado: 1},
   {id: 'CO', nombre: 'Codeudor', estado: 1},
+  {id: 'OT', nombre: 'Otro', estado: 1},
 ];
 
 export const GENERO = [
