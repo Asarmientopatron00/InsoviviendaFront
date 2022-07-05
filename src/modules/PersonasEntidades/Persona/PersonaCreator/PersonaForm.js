@@ -567,7 +567,7 @@ const PersonaForm = (props) => {
                 <MySelectField
                   label='Estado Registro'
                   className={classes.myTextField}
-                  disabled={disabled}
+                  disabled={accion === 'ver'}
                   name='personasEstadoRegistro'
                   options={ESTADO_REGISTRO}
                   variant='standard'

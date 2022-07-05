@@ -68,6 +68,10 @@ import MySearcherFamily from 'shared/components/MyFamilySearcher';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
+const {
+  theme: {palette},
+} = defaultConfig;
+
 const cells2 = [
   {
     id: 'personasIdentificacion',
@@ -183,6 +187,9 @@ const cells = [
     value: (value) => ESTADO_REGISTRO.map((estReg) => (estReg.id === value ? estReg.nombre : '')),
     align: 'left',
     mostrarInicio: true,
+    cellColor: (value) => value === 'AC' 
+         ? palette.secondary.main 
+         : palette.secondary.red,
   },
   {
     id: 'paisesDescripcion',
