@@ -1,3 +1,4 @@
+import { UPDATE_TYPE } from 'shared/constants/Constantes';
 import {
   FETCH_ERROR,
   FETCH_START,
@@ -50,7 +51,7 @@ const commonReducer = (state = INIT_STATE, action) => {
         loading: false,
         error: action.payload,
         message: '',
-        messageType: 4,
+        messageType: UPDATE_TYPE,
         updatingContent: false,
       };
     }
