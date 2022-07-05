@@ -50,6 +50,7 @@ const commonReducer = (state = INIT_STATE, action) => {
         loading: false,
         error: action.payload,
         message: '',
+        messageType: 4,
         updatingContent: false,
       };
     }

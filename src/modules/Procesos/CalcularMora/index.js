@@ -181,7 +181,7 @@ const CalcularMora = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (message || error) {
+    if (message) {
       if (messageType === UPDATE_TYPE) {
         Swal.fire('Ejecución Exitosa!', message, 'success');
         updateColeccion();
