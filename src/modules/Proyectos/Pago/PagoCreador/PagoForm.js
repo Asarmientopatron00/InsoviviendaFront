@@ -176,7 +176,7 @@ const PagoForm = (props) => {
               <MyRadioField
                 label='Estado'
                 name='pagosEstado'
-                disabled={accion === 'ver'}
+                disabled={disabled}
                 options={options}
               />
             </Box>
