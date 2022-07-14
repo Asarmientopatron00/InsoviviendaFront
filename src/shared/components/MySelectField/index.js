@@ -13,13 +13,16 @@ const MySelectField = (props) => {
       error={!!errorText}
       select
     >
-      	{props.options.map((option, index) => {
-          return (
-            <MenuItem key={index} value={option.id}>
-              {option.nombre}
-            </MenuItem>
-          )
-        })}
+      <MenuItem value=''>
+        <em>Ninguno(a)</em>
+      </MenuItem>
+      {props.options.map((option, index) => {
+        return (
+          <MenuItem key={index} value={option.id}>
+            {option.nombre}
+          </MenuItem>
+        )
+      })}
     </TextField>
   );
 }

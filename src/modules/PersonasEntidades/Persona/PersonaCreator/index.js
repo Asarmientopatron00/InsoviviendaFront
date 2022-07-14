@@ -74,10 +74,10 @@ const validationSchema = yup.object({
     .required('Requerido'),
   tipo_poblacion_id: yup
     .number()
-    .required('Requerido'),
+    .nullable(),
   tipo_discapacidad_id: yup
     .number()
-    .required('Requerido'),
+    .nullable(),
   personasSeguridadSocial: yup
     .string()
     .required('Requerido'),
