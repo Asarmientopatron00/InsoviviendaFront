@@ -88,6 +88,7 @@ const PagoForm = (props) => {
     initialValues, 
     titulo,
     setFieldValue,
+    values
   } = props;
 
   const [showSearch, setShowSearch] = useState(false);
@@ -180,6 +181,16 @@ const PagoForm = (props) => {
                 options={options}
               />
             </Box>
+            {values.pagosEstado === '0' && 
+              <Box className={classes.grid2}>
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Observaciones Anulación'
+                  name='pagosObservacionesAnulacion'
+                  disabled={disabled}
+                />              
+              </Box>
+            }
           </Box>
         </Box>
       </Scrollbar>

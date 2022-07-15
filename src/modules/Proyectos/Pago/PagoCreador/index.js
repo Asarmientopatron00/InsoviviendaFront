@@ -23,6 +23,14 @@ const validationSchema = yup.object({
   pagosFechaPago: yup.date().required('Requerido'),
   pagosValorTotalPago: yup.number().required('Requerido'),
   pagosDescripcionPago: yup.string().required('Requerido'),
+  pagosEstado: yup.string().required('Requerido'),
+  pagosObservacionesAnulacion: yup
+  .string()
+  .nullable()
+  .when('pagosEstado', {
+    is: '0',
+    then: yup.string().required('Debe especificar una razón de anulación')
+  }),
 });
 
 const PagoCreador = (props) => {
@@ -100,6 +108,8 @@ const PagoCreador = (props) => {
               pagosFechaPago: selectedRow?.pagosFechaPago??'',
               pagosValorTotalPago: selectedRow?.pagosValorTotalPago??'',
               pagosDescripcionPago: selectedRow?.pagosDescripcionPago??'',
+              pagosObservacionesAnulacion: selectedRow?.pagosObservacionesAnulacion??'',
+              pagosTipo: 'N',
               pagosEstado: selectedRow
                 ? selectedRow.pagosEstado === 1
                   ? '1'
@@ -118,13 +128,14 @@ const PagoCreador = (props) => {
               }
               setSubmitting(false);
             }}>
-            {({initialValues, setFieldValue}) => (
+            {({initialValues, setFieldValue, values}) => (
               <PagoForm
                 handleOnClose={handleOnClose}
                 titulo={titulo}
                 accion={accion}
                 setFieldValue={setFieldValue}
                 initialValues={initialValues}
+                values={values}
               />
             )}
           </Formik>
