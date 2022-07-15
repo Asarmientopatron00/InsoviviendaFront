@@ -25,7 +25,6 @@ import PagoCreador from './PagoCreador';
 import {
   onGetColeccion,
   // onRevert,
-  onRevert,
 } from '../../../redux/actions/PagoAction';
 import {useDispatch, useSelector} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -48,7 +47,7 @@ import moment from 'moment';
 import { ESTADO } from 'shared/constants/ListaValores';
 import Search from '@material-ui/icons/Search';
 import MyProjectSearcher from 'shared/components/MyProjectSearcher';
-import { Undo, PictureAsPdf, Info, InsertDriveFile } from '@material-ui/icons';
+import { PictureAsPdf, Info, InsertDriveFile } from '@material-ui/icons';
 import {history} from 'redux/store';
 import { Formik, Form } from 'formik';
 
@@ -810,24 +809,6 @@ const Pago = (props) => {
     setShowForm(true);
   };
 
-  const onRevertPago = (id) => {
-    Swal.fire({
-      title: 'Confirmar',
-      text: '¿Seguro Que Desea Reversar El Pago?',
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'NO',
-      confirmButtonText: 'SI',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(onRevert(id));
-      }
-    });
-  };
-
   const onOpenAddPago = () => {
     setPagoSeleccionado(0);
     setAccion('crear');
@@ -979,14 +960,6 @@ const Pago = (props) => {
                               <VisibilityIcon
                                 onClick={() => onOpenViewPago(row.id)}
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
-                            </Tooltip>
-                          )}
-                          {permisos.indexOf('Reversar') >= 0 && (
-                            <Tooltip
-                              title={<IntlMessages id='boton.reversar' />}>
-                              <Undo
-                                onClick={() => onRevertPago(row.id)}
-                                className={`${classes.generalIcons} ${classes.deleteIcon}`}></Undo>
                             </Tooltip>
                           )}
                           {permisos.indexOf('Exportar') >= 0 && row.pagosEstado === 1 && (
