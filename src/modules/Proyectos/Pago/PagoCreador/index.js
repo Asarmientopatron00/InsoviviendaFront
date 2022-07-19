@@ -109,7 +109,7 @@ const PagoCreador = (props) => {
               pagosValorTotalPago: selectedRow?.pagosValorTotalPago??'',
               pagosDescripcionPago: selectedRow?.pagosDescripcionPago??'',
               pagosObservacionesAnulacion: selectedRow?.pagosObservacionesAnulacion??'',
-              pagosTipo: 'N',
+              pagosTipo: selectedRow?.pagosTipo??'N',
               pagosEstado: selectedRow
                 ? selectedRow.pagosEstado === 1
                   ? '1'

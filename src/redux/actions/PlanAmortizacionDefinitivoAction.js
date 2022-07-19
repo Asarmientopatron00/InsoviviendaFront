@@ -44,8 +44,48 @@ export const onGetColeccion = (
          dispatch({type: FETCH_ERROR, payload: error.message});
          });
    };
+};
+
+export const onGetColeccionVencidas = (
+   currentPage,
+   rowsPerPage,
+   orderByToSend,
+   proyecto_id
+) => {
+   const {messages} = appIntl();
+   const page = currentPage ? currentPage : 0;
+   const ordenar_por = orderByToSend ? orderByToSend : '';
+   const proyectoAux = proyecto_id === '' ? -1 : proyecto_id   
+
+   return (dispatch) => {
+      dispatch({type: FETCH_START});
+      jwtAxios
+         .get('plan-amortizacion-definitivo/'+proyectoAux, {
+         params: {
+            page: page,
+            limite: rowsPerPage,
+            ordenar_por: ordenar_por,
+            vencidas: true
+         },
+         })
+         .then((data) => {
+         if (data.status === 200) {
+            dispatch({type: FETCH_SUCCESS});
+            dispatch({type: GET_COLECCION_PLAN_AMORTIZACION_DEFINITIVO, payload: data});
+         } else {
+            dispatch({
+               type: FETCH_ERROR,
+               payload: messages['message.somethingWentWrong'],
+            });
+         }
+         })
+         .catch((error) => {
+         dispatch({type: FETCH_ERROR, payload: error.message});
+         });
    };
-   export const onGetHeaders = (
+};
+
+export const onGetHeaders = (
    proyecto_id
    ) => {
    const {messages} = appIntl();

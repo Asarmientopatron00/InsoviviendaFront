@@ -60,6 +60,11 @@ export const proyectosConfigs = [
         path: '/pagos-detalle/:pago_id',
         component: React.lazy(() => import('./PagoDetalle')),
       },
+      {
+        exact: true,
+        path: '/pagos-especiales',
+        component: React.lazy(() => import('./PagoEspecial')),
+      },
     ],
   }
 ];

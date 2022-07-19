@@ -64,11 +64,11 @@ import { Money, Comment, Check } from '@material-ui/icons';
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
 
 const stateColor = [
-  {id: 'SOL', value: '#79E145'},
+  {id: 'SOL', value: '#ECA313'},
   {id: 'EST', value: '#2397E2'},
   {id: 'APR', value: '#9C00B2'},
   {id: 'FOR', value: '#671DE1'},
-  {id: 'DES', value: '#ECA313'},
+  {id: 'DES', value: '#628233'},
   {id: 'REC', value: '#B20A0A'},
   {id: 'CAN', value: '#B20A0A'},
   {id: 'CON', value: '#B20A0A'},
