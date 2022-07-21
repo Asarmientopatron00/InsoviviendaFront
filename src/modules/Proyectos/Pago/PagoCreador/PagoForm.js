@@ -95,10 +95,10 @@ const PagoForm = (props) => {
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
-    if (accion === 'ver' || initialValues.pagosEstado === '0') {
+    if (accion === 'ver' || initialValues.pagosEstado === '0' || initialValues.pagosTipo === 'E') {
       setDisabled(true);
     }
-  }, [initialValues.pagosEstado, accion]);
+  }, [initialValues.pagosEstado, initialValues.pagosTipo, accion]);
 
   const classes = useStyles(props);
 
@@ -177,7 +177,7 @@ const PagoForm = (props) => {
               <MyRadioField
                 label='Estado'
                 name='pagosEstado'
-                disabled={disabled}
+                disabled={initialValues.pagosEstado === '0'}
                 options={options}
               />
             </Box>
@@ -187,7 +187,7 @@ const PagoForm = (props) => {
                   className={classes.myTextField}
                   label='Observaciones Anulación'
                   name='pagosObservacionesAnulacion'
-                  disabled={disabled}
+                  disabled={initialValues.pagosEstado === '0'}
                 />              
               </Box>
             }

@@ -44,7 +44,7 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
-import { ESTADO } from 'shared/constants/ListaValores';
+import { ESTADO, TIPOS_PAGO } from 'shared/constants/ListaValores';
 import Search from '@material-ui/icons/Search';
 import MyProjectSearcher from 'shared/components/MyProjectSearcher';
 import { PictureAsPdf, Info, InsertDriveFile } from '@material-ui/icons';
@@ -64,6 +64,14 @@ const cells = [
     label: 'Proyecto Nro.',
     value: (value) => value,
     align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'pagosTipo',
+    typeHead: 'string',
+    label: 'Tipo',
+    value: (value) => TIPOS_PAGO.map((tipo) => tipo.id === value ? tipo.nombre : ''),
+    align: 'left',
     mostrarInicio: true,
   },
   {

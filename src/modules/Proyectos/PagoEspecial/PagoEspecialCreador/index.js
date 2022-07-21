@@ -13,8 +13,6 @@ import { Box } from '@material-ui/core';
 const validationSchema = yup.object({
   proyecto_id: yup.number().required('Requerido'),
   pagosDescripcionPago: yup.string().required('Requerido'),
-  // pagosObservacionesPagoEspecial: yup.string().required('Requerido'),
-  pagosObservacionesPagoEspecial: yup.string().nullable(),
   pagosFechaPago: yup.date().required('Requerido'),
   pagosValorTotalPago: yup
     .number()
@@ -115,7 +113,6 @@ const PagoEspecialCreador = (props) => {
             pagosFechaPago: '',
             pagosDescripcionPago: '',
             pagosEstado: '1',
-            pagosObservacionesPagoEspecial: '',
             pagosTipo: 'E',
             pagosValorTotalPago: '',
             pagosValorTotalCuotas: selected?calcularTotalesCuotas().sumTotal:'',

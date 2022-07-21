@@ -133,3 +133,8 @@ export const ESTADOS_DONACIONES = [
   {id: 'PD', nombre: 'Por Desembolsar', estado: 1},
   {id: 'DE', nombre: 'Desembolsado', estado: 1},
 ];
+
+export const TIPOS_PAGO = [
+  {id: 'N', nombre: 'Normal', estado: 1},
+  {id: 'E', nombre: 'Especial', estado: 1},
+];
