@@ -24,7 +24,11 @@ const validationSchema = yup.object({
   proyecto_id: yup.number().required('Requerido'),
   desembolsosFechaDesembolso: yup.date().required('Requerido'),
   desembolsosValorDesembolso: yup.number().required('Requerido'),
-  desembolsosFechaNormalizacionP: yup.date().required('Requerido'),
+  desembolsosFechaNormalizacionP: 
+    yup
+    .date()
+    .required('Requerido')
+    .min(yup.ref('desembolsosFechaDesembolso'), 'Debe ser mayor a la fecha de desembolso'),
   desembolsosDescripcionDes: yup.string().required('Requerido'),
   banco_id: yup.number().required('Requerido'),
   desembolsosTipoCuentaDes: yup.string().required('Requerido'),
