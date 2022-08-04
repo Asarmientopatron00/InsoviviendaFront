@@ -50,6 +50,7 @@ import MyProjectSearcher from 'shared/components/MyProjectSearcher';
 import { PictureAsPdf, Info, InsertDriveFile } from '@material-ui/icons';
 import {history} from 'redux/store';
 import { Formik, Form } from 'formik';
+import MySearcher from 'shared/components/MySearcher';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0});
 
@@ -78,6 +79,22 @@ const cells = [
     id: 'pagosDescripcionPago',
     typeHead: 'string',
     label: 'Descripción Pago',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: false,
+  },
+  {
+    id: 'identificacion',
+    typeHead: 'numeric',
+    label: 'Identificación',
+    value: (value) => value,
+    align: 'right',
+    mostrarInicio: true,
+  },
+  {
+    id: 'persona',
+    typeHead: 'string',
+    label: 'Solicitante',
     value: (value) => value,
     align: 'left',
     mostrarInicio: true,
@@ -282,7 +299,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   contenedorFiltros: {
     width: '90%',
     display: 'grid',
-    gridTemplateColumns: '4fr 4fr 4fr 4fr 1fr',
+    gridTemplateColumns: '4fr 4fr 4fr 4fr 4fr 1fr',
     gap: '20px',
   },
   pairFilters: {
@@ -319,14 +336,17 @@ const EnhancedTableToolbar = (props) => {
     handleOpenPopoverColumns,
     queryFilter,
     proyectoFiltro,
+    personaFiltro,
     fechaDesdeFiltro,
     fechaHastaFiltro,
     estadoFiltro,
     limpiarFiltros,
     permisos,
     handleOnClose,
-    handleOnOpen,
+    handleOnOpenProject,
+    handleOnOpenPerson,
     setSelectedProyecto,
+    setSelectedPersona,
     showSearch,
   } = props;
   return (
@@ -370,7 +390,9 @@ const EnhancedTableToolbar = (props) => {
                         '&fechaHasta=' +
                         fechaHastaFiltro +
                         '&estado=' +
-                        estadoFiltro
+                        estadoFiltro +
+                        '&persona=' +
+                        personaFiltro
                       }>
                       <IconButton
                         className={classes.exportButton}
@@ -412,7 +434,7 @@ const EnhancedTableToolbar = (props) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <IconButton onClick={handleOnOpen}>
+                    <IconButton onClick={handleOnOpenProject}>
                       <Search/>
                     </IconButton>
                   </InputAdornment>
@@ -421,7 +443,24 @@ const EnhancedTableToolbar = (props) => {
               onChange={queryFilter}
               value={proyectoFiltro}
             />
-            { showSearch && <MyProjectSearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectedProyecto}/> }
+            { showSearch.proyecto && <MyProjectSearcher showForm={showSearch.proyecto} handleOnClose={handleOnClose} getValue={setSelectedProyecto}/> }
+            <TextField
+              label='Solicitante'
+              name='personaFiltro'
+              id='personaFiltro'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleOnOpenPerson}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+              onChange={queryFilter}
+              value={personaFiltro}
+            />
+            { showSearch.persona && <MySearcher showForm={showSearch.persona} handleOnClose={handleOnClose} getValue={setSelectedPersona}/> }
             <TextField
               label='Fecha Desde Pago'
               name='fechaDesdeFiltro'
@@ -603,7 +642,10 @@ const Pago = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-  const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState({
+    proyecto: false,
+    persona: false
+  });
 
   const [accion, setAccion] = useState('ver');
   const [pagoSeleccionado, setPagoSeleccionado] = useState(0);
@@ -627,9 +669,11 @@ const Pago = (props) => {
   const [fechaDesdeFiltro, setFechaDesdeFiltro] = useState('');
   const [fechaHastaFiltro, setFechaHastaFiltro] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
-  const debouncedName = useDebounce(proyectoFiltro, 800);
+  const [personaFiltro, setPersonaFiltro] = useState('');
+  const debouncedProject = useDebounce(proyectoFiltro, 800);
   const debouncedInitialDate = useDebounce(fechaDesdeFiltro, 800);
   const debouncedFinalDate = useDebounce(fechaHastaFiltro, 800);
+  const debouncedPerson = useDebounce(personaFiltro, 800);
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
@@ -690,17 +734,19 @@ const Pago = (props) => {
       proyectoFiltro, 
       fechaDesdeFiltro, 
       fechaHastaFiltro, 
-      estadoFiltro, 
+      estadoFiltro,
+      personaFiltro 
     ));
   }, [ // eslint-disable-line react-hooks/exhaustive-deps
     dispatch, 
     page, 
     rowsPerPage, 
-    debouncedName, 
+    debouncedProject, 
     orderByToSend, 
     showForm,
     debouncedInitialDate,
     debouncedFinalDate,
+    debouncedPerson,
     estadoFiltro,
   ]); 
 
@@ -714,17 +760,19 @@ const Pago = (props) => {
       fechaDesdeFiltro, 
       fechaHastaFiltro, 
       estadoFiltro, 
+      personaFiltro
     ));
   };
 
   useEffect(() => {
     setPage(1);
   }, [
-    debouncedName, 
+    debouncedProject, 
     orderByToSend, 
     debouncedInitialDate,
     debouncedFinalDate,
-    estadoFiltro
+    estadoFiltro,
+    debouncedPerson
   ]);
 
   const queryFilter = (e) => {
@@ -741,6 +789,9 @@ const Pago = (props) => {
       case 'estadoFiltro':
         setEstadoFiltro(e.target.value);
         break;
+      case 'personaFiltro':
+        setPersonaFiltro(e.target.value);
+        break;
       default:
         break;
     }
@@ -751,6 +802,7 @@ const Pago = (props) => {
     setFechaDesdeFiltro('');
     setFechaHastaFiltro('');
     setEstadoFiltro('');
+    setPersonaFiltro('');
   };
 
   const changeOrderBy = (id) => {
@@ -859,13 +911,32 @@ const Pago = (props) => {
   }, [rows]);
 
   const handleCloseSearcher = () => {
-    setShowSearch(false);
+    setShowSearch({
+      proyecto: false,
+      persona: false
+    });
   }
-  const handleOpenSearcher = () => {
-    setShowSearch(true);
+
+  const handleOpenProjectSearcher = () => {
+    setShowSearch({
+      proyecto: true,
+      persona: false
+    });
   }
+
+  const handleOpenPersonSearcher = () => {
+    setShowSearch({
+      proyecto: false,
+      persona: true
+    });
+  }
+
   const setSelectedProyecto = (id) => {
     setProyectoFiltro(id);
+  }
+
+  const setSelectedPersona = (id) => {
+    setPersonaFiltro(id);
   }
 
   const onExportPago = (id) => {
@@ -887,15 +958,18 @@ const Pago = (props) => {
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
             proyectoFiltro={proyectoFiltro}
+            personaFiltro={personaFiltro}
             fechaDesdeFiltro={fechaDesdeFiltro}
             fechaHastaFiltro={fechaHastaFiltro}
             estadoFiltro={estadoFiltro}
             permisos={permisos}
             titulo={titulo}
             handleOnClose={handleCloseSearcher}
-            handleOnOpen={handleOpenSearcher}
+            handleOnOpenProject={handleOpenProjectSearcher}
+            handleOnOpenPerson={handleOpenPersonSearcher}
             showSearch={showSearch}
             setSelectedProyecto={setSelectedProyecto}
+            setSelectedPersona={setSelectedPersona}
           />
         )}
         {showTable && permisos ? (

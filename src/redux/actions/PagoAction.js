@@ -20,7 +20,8 @@ export const onGetColeccion = (
   proyecto,
   fechaDesde,
   fechaHasta, 
-  estado
+  estado,
+  persona
 ) => {
   const {messages} = appIntl();
   const page = currentPage ? currentPage : 0;
@@ -28,6 +29,7 @@ export const onGetColeccion = (
   const fechaDesdeAux = fechaDesde??'';
   const fechaHastaAux = fechaHasta??'';
   const estadoAux = estado??'';
+  const personaAux = persona??'';
   const ordenar_por = orderByToSend ? orderByToSend : '';
 
   return (dispatch) => {
@@ -41,6 +43,7 @@ export const onGetColeccion = (
           fechaDesde: fechaDesdeAux,
           fechaHasta: fechaHastaAux,
           estado: estadoAux,
+          persona: personaAux,
           ordenar_por: ordenar_por,
         },
       })

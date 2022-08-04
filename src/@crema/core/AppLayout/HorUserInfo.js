@@ -78,7 +78,15 @@ const HorUserInfo = ({bgType = 'colored'}) => {
             display='flex'
             style={{justifyContent: 'space-evenly', alignItems: 'center'}}
             ml={3}
-            className={classes.userName}>
+            className={classes.userName}
+          >
+            <Box
+              style={{
+                marginRight: 20,
+              }}
+            >
+              <h1 style={{fontSize: 30}}>VISIÓN</h1>
+            </Box>
             <Person
               style={{width: '50px', height: '50px', color: 'white'}}
             />
