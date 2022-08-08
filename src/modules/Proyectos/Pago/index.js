@@ -170,7 +170,7 @@ function EnhancedTableHead(props) {
     <TableHead>
       <TableRow className={classes.head}>
         <TableCell
-          align='center'
+          align='left'
           style={{fontWeight: 'bold'}}
           className={classes.headCell}>
           {'Acciones'}
@@ -1029,7 +1029,7 @@ const Pago = (props) => {
                         key={row.id}
                         selected={isItemSelected}
                         className={classes.row}>
-                        <TableCell align='center' className={classes.acciones}>
+                        <TableCell align='left' className={classes.acciones}>
                           {permisos.indexOf('Modificar') >= 0 && (
                             <Tooltip title={<IntlMessages id='boton.editar' />}>
                               <EditIcon

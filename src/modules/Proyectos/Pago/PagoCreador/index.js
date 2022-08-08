@@ -9,6 +9,7 @@ import {
   onUpdate,
   onCreate,
 } from '../../../../redux/actions/PagoAction';
+import { onGetColeccionLigera as onGetProyectos } from 'redux/actions/ProyectoAction';
 import Slide from '@material-ui/core/Slide';
 import PagoForm from './PagoForm';
 import {Fonts} from '../../../../shared/constants/AppEnums';
@@ -58,12 +59,14 @@ const PagoCreador = (props) => {
   selectedRow = useSelector(
     ({pagoReducer}) => pagoReducer.selectedRow,
   );
+  const proyectos = useSelector(({proyectoReducer}) => proyectoReducer.ligera);
 
   const initializeSelectedRow = () => {
     selectedRow = null;
   };
   useEffect(() => {
     initializeSelectedRow();
+    dispatch(onGetProyectos());
   }, []); //eslint-disable-line
 
   if (accion === 'crear') {
@@ -104,6 +107,8 @@ const PagoCreador = (props) => {
             validateOnBlur={false}
             initialValues={{
               id: selectedRow?.id??'',
+              solicitante: '',
+              identificacion: '',
               proyecto_id: selectedRow?.proyecto_id??'',
               pagosFechaPago: selectedRow?.pagosFechaPago??'',
               pagosValorTotalPago: selectedRow?.pagosValorTotalPago??'',
@@ -136,6 +141,7 @@ const PagoCreador = (props) => {
                 setFieldValue={setFieldValue}
                 initialValues={initialValues}
                 values={values}
+                proyectos={proyectos}
               />
             )}
           </Formik>

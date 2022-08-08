@@ -88,7 +88,8 @@ const PagoForm = (props) => {
     initialValues, 
     titulo,
     setFieldValue,
-    values
+    values,
+    proyectos
   } = props;
 
   const [showSearch, setShowSearch] = useState(false);
@@ -99,6 +100,19 @@ const PagoForm = (props) => {
       setDisabled(true);
     }
   }, [initialValues.pagosEstado, initialValues.pagosTipo, accion]);
+
+  useEffect(() => {
+    if(values.proyecto_id){
+      const proyecto = proyectos.find((proyecto) => proyecto.id === parseInt(values.proyecto_id));
+      if(proyecto){
+        setFieldValue('identificacion', proyecto.identificacion);
+        setFieldValue('solicitante', proyecto.nombre);
+      }
+    } else {
+      setFieldValue('identificacion', '');
+      setFieldValue('solicitante', '')
+    }
+  },[values.proyecto_id, proyectos]); // eslint-disable-line
 
   const classes = useStyles(props);
 
@@ -148,6 +162,24 @@ const PagoForm = (props) => {
               { showSearch && <MyProjectSearcher showForm={showSearch} handleOnClose={handleCloseSearcher} getValue={setSelectedProyecto}/> }
             </Box>
             <Box className={classes.grid}>
+              <MyTextField
+                className={classes.myTextField}
+                label='Identificación'
+                name='identificacion'
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled
+              />
+              <MyTextField
+                className={classes.myTextField}
+                label='Solicitante'
+                name='solicitante'
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                disabled
+              />
               <MyTextField
                 className={classes.myTextField}
                 label='Fecha Pago'
