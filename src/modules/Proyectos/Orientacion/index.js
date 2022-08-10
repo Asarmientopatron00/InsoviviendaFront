@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, InputAdornment} from '@material-ui/core';
+import {Box, Button} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
@@ -21,13 +21,15 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import Search from '@material-ui/icons/Search';
 import OrientacionCreador from './OrientacionCreador';
 import {
   onGetColeccion,
   onDelete,
 } from '../../../redux/actions/OrientacionAction';
-import {useDispatch, useSelector} from 'react-redux';
+import {
+  useDispatch, 
+  useSelector
+} from 'react-redux';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import Popover from '@material-ui/core/Popover';
@@ -47,10 +49,13 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
+
 import { Autocomplete } from '@material-ui/lab';
 import {onGetColeccionLigera as onGetColeccionLigeraTipoAsesoria} from 'redux/actions/TipoAsesoriaAction';
 import {onGetColeccionLigera as onGetColeccionLigeraAsesores} from 'redux/actions/OrientadorAction';
-import MySearcher from 'shared/components/MySearcher';
+import {onGetColeccionLigera as onGetColeccionLigeraPersonaAsesoria} from 'redux/actions/PersonaAsesoriaAction';
+import { Form, Formik } from 'formik';
+import { InsertDriveFile } from '@material-ui/icons';
 
 const {
   theme: {palette},
@@ -298,6 +303,23 @@ const useToolbarStyles = makeStyles((theme) => ({
     gap: '20px',
     minWidth: '100px',
   },
+  exportButton: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+    boxShadow:
+      '0px 3px 5px -1px rgb(0 0 0 / 30%), 0px 6px 10px 0px rgb(0 0 0 / 20%), 0px 1px 18px 0px rgb(0 0 0 / 16%)',
+    '&:hover': {
+      backgroundColor: theme.palette.colorHover,
+      cursor: 'pointer',
+    },
+  },
+  x: {
+    position: 'absolute',
+    color: '#4caf50',
+    fontSize: '14px',
+    top: '19px',
+    fontWeight: 'bold',
+  },
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -308,20 +330,20 @@ const EnhancedTableToolbar = (props) => {
     onOpenAddOrientacion,
     handleOpenPopoverColumns,
     queryFilter,
+    tipoAsesoriasFiltro,
     setTipoAsesoriasFiltro,
     tipos_orientacion,
+    identificacionOrientadorFiltro,
     setIdentificacionOrientadorFiltro,
     orientadores,
     fechaOrientacionFiltro,
     estadoFiltro, 
+    numDocPersonaAsesoriaFiltro,
+    setNumDocPersonaAsesoriaFiltro,
+    personasAsesorias,
     limpiarFiltros,
-    permisos,
-    handleOnClose,
-    handleOnOpen,
-    showSearch,
-    setSelectePersona,
-    identificacionPersonaFiltro
- } = props;
+    permisos
+  } = props;
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -346,6 +368,39 @@ const EnhancedTableToolbar = (props) => {
               {titulo}
             </Typography>
             <Box className={classes.horizontalBottoms}>
+              <Formik>
+                <Form>
+                  {permisos.indexOf('Exportar') >= 0 && (
+                    <Tooltip
+                      title='Exportar'
+                      component='a'
+                      className={classes.linkDocumento}
+                      href={
+                        defaultConfig.API_URL +
+                        '/asesorias' +
+                        '?tipoAsesoria=' +
+                        tipoAsesoriasFiltro +
+                        '&identificacionOrientador=' +
+                        identificacionOrientadorFiltro +
+                        '&fechaOrientacion=' +
+                        fechaOrientacionFiltro +
+                        '&identificacionPersona=' +
+                        numDocPersonaAsesoriaFiltro +
+                        '&estado=' +  
+                        estadoFiltro 
+                      }>
+                    <IconButton
+                        className={classes.exportButton}
+                        aria-label='filter list'>
+                        <Box component='span' className={classes.x}>
+                          X
+                        </Box>
+                        <InsertDriveFile />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Form>
+              </Formik>
               <Tooltip
                 title='Mostrar/Ocultar Columnas'
                 onClick={handleOpenPopoverColumns}>
@@ -367,6 +422,7 @@ const EnhancedTableToolbar = (props) => {
             </Box>
           </Box>
           <Box className={classes.contenedorFiltros}>
+
             <Autocomplete
               id='tipoAsesoriasFiltro'
               onChange={(event, newValue) => newValue&&setTipoAsesoriasFiltro(newValue.id)}
@@ -377,6 +433,7 @@ const EnhancedTableToolbar = (props) => {
               getOptionLabel={(option) => option.nombre}
               renderInput={(params) => <TextField {...params} label='Tipo Asesoria'/>}
             />
+
             <Autocomplete
               id='identificacionOrientadorFiltro'
               onChange={(event, newValue) => newValue&&setIdentificacionOrientadorFiltro(newValue.identificacion)}
@@ -387,6 +444,7 @@ const EnhancedTableToolbar = (props) => {
               getOptionLabel={(option) => option.nombre}
               renderInput={(params) => <TextField {...params} label='Nombre Asesor(a)'/>}
             />
+
             <TextField
               label = 'Fecha Asesoria'
               name='fechaOrientacionFiltro'
@@ -399,6 +457,7 @@ const EnhancedTableToolbar = (props) => {
                 shrink: true,
               }}
             />
+
             <TextField
               label='Estado'
               name='estadoFiltro'
@@ -418,23 +477,18 @@ const EnhancedTableToolbar = (props) => {
                 );
               })}
             </TextField>
-            <TextField
-              label='Asesorado'
-              name='identificacionPersonaFiltro'
-              id='identificacionPersonaFiltro'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton onClick={handleOnOpen}>
-                      <Search/>
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              onChange={queryFilter}
-              value={identificacionPersonaFiltro}
+
+            <Autocomplete
+              id = 'numDocPersonaAsesoriaFiltro'
+              onChange = { (event, newValue) => newValue&&setNumDocPersonaAsesoriaFiltro(newValue.id) }
+              clearOnBlur
+              handleHomeEndKeys
+              selectOnFocus
+              options = { personasAsesorias }
+              getOptionLabel = { (option) => option.nombre }
+              renderInput = { (params) => <TextField {...params} label='Asesorado'/> }
             />
-            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectePersona}/> }
+
             <Box display='grid'>
               <Box display='flex' mb={2}>
                 <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
@@ -575,7 +629,6 @@ const Orientacion = (props) => {
   const dense = true; //Borrar cuando se use el change
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const rowsPerPageOptions = [5, 10, 15, 25, 50];
-  const [showSearch, setShowSearch] = useState(false);
 
   const [accion, setAccion] = useState('ver');
   const [OrientacionSeleccionado, setOrientacionSeleccionado] = useState(0);
@@ -599,12 +652,12 @@ const Orientacion = (props) => {
   const [tipoAsesoriasFiltro, setTipoAsesoriasFiltro] = useState('');
   const [identificacionOrientadorFiltro, setIdentificacionOrientadorFiltro] = useState('');
   const [fechaOrientacionFiltro, setFechaOrientacionFiltro] = useState('');
-  const [identificacionPersonaFiltro, setIdentificacionPersonaFiltro] = useState('');
+  const [numDocPersonaAsesoriaFiltro, setNumDocPersonaAsesoriaFiltro] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
   
   const debouncedTipoAsesoria = useDebounce(tipoAsesoriasFiltro, 800);
   const debouncedNameAsesor = useDebounce(identificacionOrientadorFiltro, 800);
-  const debouncedIdPersona = useDebounce(identificacionPersonaFiltro, 800);
+  const debouncedNumDocPersonaAsesoria = useDebounce(numDocPersonaAsesoriaFiltro, 800);
   
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
@@ -612,6 +665,7 @@ const Orientacion = (props) => {
 
   const tipos_orientacion = useSelector(({tipoAsesoriaReducer}) => tipoAsesoriaReducer.ligera);
   const orientadores = useSelector(({orientadorReducer}) => orientadorReducer.ligera);
+  const personasAsesorias = useSelector(({personaAsesoriaReducer}) => personaAsesoriaReducer.ligera);
 
   let columnasMostradasInicial = [];
 
@@ -669,7 +723,7 @@ const Orientacion = (props) => {
         tipoAsesoriasFiltro,
         identificacionOrientadorFiltro,
         fechaOrientacionFiltro,
-        identificacionPersonaFiltro,
+        numDocPersonaAsesoriaFiltro,
         estadoFiltro, 
         orderByToSend,
         ),
@@ -681,7 +735,7 @@ const Orientacion = (props) => {
       debouncedTipoAsesoria,
       debouncedNameAsesor,
       fechaOrientacionFiltro,
-      debouncedIdPersona,
+      debouncedNumDocPersonaAsesoria,
       estadoFiltro,  
       orderByToSend, 
       showForm,
@@ -695,7 +749,7 @@ const Orientacion = (props) => {
       tipoAsesoriasFiltro,
       identificacionOrientadorFiltro,
       fechaOrientacionFiltro,
-      identificacionPersonaFiltro,
+      numDocPersonaAsesoriaFiltro,
       estadoFiltro, 
       orderByToSend,
       ),
@@ -706,7 +760,7 @@ const Orientacion = (props) => {
   }, [debouncedTipoAsesoria,
       debouncedNameAsesor,
       fechaOrientacionFiltro,
-      debouncedIdPersona,
+      debouncedNumDocPersonaAsesoria,
       estadoFiltro,  
       orderByToSend,
   ]);
@@ -717,6 +771,10 @@ const Orientacion = (props) => {
 
   useEffect(() => {
     dispatch(onGetColeccionLigeraAsesores());
+  },[]) //eslint-disable-line
+
+  useEffect(() => {
+    dispatch(onGetColeccionLigeraPersonaAsesoria());
   },[]) //eslint-disable-line
 
   const queryFilter = (e) => {
@@ -733,8 +791,8 @@ const Orientacion = (props) => {
       case 'estadoFiltro':
         setEstadoFiltro(e.target.value);
         break;
-      case 'identificacionPersonaFiltro':
-        setIdentificacionPersonaFiltro(e.target.value);
+      case 'numDocPersonaAsesoriaFiltro':
+        setNumDocPersonaAsesoriaFiltro(e.target.value);
         break;
       default:
         break;
@@ -746,7 +804,7 @@ const Orientacion = (props) => {
     setIdentificacionOrientadorFiltro('');
     setFechaOrientacionFiltro('');
     setEstadoFiltro('');
-    setIdentificacionPersonaFiltro('');
+    setNumDocPersonaAsesoriaFiltro('');
   };
 
   const changeOrderBy = (id) => {
@@ -872,18 +930,6 @@ const Orientacion = (props) => {
     }
   }, [rows]);
 
-  const handleCloseSearcher = () => {
-    setShowSearch(false);
-  }
-
-  const handleOpenSearcher = () => {
-    setShowSearch(true);
-  }
-
-  const setSelectePersona = (id) => {
-    setIdentificacionPersonaFiltro(id);
-  }
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -894,21 +940,19 @@ const Orientacion = (props) => {
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
+            tipos_orientacion = {tipos_orientacion}
             tipoAsesoriasFiltro = {tipoAsesoriasFiltro}
             setTipoAsesoriasFiltro = {setTipoAsesoriasFiltro}
+            orientadores = {orientadores}
             identificacionOrientadorFiltro = {identificacionOrientadorFiltro} 
             setIdentificacionOrientadorFiltro = {setIdentificacionOrientadorFiltro} 
-            identificacionPersonaFiltro = {identificacionPersonaFiltro}
             fechaOrientacionFiltro = {fechaOrientacionFiltro}
             estadoFiltro = {estadoFiltro}
+            personasAsesorias = { personasAsesorias }
+            numDocPersonaAsesoriaFiltro = { numDocPersonaAsesoriaFiltro }
+            setNumDocPersonaAsesoriaFiltro = { setNumDocPersonaAsesoriaFiltro } 
             permisos={permisos}
-            tipos_orientacion = {tipos_orientacion}
-            orientadores = {orientadores}
             titulo={titulo}
-            handleOnClose={handleCloseSearcher}
-            handleOnOpen={handleOpenSearcher}
-            showSearch={showSearch}
-            setSelectePersona={setSelectePersona}
           />
         )}
         {showTable && permisos ? (

@@ -15,7 +15,7 @@ import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@material-ui/core/styles/index';
 import { onGetColeccionLigera } from 'redux/actions/TipoAsesoriaAction';
 import { onGetColeccionLigera as onGetColeccionLigeraAsesor} from 'redux/actions/OrientadorAction';
-import { onGetColeccionLigera as onGetColeccionLigeraPersona} from 'redux/actions/PersonaAction';
+import { onGetColeccionLigera as onGetColeccionLigeraPersonaAsesoria} from 'redux/actions/PersonaAsesoriaAction';
 import moment from 'moment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -23,21 +23,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const validationSchema = yup.object({
-  tipo_orientacion_id: yup
-      .number()
-      .required('Requerido'),
-  orientador_id: yup
-      .number()
-      .required('Requerido'),
-  orientacionesFechaOrientacion: yup
-      .date()
-      .required('Requerido'),
-  persona_id: yup
-      .number()
-      .required('Requerido'),
-  persona_identificacion: yup
-      .number()
-      .required('Requerido'),
+  tipo_orientacion_id: yup.number().required('Requerido'),
+  orientador_id: yup.number().required('Requerido'),
+  orientacionesFechaOrientacion: yup.date().required('Requerido'),
+  persona_asesoria_id: yup.number().required('Requerido'),
   orientacionesSolicitud: yup.string().required('Requerido'),
   orientacionesNota: yup.string().required('Requerido'),
   orientacionesRespuesta: yup.string().required('Requerido'),
@@ -78,18 +67,19 @@ const OrientacionCreador = (props) => {
     ({orientadorReducer}) => orientadorReducer.ligera,
   );
  
-  const personas = useSelector(
-    ({personaReducer}) => personaReducer.ligera,
+  const personasAsesorias = useSelector(
+    ({personaAsesoriaReducer}) => personaAsesoriaReducer.ligera,
   );
 
-   const initializeSelectedRow = () => {
+  const initializeSelectedRow = () => {
     selectedRow = null;
   };
+
   useEffect(() => {
     initializeSelectedRow();
     dispatch(onGetColeccionLigera()); 
     dispatch(onGetColeccionLigeraAsesor());
-    dispatch(onGetColeccionLigeraPersona());
+    dispatch(onGetColeccionLigeraPersonaAsesoria());
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (accion === 'crear') {
@@ -136,17 +126,7 @@ const OrientacionCreador = (props) => {
                   ? moment(selectedRow.orientacionesFechaOrientacion).format('YYYY-MM-DD')
                   : ''
                 : '',
-              persona_id: selectedRow
-                ? selectedRow.persona_id
-                  ? selectedRow.persona_id
-                  : ''
-                : '',
-              persona_identificacion: selectedRow
-                ? selectedRow?.persona?.identificacion??''
-                : '',
-              nombrePersona: selectedRow
-                ? selectedRow?.persona?.nombre??''
-                : '',
+              persona_asesoria_id: selectedRow ? selectedRow.persona_asesoria_id: '',
               orientacionesSolicitud: selectedRow
                 ? selectedRow.orientacionesSolicitud
                   ? selectedRow.orientacionesSolicitud
@@ -189,7 +169,7 @@ const OrientacionCreador = (props) => {
                 initialValues={initialValues}
                 tiposAsesorias={tiposAsesorias}
                 asesores={asesores}
-                personas={personas}
+                personasAsesorias = { personasAsesorias }
                 values={values}
               />
             )}

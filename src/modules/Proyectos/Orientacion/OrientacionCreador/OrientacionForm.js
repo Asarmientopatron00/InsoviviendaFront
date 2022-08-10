@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, IconButton, InputAdornment} from '@material-ui/core';
+import {Box, Button } from '@material-ui/core';
 import {Form} from 'formik';
 import {makeStyles} from '@material-ui/core/styles';
 import Scrollbar from '../../../../@crema/core/Scrollbar';
@@ -8,8 +8,6 @@ import {Fonts} from '../../../../shared/constants/AppEnums';
 import MyTextField from 'shared/components/MyTextField';
 import MyRadioField from 'shared/components/MyRadioField';
 import MyAutocomplete from '../../../../shared/components/MyAutoComplete';
-import MySearcher from 'shared/components/MySearcher';
-import Search from '@material-ui/icons/Search';
 
 const options = [
   {value: '1', label: 'Activo'},
@@ -84,12 +82,9 @@ const OrientacionForm = (props) => {
     titulo,
     tiposAsesorias, 
     asesores,
-    setFieldValue,
-    personas,
-    values
+    personasAsesorias,
   } = props;
 
-  const [showSearch, setShowSearch] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
@@ -98,27 +93,7 @@ const OrientacionForm = (props) => {
     }
   }, [initialValues.estado, accion]);
 
-  useEffect(() => {
-    if(values.persona_identificacion){
-      const persona = personas.find((persona) => persona.identificacion == values.persona_identificacion) //eslint-disable-line
-      setFieldValue('nombrePersona', persona?.nombre??'');
-      setFieldValue('persona_id', persona?.id??'');
-    }
-  },[values.persona_identificacion]) //eslint-disable-line
-
   const classes = useStyles(props);
-
-  const handleCloseSearcher = () => {
-    setShowSearch(false);
-  }
-
-  const handleOpenPersonaSearcher = () => {
-    setShowSearch(true);
-  }
-
-  const setSelectePersona = (id) => {
-    setFieldValue('persona_identificacion',id);
-  }
 
   return (
     <Form className='' noValidate autoComplete='off'>
@@ -166,31 +141,16 @@ const OrientacionForm = (props) => {
                 disabled={disabled}
                 type='date'
               />
-              <MyTextField
-                label='Persona'
-                name='persona_identificacion'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton 
-                      style={{
-                        pointerEvents: disabled?'none':'auto'
-                      }}
-                      onClick={handleOpenPersonaSearcher}>
-                        <Search/>
-                      </IconButton>
-                    </InputAdornment>
-                  )
+              <MyAutocomplete
+                label = 'Persona'
+                options = {personasAsesorias}
+                style = {{
+                  paddingRight: '10px'
                 }}
-                disabled={disabled}
-                className={classes.myTextField}
-              />
-              { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleCloseSearcher} getValue={setSelectePersona}/> }
-              <MyTextField
-                className={classes.myTextField}
-                label='Nombre Persona'
-                name='nombrePersona'
-                disabled
+                className = {classes.myTextField}
+                name = 'persona_asesoria_id'
+                required
+                disabled = {disabled}
               />
             </Box>
             <MyTextField
