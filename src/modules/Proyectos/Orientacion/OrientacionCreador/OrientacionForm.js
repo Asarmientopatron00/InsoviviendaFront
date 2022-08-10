@@ -72,6 +72,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
   },
+  inputs_2: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '2fr 1fr',
+  },
 }));
 
 const OrientacionForm = (props) => {
@@ -140,7 +145,9 @@ const OrientacionForm = (props) => {
                 name='orientacionesFechaOrientacion'
                 disabled={disabled}
                 type='date'
-              />
+              />                
+            </Box>
+            <Box className={classes.inputs_2}>
               <MyAutocomplete
                 label = 'Persona'
                 options = {personasAsesorias}
