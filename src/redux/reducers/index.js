@@ -17,6 +17,7 @@ import PersonaReducer from './PersonaReducer';
 import FamiliaReducer from './FamiliaReducer';
 import BenefactorReducer from './BenefactorReducer';
 import OrientadorReducer from './OrientadorReducer';
+import PersonaAsesoriaReducer from './PersonaAsesoriaReducer';
 // Proyectos
 import ProyectoReducer from './ProyectoReducer';
 import DocumentosProyectoReducer from './DocumentosProyectoReducer';
@@ -79,6 +80,7 @@ const reducers = (history) =>
     familiaReducer: FamiliaReducer,
     orientadorReducer: OrientadorReducer,
     benefactorReducer: BenefactorReducer,
+    personaAsesoriaReducer: PersonaAsesoriaReducer,
     tipoIdentificacionReducer: TipoIdentificacionReducer,
     proyectoReducer: ProyectoReducer,
     orientacionReducer: OrientacionReducer,

@@ -147,6 +147,14 @@ export const UPDATE_ORIENTADOR = 'update_orientador';
 export const CREATE_ORIENTADOR = 'create_orientador';
 export const DELETE_ORIENTADOR = 'delete_orientador';
 
+// PERSONA ASESORIA
+export const GET_COLECCION_PERSONA_ASESORIA = 'get_coleccion_persona_asesoria';
+export const GET_COLECCION_LIGERA_PERSONA_ASESORIA = 'get_coleccion_ligera_persona_asesoria';
+export const SHOW_PERSONA_ASESORIA = 'show_persona_asesoria';
+export const UPDATE_PERSONA_ASESORIA = 'update_persona_asesoria';
+export const CREATE_PERSONA_ASESORIA = 'create_persona_asesoria';
+export const DELETE_PERSONA_ASESORIA = 'delete_persona_asesoria';
+
 // TIPO PROGRAMA
 export const GET_COLECCION_TIPO_PROGRAMA = 'get_coleccion_tipo_programa';
 export const GET_COLECCION_LIGERA_TIPO_PROGRAMA = 'get_coleccion_ligera_tipo_programa';
