@@ -65,6 +65,16 @@ export const proyectosConfigs = [
         path: '/pagos-especiales',
         component: React.lazy(() => import('./PagoEspecial')),
       },
+      {
+        exact: true,
+        path: '/informe-gestion-cartera',
+        component: React.lazy(() => import('./InformeCartera')),
+      },
+      {
+        exact: true,
+        path: '/pagos-abonar-extra',
+        component: React.lazy(() => import('./Pago')),
+      },
     ],
   }
 ];

@@ -630,6 +630,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Pago = (props) => {
+  const [abonar, setAbonar] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
@@ -713,6 +714,9 @@ const Pago = (props) => {
       user.permisos.forEach((modulo) => {
         modulo.opciones.forEach((opcion) => {
           if (opcion.url === props.route.path) {
+            if(opcion.url === '/pagos-abonar-extra'){
+              setAbonar(true);
+            }
             setTitulo(opcion.nombre);
             const permisoAux = [];
             opcion.permisos.forEach((permiso) => {
@@ -1146,6 +1150,7 @@ const Pago = (props) => {
           showForm={showForm}
           pago={pagoSeleccionado}
           accion={accion}
+          abonar={abonar}
           handleOnClose={handleOnClose}
           updateColeccion={updateColeccion}
           titulo={titulo}

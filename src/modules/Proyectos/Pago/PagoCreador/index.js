@@ -35,7 +35,14 @@ const validationSchema = yup.object({
 });
 
 const PagoCreador = (props) => {
-  const {pago, handleOnClose, accion, updateColeccion, titulo} = props;
+  const {
+    pago, 
+    handleOnClose, 
+    accion, 
+    updateColeccion, 
+    titulo,
+    abonar
+  } = props;
 
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -120,6 +127,7 @@ const PagoCreador = (props) => {
                   ? '1'
                   : '0'
                 : '1',
+              abono_extra: abonar
             }}
             validationSchema={validationSchema}
             onSubmit={(data, {setSubmitting}) => {
