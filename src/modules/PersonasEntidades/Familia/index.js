@@ -1,26 +1,42 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, MenuItem, InputAdornment} from '@material-ui/core';
+import {
+  Box, 
+  Button, 
+  MenuItem, 
+  InputAdornment, 
+  lighten, 
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Toolbar,
+  Typography,
+  Paper,
+  IconButton,
+  Tooltip,
+  FormControlLabel,
+  Switch,
+  Popover,
+  TextField
+} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import {lighten, makeStyles} from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import Pagination from '@material-ui/lab/Pagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
+import {
+  Delete, 
+  Edit, 
+  Add,
+  Visibility,
+  ClearAll,
+  Tune,
+  Search,
+  Check,
+  InsertDriveFile
+} from '@material-ui/icons';
 import FamiliaCreador from './FamiliaCreador';
 import {
   onGetColeccion,
@@ -30,12 +46,7 @@ import {onGetColeccionLigera as onGetColeccionLigeraPersona} from 'redux/actions
 import {onGetColeccionLigera as onGetColeccionLigeraTiposFamilia} from 'redux/actions/TipofamiliaAction';
 import {onGetColeccionLigera as onGetColeccionLigeraCondicionFamilia} from 'redux/actions/CondicionFamiliaAction';
 import {useDispatch, useSelector} from 'react-redux';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import IntlMessages from '../../../@crema/utility/IntlMessages';
-import Popover from '@material-ui/core/Popover';
-import TuneIcon from '@material-ui/icons/Tune';
-import ClearAllIcon from '@material-ui/icons/ClearAll';
-import TextField from '@material-ui/core/TextField';
+import IntlMessages from '@crema/utility/IntlMessages';
 import Swal from 'sweetalert2';
 import {
   UPDATE_TYPE,
@@ -49,10 +60,7 @@ import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
 import { ESTADO } from 'shared/constants/ListaValores';
 import MySearcher from 'shared/components/MySearcher';
-import Search from '@material-ui/icons/Search';
-import Check from '@material-ui/icons/Check';
 import { Form, Formik } from 'formik';
-import { InsertDriveFile } from '@material-ui/icons';
 
 const {
   theme: {palette},
@@ -546,7 +554,7 @@ const EnhancedTableToolbar = (props) => {
                   <IconButton
                     className={classes.columnFilterButton}
                     aria-label='filter list'>
-                    <TuneIcon />
+                    <Tune />
                   </IconButton>
                 </Tooltip>
                 {permisos.indexOf('Crear') >= 0 && (
@@ -554,7 +562,7 @@ const EnhancedTableToolbar = (props) => {
                     <IconButton
                       className={classes.createButton}
                       aria-label='filter list'>
-                      <AddIcon />
+                      <Add />
                     </IconButton>
                   </Tooltip>
                 )}
@@ -642,7 +650,7 @@ const EnhancedTableToolbar = (props) => {
                   <IconButton
                     className={classes.clearButton}
                     aria-label='filter list'>
-                    <ClearAllIcon />
+                    <ClearAll />
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -654,7 +662,7 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Tooltip title='Delete'>
           <IconButton aria-label='delete'>
-            <DeleteIcon />
+            <Delete />
           </IconButton>
         </Tooltip>
       ) : (
@@ -670,10 +678,6 @@ EnhancedTableToolbar.propTypes = {
   handleOpenPopoverColumns: PropTypes.func.isRequired,
   queryFilter: PropTypes.func.isRequired,
   limpiarFiltros: PropTypes.func.isRequired,
-  // identificacionFiltro: PropTypes.string.isRequired,
-  // tipoFamiliaFiltro: PropTypes.string.isRequired,
-  // condicionFamiliaFiltro: PropTypes.string.isRequired,
-  // estadoFiltro: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -766,6 +770,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialFilters = {
+  identificacionFiltro: '',
+  tipoFamiliaFiltro: '',
+  condicionFamiliaFiltro: '',
+  estadoFiltro: '',
+}
+
 const Familias = (props) => {
   const {buscador, onSelectFamilia} = props;
   const [showForm, setShowForm] = useState(false);
@@ -800,14 +811,14 @@ const Familias = (props) => {
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-
-  const [identificacionFiltro, setIdentificacionFiltro] = useState('');
-  const [tipoFamiliaFiltro, setTipoFamiliaFiltro] = useState('');
-  const [condicionFamiliaFiltro, setCondicionFamiliaFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-  
-  const debouncedId = useDebounce(identificacionFiltro, 800);
-  // const {pathname} = useLocation();
+  const [filters, setFilters] = useState(initialFilters);
+  const {
+    identificacionFiltro,
+    tipoFamiliaFiltro,
+    condicionFamiliaFiltro,
+    estadoFiltro,
+  } = filters;
+  const debouncedFilters = useDebounce(filters, 800);
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
 
@@ -879,8 +890,23 @@ const Familias = (props) => {
   }, [user, props.route]);
 
   useEffect(() => {
-    dispatch(onGetColeccion(page, rowsPerPage, identificacionFiltro, tipoFamiliaFiltro, condicionFamiliaFiltro, estadoFiltro, orderByToSend));
-  }, [dispatch, page, rowsPerPage, debouncedId, tipoFamiliaFiltro, condicionFamiliaFiltro, estadoFiltro, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch(onGetColeccion(
+      page, 
+      rowsPerPage, 
+      identificacionFiltro, 
+      tipoFamiliaFiltro, 
+      condicionFamiliaFiltro, 
+      estadoFiltro, 
+      orderByToSend
+    ));
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch, 
+    page, 
+    rowsPerPage, 
+    orderByToSend, 
+    showForm,
+    debouncedFilters
+  ]); 
 
   const updateColeccion = () => {
     setPage(1);
@@ -888,7 +914,7 @@ const Familias = (props) => {
   };
   useEffect(() => {
     setPage(1);
-  }, [debouncedId, tipoFamiliaFiltro, condicionFamiliaFiltro, estadoFiltro, orderByToSend]);
+  }, [debouncedFilters, orderByToSend]);
 
   useEffect(() => {
     dispatch(onGetColeccionLigeraPersona());
@@ -897,29 +923,14 @@ const Familias = (props) => {
   },[]) //eslint-disable-line
 
   const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'identificacionFiltro':
-        setIdentificacionFiltro(e.target.value);
-        break;
-      case 'tipoFamiliaFiltro':
-        setTipoFamiliaFiltro(e.target.value);
-        break;
-      case 'condicionFamiliaFiltro':
-        setCondicionFamiliaFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value
+    })
   };
 
   const limpiarFiltros = () => {
-    setIdentificacionFiltro('');
-    setTipoFamiliaFiltro('');
-    setCondicionFamiliaFiltro('');
-    setEstadoFiltro('');
+    setFilters(initialFilters);
   };
 
   const changeOrderBy = (id) => {
@@ -1046,7 +1057,10 @@ const Familias = (props) => {
   }, [rows]);
 
   const setSelectePersona = (id) => {
-    setIdentificacionFiltro(id);
+    setFilters({
+      ...filters,
+      identificacionFiltro: id
+    });
   }
 
   const handleCloseSearcher = () => {
@@ -1068,7 +1082,6 @@ const Familias = (props) => {
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
             identificacionFiltro={identificacionFiltro}
-            setIdentificacionFiltro={setIdentificacionFiltro}
             estadoFiltro={estadoFiltro}
             personas={personas}
             tipoFamiliaFiltro={tipoFamiliaFiltro}
@@ -1152,24 +1165,24 @@ const Familias = (props) => {
                             <>
                               {permisos.indexOf('Modificar') >= 0 && (
                                 <Tooltip title={<IntlMessages id='boton.editar' />}>
-                                  <EditIcon
+                                  <Edit
                                     onClick={() => onOpenEditFamilia(row.id)}
-                                    className={`${classes.generalIcons} ${classes.editIcon}`}></EditIcon>
+                                    className={`${classes.generalIcons} ${classes.editIcon}`}></Edit>
                                 </Tooltip>
                               )}
                               {permisos.indexOf('Listar') >= 0 && (
                                 <Tooltip title={<IntlMessages id='boton.ver' />}>
-                                  <VisibilityIcon
+                                  <Visibility
                                     onClick={() => onOpenViewFamilia(row.id)}
-                                    className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
+                                    className={`${classes.generalIcons} ${classes.visivilityIcon}`}></Visibility>
                                 </Tooltip>
                               )}
                               {permisos.indexOf('Eliminar') >= 0 && (
                                 <Tooltip
                                   title={<IntlMessages id='boton.eliminar' />}>
-                                  <DeleteIcon
+                                  <Delete
                                     onClick={() => onDeleteFamilia(row.id)}
-                                    className={`${classes.generalIcons} ${classes.deleteIcon}`}></DeleteIcon>
+                                    className={`${classes.generalIcons} ${classes.deleteIcon}`}></Delete>
                                 </Tooltip>
                               )}
                             </>

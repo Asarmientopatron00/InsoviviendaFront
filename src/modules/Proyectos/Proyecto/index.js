@@ -1027,6 +1027,13 @@ const useStyles = makeStyles((theme) => ({
   },  
 }));
 
+const initialFilters = {
+  solicitanteFiltro: '',
+  tipoFiltro: '',
+  fechaFiltro: '',
+  estadoFiltro: '',
+};
+
 const Proyecto = (props) => {
   const {buscador, onSelectProyecto} = props;
   const [showForm, setShowForm] = useState(false);
@@ -1057,16 +1064,14 @@ const Proyecto = (props) => {
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-  const [solicitanteFiltro, setSolicitanteFiltro] = useState('');
-  const [tipoFiltro, setTipoFiltro] = useState('');
-  const [fechaFiltro, setFechaFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-
-  const debouncedName = useDebounce(solicitanteFiltro, 800);
-  const debouncedFamily = useDebounce(tipoFiltro, 800);
-  const debouncedApCategory = useDebounce(fechaFiltro, 800);
-  const debouncedStatus = useDebounce(estadoFiltro, 800);
-
+  const [filters, setFilters] = useState(initialFilters)
+  const {
+    solicitanteFiltro,
+    tipoFiltro,
+    fechaFiltro,
+    estadoFiltro,
+  } = filters;
+  const debouncedFilters = useDebounce(filters, 800);
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
 
@@ -1099,6 +1104,15 @@ const Proyecto = (props) => {
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
   const [titulo, setTitulo] = useState('');
+  const [showTable, setShowTable] = useState(true);
+  
+  useEffect(() => {
+    if (rows.length === 0) {
+      setShowTable(false);
+    } else {
+      setShowTable(true);
+    }
+  }, [rows]);
 
   useEffect(() => {
     user &&
@@ -1134,10 +1148,7 @@ const Proyecto = (props) => {
     dispatch,
     page,
     rowsPerPage,
-    debouncedName,
-    debouncedFamily,
-    debouncedApCategory,
-    debouncedStatus,
+    debouncedFilters,
     orderByToSend,
   ]);
 
@@ -1158,37 +1169,19 @@ const Proyecto = (props) => {
   useEffect(() => {
     setPage(1);
   }, [
-    debouncedName,
     orderByToSend,
-    debouncedFamily,
-    debouncedApCategory,
-    debouncedStatus,
+    debouncedFilters,
   ]);
 
   const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'solicitanteFiltro':
-        setSolicitanteFiltro(e.target.value);
-        break;
-      case 'tipoFiltro':
-        setTipoFiltro(e.target.value);
-        break;
-      case 'fechaFiltro':
-        setFechaFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
+    setFilters({
+      ...filters, 
+      [e.target.name]: e.target.value
+    });
   };
 
   const limpiarFiltros = () => {
-    setSolicitanteFiltro('');
-    setTipoFiltro('');
-    setFechaFiltro('');
-    setEstadoFiltro('');
+    setFilters(initialFilters);
   };
 
   const changeOrderBy = (id) => {
@@ -1321,17 +1314,12 @@ const Proyecto = (props) => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const [showTable, setShowTable] = useState(true);
-  useEffect(() => {
-    if (rows.length === 0) {
-      setShowTable(false);
-    } else {
-      setShowTable(true);
-    }
-  }, [rows]);
 
   const setSelectePersona = (id) => {
-    setSolicitanteFiltro(id);
+    setFilters({
+      ...filters,
+      solicitanteFiltro: id
+    });
   }
 
   return (

@@ -177,3 +177,30 @@ export const onCreate = (params, handleOnClose, updateColeccion) => {
       });
   };
 };
+
+export const onReajustarFecha = (params, handleOnClose) => {
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+    jwtAxios
+      .post('reajustar-fecha-pago', params)
+      .then((data) => {
+        if (data.status === 201) {
+          dispatch({type: FETCH_SUCCESS});
+          dispatch({
+            type: CREATE_DESEMBOLSO,
+            payload: data.data,
+          });
+          handleOnClose();
+          dispatch({
+            type: SHOW_MESSAGE,
+            payload: [data.data.mensajes[0], data.data.mensajes[1]],
+          });
+        } else {
+          dispatch({type: FETCH_ERROR, payload: data.data.mensajes[0]});
+        }
+      })
+      .catch((error) => {
+        dispatch({type: FETCH_ERROR, payload: error.response.data.mensajes[0]});
+      });
+  };
+};

@@ -331,18 +331,17 @@ const EnhancedTableToolbar = (props) => {
     handleOpenPopoverColumns,
     queryFilter,
     tipoAsesoriasFiltro,
-    setTipoAsesoriasFiltro,
     tipos_orientacion,
     identificacionOrientadorFiltro,
-    setIdentificacionOrientadorFiltro,
+    setFilters,
     orientadores,
     fechaOrientacionFiltro,
     estadoFiltro, 
     numDocPersonaAsesoriaFiltro,
-    setNumDocPersonaAsesoriaFiltro,
     personasAsesorias,
     limpiarFiltros,
-    permisos
+    permisos,
+    filters
   } = props;
   return (
     <Toolbar
@@ -425,7 +424,7 @@ const EnhancedTableToolbar = (props) => {
 
             <Autocomplete
               id='tipoAsesoriasFiltro'
-              onChange={(event, newValue) => newValue&&setTipoAsesoriasFiltro(newValue.id)}
+              onChange={(event, newValue) => newValue&&setFilters({...filters, tipoAsesoriaFiltro: newValue.id})}
               clearOnBlur
               handleHomeEndKeys
               selectOnFocus
@@ -436,7 +435,7 @@ const EnhancedTableToolbar = (props) => {
 
             <Autocomplete
               id='identificacionOrientadorFiltro'
-              onChange={(event, newValue) => newValue&&setIdentificacionOrientadorFiltro(newValue.identificacion)}
+              onChange={(event, newValue) => newValue&&setFilters({...filters, identificacionOrientadorFiltro: newValue.identificacion})}
               clearOnBlur
               handleHomeEndKeys
               selectOnFocus
@@ -480,7 +479,7 @@ const EnhancedTableToolbar = (props) => {
 
             <Autocomplete
               id = 'numDocPersonaAsesoriaFiltro'
-              onChange = { (event, newValue) => newValue&&setNumDocPersonaAsesoriaFiltro(newValue.id) }
+              onChange = { (event, newValue) => newValue&&setFilters({...filters, numDocPersonaAsesoriaFiltro: newValue.id})}
               clearOnBlur
               handleHomeEndKeys
               selectOnFocus
@@ -616,6 +615,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialFilters = {
+  tipoAsesoriasFiltro: '',
+  identificacionOrientadorFiltro: '',
+  fechaOrientacionFiltro: '',
+  numDocPersonaAsesoriaFiltro: '',
+  estadoFiltro: '',
+};
+
 const Orientacion = (props) => {
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
@@ -649,15 +656,15 @@ const Orientacion = (props) => {
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
  
-  const [tipoAsesoriasFiltro, setTipoAsesoriasFiltro] = useState('');
-  const [identificacionOrientadorFiltro, setIdentificacionOrientadorFiltro] = useState('');
-  const [fechaOrientacionFiltro, setFechaOrientacionFiltro] = useState('');
-  const [numDocPersonaAsesoriaFiltro, setNumDocPersonaAsesoriaFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-  
-  const debouncedTipoAsesoria = useDebounce(tipoAsesoriasFiltro, 800);
-  const debouncedNameAsesor = useDebounce(identificacionOrientadorFiltro, 800);
-  const debouncedNumDocPersonaAsesoria = useDebounce(numDocPersonaAsesoriaFiltro, 800);
+  const [filters, setFilters] = useState(initialFilters);
+  const {
+    tipoAsesoriasFiltro,
+    identificacionOrientadorFiltro,
+    fechaOrientacionFiltro,
+    numDocPersonaAsesoriaFiltro,
+    estadoFiltro,
+  } = filters;
+  const debouncedFilters = useDebounce(filters, 800);
   
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
@@ -732,11 +739,7 @@ const Orientacion = (props) => {
       dispatch, 
       page, 
       rowsPerPage,
-      debouncedTipoAsesoria,
-      debouncedNameAsesor,
-      fechaOrientacionFiltro,
-      debouncedNumDocPersonaAsesoria,
-      estadoFiltro,  
+      debouncedFilters,
       orderByToSend, 
       showForm,
     ]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -757,11 +760,8 @@ const Orientacion = (props) => {
   };
   useEffect(() => {
     setPage(1);
-  }, [debouncedTipoAsesoria,
-      debouncedNameAsesor,
-      fechaOrientacionFiltro,
-      debouncedNumDocPersonaAsesoria,
-      estadoFiltro,  
+  }, [
+      debouncedFilters,
       orderByToSend,
   ]);
 
@@ -778,33 +778,14 @@ const Orientacion = (props) => {
   },[]) //eslint-disable-line
 
   const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'tipoAsesoriasFiltro':
-        setTipoAsesoriasFiltro(e.target.value);
-        break;
-      case 'identificacionOrientadorFiltro':
-        setIdentificacionOrientadorFiltro(e.target.value);
-        break;
-      case 'fechaOrientacionFiltro':
-        setFechaOrientacionFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      case 'numDocPersonaAsesoriaFiltro':
-        setNumDocPersonaAsesoriaFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
+    setFilters({
+      ...filters, 
+      [e.target.name]: e.target.value
+    });
   };
 
   const limpiarFiltros = () => {
-    setTipoAsesoriasFiltro('');
-    setIdentificacionOrientadorFiltro('');
-    setFechaOrientacionFiltro('');
-    setEstadoFiltro('');
-    setNumDocPersonaAsesoriaFiltro('');
+    setFilters(initialFilters);
   };
 
   const changeOrderBy = (id) => {
@@ -942,17 +923,16 @@ const Orientacion = (props) => {
             limpiarFiltros={limpiarFiltros}
             tipos_orientacion = {tipos_orientacion}
             tipoAsesoriasFiltro = {tipoAsesoriasFiltro}
-            setTipoAsesoriasFiltro = {setTipoAsesoriasFiltro}
+            setFilters = {setFilters}
             orientadores = {orientadores}
             identificacionOrientadorFiltro = {identificacionOrientadorFiltro} 
-            setIdentificacionOrientadorFiltro = {setIdentificacionOrientadorFiltro} 
             fechaOrientacionFiltro = {fechaOrientacionFiltro}
             estadoFiltro = {estadoFiltro}
             personasAsesorias = { personasAsesorias }
-            numDocPersonaAsesoriaFiltro = { numDocPersonaAsesoriaFiltro }
-            setNumDocPersonaAsesoriaFiltro = { setNumDocPersonaAsesoriaFiltro } 
+            numDocPersonaAsesoriaFiltro = { numDocPersonaAsesoriaFiltro } 
             permisos={permisos}
             titulo={titulo}
+            filters={filters}
           />
         )}
         {showTable && permisos ? (

@@ -348,6 +348,7 @@ const EnhancedTableToolbar = (props) => {
     setSelectedProyecto,
     setSelectedPersona,
     showSearch,
+    abonar
   } = props;
   return (
     <Toolbar
@@ -392,7 +393,9 @@ const EnhancedTableToolbar = (props) => {
                         '&estado=' +
                         estadoFiltro +
                         '&persona=' +
-                        personaFiltro
+                        personaFiltro+
+                        '&abonoExtra=' +
+                        abonar
                       }>
                       <IconButton
                         className={classes.exportButton}
@@ -629,6 +632,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialFilters = {
+  proyectoFiltro: '',
+  personaFiltro: '',
+  fechaDesdeFiltro: '',
+  fechaHastaFiltro: '',
+  estadoFiltro: '',
+}
 const Pago = (props) => {
   const [abonar, setAbonar] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -666,15 +676,15 @@ const Pago = (props) => {
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-  const [proyectoFiltro, setProyectoFiltro] = useState('');
-  const [fechaDesdeFiltro, setFechaDesdeFiltro] = useState('');
-  const [fechaHastaFiltro, setFechaHastaFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-  const [personaFiltro, setPersonaFiltro] = useState('');
-  const debouncedProject = useDebounce(proyectoFiltro, 800);
-  const debouncedInitialDate = useDebounce(fechaDesdeFiltro, 800);
-  const debouncedFinalDate = useDebounce(fechaHastaFiltro, 800);
-  const debouncedPerson = useDebounce(personaFiltro, 800);
+  const [filters, setFilters] = useState(initialFilters);
+  const debouncedFilters = useDebounce(filters, 800);
+  const {
+    proyectoFiltro,
+    personaFiltro,
+    fechaDesdeFiltro,
+    fechaHastaFiltro,
+    estadoFiltro,
+  } = filters;
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
@@ -739,19 +749,18 @@ const Pago = (props) => {
       fechaDesdeFiltro, 
       fechaHastaFiltro, 
       estadoFiltro,
-      personaFiltro 
+      personaFiltro,
+      abonar 
     ));
   }, [ // eslint-disable-line react-hooks/exhaustive-deps
     dispatch, 
     page, 
     rowsPerPage, 
-    debouncedProject, 
     orderByToSend, 
     showForm,
-    debouncedInitialDate,
-    debouncedFinalDate,
-    debouncedPerson,
+    debouncedFilters,
     estadoFiltro,
+    abonar
   ]); 
 
   const updateColeccion = () => {
@@ -764,49 +773,27 @@ const Pago = (props) => {
       fechaDesdeFiltro, 
       fechaHastaFiltro, 
       estadoFiltro, 
-      personaFiltro
+      personaFiltro,
+      abonar
     ));
   };
 
   useEffect(() => {
     setPage(1);
-  }, [
-    debouncedProject, 
+  }, [ 
     orderByToSend, 
-    debouncedInitialDate,
-    debouncedFinalDate,
-    estadoFiltro,
-    debouncedPerson
+    debouncedFilters
   ]);
 
   const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'proyectoFiltro':
-        setProyectoFiltro(e.target.value);
-        break;
-      case 'fechaDesdeFiltro':
-        setFechaDesdeFiltro(e.target.value);
-        break;
-      case 'fechaHastaFiltro':
-        setFechaHastaFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      case 'personaFiltro':
-        setPersonaFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
+    setFilters({
+      ...filters, 
+      [e.target.name]: e.target.value
+    });
   };
 
   const limpiarFiltros = () => {
-    setProyectoFiltro('');
-    setFechaDesdeFiltro('');
-    setFechaHastaFiltro('');
-    setEstadoFiltro('');
-    setPersonaFiltro('');
+    setFilters(initialFilters);
   };
 
   const changeOrderBy = (id) => {
@@ -936,11 +923,17 @@ const Pago = (props) => {
   }
 
   const setSelectedProyecto = (id) => {
-    setProyectoFiltro(id);
+    setFilters({
+      ...filters, 
+      proyectoFiltro: id
+    });
   }
 
   const setSelectedPersona = (id) => {
-    setPersonaFiltro(id);
+    setFilters({
+      ...filters, 
+      personaFiltro: id
+    });
   }
 
   const onExportPago = (id) => {
@@ -961,11 +954,6 @@ const Pago = (props) => {
             handleOpenPopoverColumns={handleOpenPopoverColumns}
             queryFilter={queryFilter}
             limpiarFiltros={limpiarFiltros}
-            proyectoFiltro={proyectoFiltro}
-            personaFiltro={personaFiltro}
-            fechaDesdeFiltro={fechaDesdeFiltro}
-            fechaHastaFiltro={fechaHastaFiltro}
-            estadoFiltro={estadoFiltro}
             permisos={permisos}
             titulo={titulo}
             handleOnClose={handleCloseSearcher}
@@ -974,6 +962,12 @@ const Pago = (props) => {
             showSearch={showSearch}
             setSelectedProyecto={setSelectedProyecto}
             setSelectedPersona={setSelectedPersona}
+            abonar={abonar}
+            proyectoFiltro={proyectoFiltro}
+            personaFiltro={personaFiltro}
+            fechaDesdeFiltro={fechaDesdeFiltro}
+            fechaHastaFiltro={fechaHastaFiltro}
+            estadoFiltro={estadoFiltro}
           />
         )}
         {showTable && permisos ? (

@@ -75,6 +75,11 @@ export const proyectosConfigs = [
         path: '/pagos-abonar-extra',
         component: React.lazy(() => import('./Pago')),
       },
+      {
+        exact: true,
+        path: '/ajustar-fecha-pago',
+        component: React.lazy(() => import('./ReajustarFechaPago')),
+      },
     ],
   }
 ];

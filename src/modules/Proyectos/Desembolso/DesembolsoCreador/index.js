@@ -23,7 +23,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const validationSchema = yup.object({
   proyecto_id: yup.number().required('Requerido'),
   desembolsosFechaDesembolso: yup.date().required('Requerido'),
-  desembolsosValorDesembolso: yup.number().required('Requerido'),
+  desembolsosValorDesembolso: yup
+    .number()
+    .required('Requerido')
+    .typeError('Debe ser un número')
+    .min(1, 'Debe ser al menos 1'),
   desembolsosFechaNormalizacionP: 
     yup
     .date()
@@ -32,8 +36,8 @@ const validationSchema = yup.object({
   desembolsosDescripcionDes: yup.string().required('Requerido'),
   banco_id: yup.number().required('Requerido'),
   desembolsosTipoCuentaDes: yup.string().required('Requerido'),
-  desembolsosNumeroCuentaDes: yup.number().required('Requerido'),
-  desembolsosNumeroComEgreso: yup.number().required('Requerido')
+  desembolsosNumeroCuentaDes: yup.number().required('Requerido').typeError('Debe ser un número'),
+  desembolsosNumeroComEgreso: yup.number().required('Requerido').typeError('Debe ser un número')
 });
 
 const DesembolsoCreador = (props) => {

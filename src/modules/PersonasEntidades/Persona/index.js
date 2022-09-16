@@ -1287,6 +1287,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialFilters = {
+  nombreFiltro: '',
+  numeroDocumentoFiltro: '',
+  familiaFiltro: '',
+  categoriaApFiltro: '',
+  estadoFiltro: '',
+};
+
 const Persona = (props) => {
   const {buscador, onSelectPersona} = props;
   const [order, setOrder] = React.useState('asc');
@@ -1315,18 +1323,15 @@ const Persona = (props) => {
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-  const [nombreFiltro, setNombreFiltro] = useState('');
-  const [numeroDocumentoFiltro, setNumeroDocumentoFiltro] = useState('');
-  const [familiaFiltro, setFamiliaFiltro] = useState('');
-  const [categoriaApFiltro, setCategoriaApFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-
-  const debouncedName = useDebounce(nombreFiltro, 800);
-  const debouncedId = useDebounce(numeroDocumentoFiltro, 800);
-  const debouncedFamily = useDebounce(familiaFiltro, 800);
-  const debouncedApCategory = useDebounce(categoriaApFiltro, 800);
-  const debouncedStatus = useDebounce(estadoFiltro, 800);
-
+  const [filters, setFilters] = useState(initialFilters);
+  const {
+    nombreFiltro,
+    numeroDocumentoFiltro,
+    familiaFiltro,
+    categoriaApFiltro,
+    estadoFiltro,
+  } = filters;
+  const debouncedFilters = useDebounce(filters, 800);
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
 
@@ -1378,6 +1383,15 @@ const Persona = (props) => {
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
   const [titulo, setTitulo] = useState('');
+  const [showTable, setShowTable] = useState(true);
+  
+  useEffect(() => {
+    if (rows.length === 0) {
+      setShowTable(false);
+    } else {
+      setShowTable(true);
+    }
+  }, [rows]);
 
   useEffect(() => {
     user &&
@@ -1414,11 +1428,7 @@ const Persona = (props) => {
     dispatch,
     page,
     rowsPerPage,
-    debouncedName,
-    debouncedId,
-    debouncedFamily,
-    debouncedApCategory,
-    debouncedStatus,
+    debouncedFilters,
     orderByToSend,
   ]);
 
@@ -1440,42 +1450,20 @@ const Persona = (props) => {
   useEffect(() => {
     setPage(1);
   }, [
-    debouncedName,
     orderByToSend,
-    debouncedId,
-    debouncedFamily,
-    debouncedApCategory,
-    debouncedStatus,
+    debouncedFilters
   ]);
 
   const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'nombreFiltro':
-        setNombreFiltro(e.target.value);
-        break;
-      case 'numeroDocumentoFiltro':
-        setNumeroDocumentoFiltro(e.target.value);
-        break;
-      case 'familiaFiltro':
-        setFamiliaFiltro(e.target.value);
-        break;
-      case 'categoriaApFiltro':
-        setCategoriaApFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value
+    })
   };
 
+
   const limpiarFiltros = () => {
-    setNombreFiltro('');
-    setNumeroDocumentoFiltro('');
-    setFamiliaFiltro('');
-    setCategoriaApFiltro('');
-    setEstadoFiltro('');
+    setFilters(initialFilters);
   };
 
   const changeOrderBy = (id) => {
@@ -1578,20 +1566,7 @@ const Persona = (props) => {
     setPage(1);
   };
 
-  // const onOpenParticipanteDatosAdicionales = (id) => {
-  //   history.push(history.location.pathname + '-datos-adicionales/' + id);
-  // };
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
-
-  const [showTable, setShowTable] = useState(true);
-  useEffect(() => {
-    if (rows.length === 0) {
-      setShowTable(false);
-    } else {
-      setShowTable(true);
-    }
-  }, [rows]);
 
   const handleCloseSearcher = () => {
     setShowSearch(false);
@@ -1602,7 +1577,10 @@ const Persona = (props) => {
   }
 
   const setSelecteFamilia = (id) => {
-    setFamiliaFiltro(id);
+    setFilters({
+      ...filters,
+      familiaFiltro: id
+    });
   }
 
   return (

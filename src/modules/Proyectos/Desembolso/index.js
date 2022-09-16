@@ -673,6 +673,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialFilters = {
+  proyectoFiltro: '',
+  fechaDesdeFiltro: '',
+  fechaHastaFiltro: '',
+  estadoFiltro: '',
+  solicitanteFiltro: '',
+}
+
 const Desembolso = (props) => {
   const [showForm, setShowForm] = useState(false);
   const [order, setOrder] = React.useState('asc');
@@ -709,15 +717,15 @@ const Desembolso = (props) => {
   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-  const [proyectoFiltro, setProyectoFiltro] = useState('');
-  const [fechaDesdeFiltro, setFechaDesdeFiltro] = useState('');
-  const [fechaHastaFiltro, setFechaHastaFiltro] = useState('');
-  const [estadoFiltro, setEstadoFiltro] = useState('');
-  const [solicitanteFiltro, setSolicitanteFiltro] = useState('');
-  const debouncedName = useDebounce(proyectoFiltro, 800);
-  const debouncedInitialDate = useDebounce(fechaDesdeFiltro, 800);
-  const debouncedFinalDate = useDebounce(fechaHastaFiltro, 800);
-  const debouncedSolicitante = useDebounce(solicitanteFiltro, 800);
+  const [filters, setFilters] = useState(initialFilters);
+  const {
+    proyectoFiltro,
+    fechaDesdeFiltro,
+    fechaHastaFiltro,
+    estadoFiltro,
+    solicitanteFiltro
+  } = filters;
+  const debouncedFilters = useDebounce(filters, 800);
   // const {pathname} = useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
@@ -736,14 +744,14 @@ const Desembolso = (props) => {
       cellColor: cell.cellColor,
     });
   });
-
+  
   const [columnasMostradas, setColumnasMostradas] = useState(
     columnasMostradasInicial,
-  );
-
-  let vp = '15px';
-  if (dense === true) {
-    vp = '0px';
+    );
+    
+    let vp = '15px';
+    if (dense === true) {
+      vp = '0px';
   }
   const classes = useStyles({vp: vp});
   const dispatch = useDispatch();
@@ -751,7 +759,16 @@ const Desembolso = (props) => {
   const {user} = useSelector(({auth}) => auth);
   const [permisos, setPermisos] = useState('');
   const [titulo, setTitulo] = useState('');
+  const [showTable, setShowTable] = useState(true);
 
+  useEffect(() => {
+    if (rows.length === 0) {
+      setShowTable(false);
+    } else {
+      setShowTable(true);
+    }
+  }, [rows]);
+  
   useEffect(() => {
     user &&
       user.permisos.forEach((modulo) => {
@@ -784,14 +801,10 @@ const Desembolso = (props) => {
   }, [ // eslint-disable-line react-hooks/exhaustive-deps
     dispatch, 
     page, 
-    rowsPerPage, 
-    debouncedName, 
+    rowsPerPage,  
     orderByToSend, 
     showForm,
-    debouncedInitialDate,
-    debouncedFinalDate,
-    debouncedSolicitante,
-    estadoFiltro,
+    debouncedFilters
   ]); 
 
   const updateColeccion = () => {
@@ -810,43 +823,20 @@ const Desembolso = (props) => {
 
   useEffect(() => {
     setPage(1);
-  }, [
-    debouncedName, 
+  }, [ 
     orderByToSend, 
-    debouncedInitialDate,
-    debouncedFinalDate,
-    debouncedSolicitante,
-    estadoFiltro
+    debouncedFilters
   ]);
 
   const queryFilter = (e) => {
-    switch (e.target.name) {
-      case 'solicitanteFiltro':
-        setSolicitanteFiltro(e.target.value);
-        break;
-      case 'proyectoFiltro':
-        setProyectoFiltro(e.target.value);
-        break;
-      case 'fechaDesdeFiltro':
-        setFechaDesdeFiltro(e.target.value);
-        break;
-      case 'fechaHastaFiltro':
-        setFechaHastaFiltro(e.target.value);
-        break;
-      case 'estadoFiltro':
-        setEstadoFiltro(e.target.value);
-        break;
-      default:
-        break;
-    }
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value
+    })
   };
 
   const limpiarFiltros = () => {
-    setProyectoFiltro('');
-    setSolicitanteFiltro('');
-    setFechaDesdeFiltro('');
-    setFechaHastaFiltro('');
-    setEstadoFiltro('');
+    setFilters(initialFilters);
   };
 
   const changeOrderBy = (id) => {
@@ -963,14 +953,6 @@ const Desembolso = (props) => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const [showTable, setShowTable] = useState(true);
-  useEffect(() => {
-    if (rows.length === 0) {
-      setShowTable(false);
-    } else {
-      setShowTable(true);
-    }
-  }, [rows]);
 
   const handleCloseSearcher = () => {
     setShowSearch({persona: false, proyecto: false});
@@ -988,10 +970,16 @@ const Desembolso = (props) => {
     });
   }
   const setSelectePersona = (id) => {
-    setSolicitanteFiltro(id);
+    setFilters({
+      ...filters,
+      solicitanteFiltro: id
+    });
   }
   const setSelectedProyecto = (id) => {
-    setProyectoFiltro(id);
+    setFilters({
+      ...filters,
+      proyectoFiltro: id
+    });
   }
 
   return (
@@ -1077,7 +1065,7 @@ const Desembolso = (props) => {
                         selected={isItemSelected}
                         className={classes.row}>
                         <TableCell align='center' className={classes.acciones}>
-                          {permisos.indexOf('Modificar') >= 0 && (
+                          {permisos.indexOf('Modificar') >= 0 && row.desembolsosValorDesembolso > 0 && (
                             <Tooltip title={<IntlMessages id='boton.editar' />}>
                               <EditIcon
                                 onClick={() => onOpenEditDesembolso(row.id)}
@@ -1091,7 +1079,7 @@ const Desembolso = (props) => {
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                             </Tooltip>
                           )}
-                          {permisos.indexOf('Eliminar') >= 0 && (
+                          {permisos.indexOf('Eliminar') >= 0 && row.desembolsosValorDesembolso > 0 && (
                             <Tooltip
                               title={<IntlMessages id='boton.eliminar' />}>
                               <DeleteIcon

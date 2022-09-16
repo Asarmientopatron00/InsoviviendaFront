@@ -21,7 +21,8 @@ export const onGetColeccion = (
   fechaDesde,
   fechaHasta, 
   estado,
-  persona
+  persona,
+  abonoExtra
 ) => {
   const {messages} = appIntl();
   const page = currentPage ? currentPage : 0;
@@ -44,6 +45,7 @@ export const onGetColeccion = (
           fechaHasta: fechaHastaAux,
           estado: estadoAux,
           persona: personaAux,
+          abonoExtra: abonoExtra??'',
           ordenar_por: ordenar_por,
         },
       })
