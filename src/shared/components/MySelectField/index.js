@@ -19,7 +19,7 @@ const MySelectField = (props) => {
       {props.options.map((option, index) => {
         return (
           <MenuItem key={index} value={option.id}>
-            {option.nombre}
+            {option.estado === 1 ? option.nombre : ''}
           </MenuItem>
         )
       })}
