@@ -71,6 +71,7 @@ export const TIPO_TRABAJO = [
   {id: 'FO', nombre: 'Formal', estado: 1},
   {id: 'IN', nombre: 'Informal', estado: 1},
   {id: 'PE', nombre: 'Pensionado', estado: 1},
+  {id: 'NA', nombre: 'No Aplica', estado: 1},
 ];
 
 export const TIPO_CONTRATO = [
@@ -78,6 +79,7 @@ export const TIPO_CONTRATO = [
   {id: 'TF', nombre: 'Término Fijo', estado: 1},
   {id: 'OL', nombre: 'Por Obra Labor', estado: 1},
   {id: 'PS', nombre: 'Prestación de Servicios', estado: 1},
+  {id: 'Na', nombre: 'No Aplica', estado: 1},
 ];
 
 export const ESTADO = [
