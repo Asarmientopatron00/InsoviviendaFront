@@ -63,6 +63,7 @@ export const ESTRATO = [
 ];
 
 export const INDICATIVO_PC = [
+  {id: 'ES', nombre: 'Escritura', estado: 1},
   {id: 'PO', nombre: 'Posesión', estado: 1},
   {id: 'CV', nombre: 'Compraventa', estado: 1},
 ];
