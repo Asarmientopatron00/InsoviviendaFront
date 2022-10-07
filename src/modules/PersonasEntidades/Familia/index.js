@@ -257,6 +257,14 @@ const cells = [
     mostrarInicio: false,
   },
   {
+    id: 'familiasEgresosOtros',
+    typeHead: 'numeric',
+    label: 'Egres. Otros',
+    value: (value) => currencyFormatter.format(value),
+    align: 'right',
+    mostrarInicio: false,
+  },
+  {
     id: 'familiasObservaciones',
     typeHead: 'string',
     label: 'Observaciones',
