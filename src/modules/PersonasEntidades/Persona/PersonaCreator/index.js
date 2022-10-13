@@ -225,11 +225,11 @@ const validationSchema = yup.object({
     .nullable(),
   personasPuntajeProcredito: yup
     .number()
-    .required('Requerido')
+    .nullable()
     .typeError(mensajeValidacion('numero')),
   personasPuntajeDatacredito: yup
     .number()
-    .required('Requerido')
+    .nullable()
     .typeError(mensajeValidacion('numero')),
   departamento_correspondencia_id: yup
     .number()
