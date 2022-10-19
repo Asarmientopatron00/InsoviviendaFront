@@ -117,6 +117,7 @@ export const TIPOS_PROYECTO = [
   {id: 'MEJ', nombre: 'Mejora', estado: 1},
   {id: 'CON', nombre: 'Construcción', estado: 1},
   {id: 'COM', nombre: 'Compra', estado: 1},
+  {id: 'LHO', nombre: 'Línea Hogar', estado: 1},
 ];
 
 export const ESTADOS_FORMALIZACION = [
