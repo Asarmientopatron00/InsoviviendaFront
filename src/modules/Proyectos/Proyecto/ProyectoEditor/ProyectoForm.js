@@ -107,11 +107,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let departamentosFilter = [];
-let ciudadesFilter = [];
-let comunasFilter = [];
-let barriosFilter = [];
-
 const ProyectoForm = (props) => {
   const {
     accion,
@@ -156,75 +151,36 @@ const ProyectoForm = (props) => {
   }, [initialValues.proyectosEstadoProyecto, accion]); //eslint-disable-line
 
   useEffect(() => {
-    if(values.pais_id){
-      departamentosFilter = departamentos.filter((dep) => dep.pais_id === values.pais_id)
-    }
-  },[values.pais_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.departamento_id){
-      ciudadesFilter = ciudades.filter((city) => city.departamento_id === values.departamento_id)
-    }
-  },[values.departamento_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.ciudad_id){
-      comunasFilter = comunas.filter((com) => com.ciudad_id === values.ciudad_id)
-    }
-  },[values.ciudad_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.comuna_id){
-      barriosFilter = barrios.filter((neigh) => neigh.comuna_id === values.comuna_id)
-    }
-  },[values.comuna_id]); //eslint-disable-line
-
-  useEffect(() => {
     openOneCloseOthers(values.proyectosEstadoProyecto)
   },[values.proyectosEstadoProyecto]) //eslint-disable-line
-
-  const classes = useStyles(props);
-
-  const handleCloseSearcher = () => {
-    setShowSearch({persona: false, remitente: false});
-  }
-
-  const handleOpenPersonaSearcher = () => {
-    setShowSearch({persona: true, remitente: false});
-  }
-  const handleOpenRemitenteSearcher = () => {
-    setShowSearch({persona: false, remitente: true});
-  }
-
-  const setSelectePersona = (id) => {
-    setFieldValue('persona_identificacion',id);
-  }
-
-  const setSelecteRemitente = (id) => {
-    setFieldValue('remitente_identificacion',id);
-  }
 
   useEffect(() => {
     if(values.persona_identificacion){
       const persona = personas.find((persona) => persona.identificacion == values.persona_identificacion) //eslint-disable-line
-      setFieldValue('nombrePersona', persona?.nombre??'');
-      setFieldValue('persona_id', persona?.id??'');
+      if(persona){
+        setFieldValue('nombrePersona', persona.nombre);
+        setFieldValue('persona_id', persona.id);
+      }
     }
   },[values.persona_identificacion]) //eslint-disable-line
   
   useEffect(() => {
     if(values.remitente_identificacion){
       const persona = personas.find((persona) => persona.identificacion == values.remitente_identificacion) //eslint-disable-line
-      setFieldValue('nombreRemitente', persona?.nombre??'');
-      setFieldValue('remitido_id', persona?.id??'');
+      if(persona){
+        setFieldValue('nombreRemitente', persona.nombre);
+        setFieldValue('remitido_id', persona.id);
+      }
     }
   },[values.remitente_identificacion]) //eslint-disable-line
   
   useEffect(() => {
     if(values.orientador_identificacion){
       const orientador = orientadores.find((orientador) => orientador.identificacion == values.orientador_identificacion) //eslint-disable-line
-      setFieldValue('nombreOrientador', orientador?.nombre??'');
-      setFieldValue('orientador_id', orientador?.id??'');
+      if(orientador){
+        setFieldValue('nombreOrientador', orientador.nombre);
+        setFieldValue('orientador_id', orientador.id);
+      }
     }
   },[values.orientador_identificacion]) //eslint-disable-line
 
@@ -368,7 +324,7 @@ const ProyectoForm = (props) => {
       {id: 'REC', nombre: 'Rechazado', value: 3},
       {id: 'FOR', nombre: 'Formalización', value: 5},
       {id: 'DES', nombre: 'Desembolsado', value: 6},
-      {id: 'CAN', nombre: 'Cancelado', value: 1},
+      {id: 'CAN', nombre: 'Cancelado', value: 7},
       {id: 'CON', nombre: 'Congelado', value: 1},
     ];
     const currentEstado = estados.filter((estado) => estado.id === currentState);
@@ -377,6 +333,27 @@ const ProyectoForm = (props) => {
       return 'auto';
     }
     return 'none'
+  }
+
+  const classes = useStyles(props);
+
+  const handleCloseSearcher = () => {
+    setShowSearch({persona: false, remitente: false});
+  }
+
+  const handleOpenPersonaSearcher = () => {
+    setShowSearch({persona: true, remitente: false});
+  }
+  const handleOpenRemitenteSearcher = () => {
+    setShowSearch({persona: false, remitente: true});
+  }
+
+  const setSelectePersona = (id) => {
+    setFieldValue('persona_identificacion',id);
+  }
+
+  const setSelecteRemitente = (id) => {
+    setFieldValue('remitente_identificacion',id);
   }
 
   return (
@@ -576,7 +553,7 @@ const ProyectoForm = (props) => {
                   className={classes.myTextField}
                   name='departamento_id'
                   disabled={disabled}
-                  options={departamentosFilter}
+                  options={departamentos.filter((dep) => dep.pais_id === values.pais_id)}
                 />
                 <MyAutocomplete
                   label='Ciudad'
@@ -586,7 +563,7 @@ const ProyectoForm = (props) => {
                   className={classes.myTextField}
                   name='ciudad_id'
                   disabled={disabled}
-                  options={ciudadesFilter}
+                  options={ciudades.filter((city) => city.departamento_id === values.departamento_id)}
                 />
                 <MyAutocomplete
                   label='Comuna'
@@ -596,7 +573,7 @@ const ProyectoForm = (props) => {
                   className={classes.myTextField}
                   name='comuna_id'
                   disabled={disabled}
-                  options={comunasFilter}
+                  options={comunas.filter((com) => com.ciudad_id === values.ciudad_id)}
                 />
                 <MyAutocomplete
                   label='Barrio'
@@ -606,7 +583,7 @@ const ProyectoForm = (props) => {
                   className={classes.myTextField}
                   name='barrio_id'
                   disabled={disabled}
-                  options={barriosFilter}
+                  options={barrios.filter((neigh) => neigh.comuna_id === values.comuna_id)}
                 />
                 <MyTextField
                   className={classes.myTextField}

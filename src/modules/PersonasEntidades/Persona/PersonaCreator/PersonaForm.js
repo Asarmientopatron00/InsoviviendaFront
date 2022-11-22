@@ -106,15 +106,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let departamentosNacimiento = [];
-let ciudadesNacimiento = [];
-let ciudadesVivienda = [];
-let comunasVivienda = [];
-let barriosVivienda = [];
-let ciudadesCor = [];
-let comunasCor = [];
-let barriosCor = [];
-
 const PersonaForm = (props) => {
   const {
     accion,
@@ -159,54 +150,6 @@ const PersonaForm = (props) => {
       setDisabled(true);
     }
   }, [initialValues.personasEstadoRegistro, accion]); //eslint-disable-line
-
-  useEffect(() => {
-    if(values.pais_nacimiento_id){
-      departamentosNacimiento = departamentos.filter((dep) => dep.pais_id === values.pais_nacimiento_id)
-    }
-  },[values.pais_nacimiento_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.departamento_nacimiento_id){
-      ciudadesNacimiento = ciudades.filter((city) => city.departamento_id === values.departamento_nacimiento_id)
-    }
-  },[values.departamento_nacimiento_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.departamento_id){
-      ciudadesVivienda = ciudades.filter((city) => city.departamento_id === values.departamento_id)
-    }
-  },[values.departamento_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.ciudad_id){
-      comunasVivienda = comunas.filter((comuna) => comuna.ciudad_id === values.ciudad_id)
-    }
-  },[values.ciudad_id]); //eslint-disable-line
-
-  useEffect(() => {
-    if(values.comuna_id){
-      barriosVivienda = barrios.filter((neigh) => neigh.comuna_id === values.comuna_id)
-    }
-  },[values.comuna_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.departamento_correspondencia_id){
-      ciudadesCor = ciudades.filter((city) => city.departamento_id === values.departamento_correspondencia_id)
-    }
-  },[values.departamento_correspondencia_id]); //eslint-disable-line
-  
-  useEffect(() => {
-    if(values.ciudad_correspondencia_id){
-      comunasCor = comunas.filter((comuna) => comuna.ciudad_id === values.ciudad_correspondencia_id)
-    }
-  },[values.ciudad_correspondencia_id]); //eslint-disable-line
-
-  useEffect(() => {
-    if(values.comuna_correspondencia_id){
-      barriosCor = barrios.filter((neigh) => neigh.comuna_id === values.comuna_correspondencia_id)
-    }
-  },[values.comuna_correspondencia_id]); //eslint-disable-line
 
   useEffect(() => {
     if(values.familia_identificacion){
@@ -427,7 +370,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='departamento_nacimiento_id'
                   disabled={disabled}
-                  options={departamentosNacimiento}
+                  options={departamentos.filter((dep) => dep.pais_id === values.pais_nacimiento_id)}
                 />
                 <MyAutocomplete
                   label='Ciudad Nacimiento'
@@ -437,7 +380,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='ciudad_nacimiento_id'
                   disabled={disabled}
-                  options={ciudadesNacimiento}
+                  options={ciudades.filter((city) => city.departamento_id === values.departamento_nacimiento_id)}
                 />
                 <MySelectField
                   label='Género'
@@ -633,7 +576,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='ciudad_id'
                   disabled={disabled}
-                  options={ciudadesVivienda}
+                  options={ciudades.filter((city) => city.departamento_id === values.departamento_id)}
                 />
                 <MyAutocomplete
                   label='Comuna'
@@ -643,7 +586,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='comuna_id'
                   disabled={disabled}
-                  options={comunasVivienda}
+                  options={comunas.filter((comuna) => comuna.ciudad_id === values.ciudad_id)}
                 />
                 <MyAutocomplete
                   label='Barrio'
@@ -653,7 +596,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='barrio_id'
                   disabled={disabled}
-                  options={barriosVivienda}
+                  options={barrios.filter((neigh) => neigh.comuna_id === values.comuna_id)}
                 />
                 <MyTextField
                   className={classes.myTextField}
@@ -902,7 +845,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='ciudad_correspondencia_id'
                   disabled={disabled}
-                  options={ciudadesCor}
+                  options={ciudades.filter((city) => city.departamento_id === values.departamento_correspondencia_id)}
                 />
                 <MyAutocomplete
                   label='Comuna Correspon.'
@@ -912,7 +855,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='comuna_correspondencia_id'
                   disabled={disabled}
-                  options={comunasCor}
+                  options={comunas.filter((comuna) => comuna.ciudad_id === values.ciudad_correspondencia_id)}
                 />
                 <MyAutocomplete
                   label='Barrio Correspon.'
@@ -922,7 +865,7 @@ const PersonaForm = (props) => {
                   className={classes.myTextField}
                   name='barrio_correspondencia_id'
                   disabled={disabled}
-                  options={barriosCor}
+                  options={barrios.filter((neigh) => neigh.comuna_id === values.comuna_correspondencia_id)}
                 />
                 <MyTextField
                   className={classes.myTextField}
