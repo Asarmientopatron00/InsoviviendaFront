@@ -7,13 +7,12 @@ import {
 } from '../../shared/constants/ActionTypes';
 import jwtAxios from '../../@crema/services/auth/jwt-auth/jwt-api';
 
-export const onExecute = (updateColeccion) => {
+export const onExecute = (params, updateColeccion) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
-      .post('calcular-mora')
+      .post('calcular-mora', params)
       .then((data) => {
-        console.log(data)
         if (data.status === 200) {
           dispatch({type: FETCH_SUCCESS});
           dispatch({
