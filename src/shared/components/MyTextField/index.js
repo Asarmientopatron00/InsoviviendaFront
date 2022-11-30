@@ -9,6 +9,7 @@ const MyTextField = (props) => {
     <TextField
       {...props}
       {...field}
+      onBlur={props.onBlur}
       helperText={errorText}
       error={!!errorText}
     />

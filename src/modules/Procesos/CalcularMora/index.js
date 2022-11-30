@@ -139,7 +139,8 @@ const EnhancedTableToolbar = (props) => {
     titulo,
     onExecuteCalcularMora,
     permisos,
-    fecha
+    fecha,
+    setFechaEjecucion
   } = props;
   return (
     <Toolbar
@@ -168,50 +169,53 @@ const EnhancedTableToolbar = (props) => {
           onExecuteCalcularMora(data);
           setSubmitting(false);
         }}>
-        {({initialValues, setFieldValue, values}) => (
-          <Form noValidate autoComplete='off'>
-            <Box className={classes.contenedorFiltros}>
-              <MyTextField
-                className={classes.myTextField}
-                label='Fecha Última Ejecución'
-                name='fecha'
-                type='date'
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                disabled
-              />
-              <MyTextField
-                className={classes.myTextField}
-                label='Fecha Ejecución'
-                name='fechaEjecucion'
-                type='date'
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              {permisos.indexOf('Ejecutar') >= 0 && 
-                <Box 
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    maxHeight: 50
+        {({initialValues, setFieldValue, values}) => {
+          return (
+            <Form noValidate autoComplete='off'>
+              <Box className={classes.contenedorFiltros}>
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Última Ejecución'
+                  name='fecha'
+                  type='date'
+                  InputLabelProps={{
+                    shrink: true,
                   }}
-                >
-                  <Tooltip title='Ejecutar Cálculo de Mora'>
-                    <Button
-                      className={classes.createButton}
-                      aria-label='filter list'
-                      type='submit'
-                    >
-                      <IntlMessages id='boton.executeMora' />
-                    </Button>
-                  </Tooltip>
-                </Box>
-              }
-            </Box>
-          </Form>
-        )}
+                  disabled
+                />
+                <MyTextField
+                  className={classes.myTextField}
+                  label='Fecha Ejecución'
+                  name='fechaEjecucion'
+                  type='date'
+                  onBlur={() => setFechaEjecucion(values.fechaEjecucion)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+                {permisos.indexOf('Ejecutar') >= 0 && 
+                  <Box 
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      maxHeight: 50
+                    }}
+                  >
+                    <Tooltip title='Ejecutar Cálculo de Mora'>
+                      <Button
+                        className={classes.createButton}
+                        aria-label='filter list'
+                        type='submit'
+                      >
+                        <IntlMessages id='boton.executeMora' />
+                      </Button>
+                    </Tooltip>
+                  </Box>
+                }
+              </Box>
+            </Form>
+          )}
+        }
       </Formik>
     </Toolbar>
   );
@@ -241,6 +245,7 @@ const useStyles = makeStyles((theme) => ({
 const CalcularMora = (props) => {
   const [permisos, setPermisos] = useState('');
   const [titulo, setTitulo] = useState('');
+  const [fechaEjecucion, setFechaEjecucion] = useState('');
   const classes = useStyles({vp: '0px'});
   const dispatch = useDispatch();
   const {ligera} = useSelector(
@@ -286,7 +291,7 @@ const CalcularMora = (props) => {
   const onExecuteCalcularMora = (data) => {
     Swal.fire({
       title: 'Confirmar',
-      text: `¿Seguro Que Desea Ejecutar el Proceso de Cálculo de Mora Para Hoy ${moment().format('YYYY-MM-DD HH:mm:ss')}?`,
+      text: `¿Seguro Que Desea Ejecutar el Proceso de Cálculo de Mora Para El ${moment(fechaEjecucion).format('YYYY-MM-DD')}?`,
       allowEscapeKey: false,
       allowEnterKey: false,
       showCancelButton: true,
@@ -310,6 +315,7 @@ const CalcularMora = (props) => {
             onExecuteCalcularMora={onExecuteCalcularMora}
             titulo={titulo}
             fecha={fecha}
+            setFechaEjecucion={setFechaEjecucion}
           />
         ) : (
           <Box
