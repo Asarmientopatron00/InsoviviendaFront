@@ -1042,7 +1042,7 @@ const Pago = (props) => {
                                 className={`${classes.generalIcons} ${classes.visivilityIcon}`}></VisibilityIcon>
                             </Tooltip>
                           )}
-                          {permisos.indexOf('Exportar') >= 0 && row.pagosEstado === 1 && (
+                          {permisos.indexOf('Exportar') >= 0 && (
                             <Tooltip
                               title={<IntlMessages id='boton.recibo' />}>
                               <PictureAsPdf
