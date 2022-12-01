@@ -84,7 +84,7 @@ const cells = [
    {
       id: 'donacionesFechaDonacion',
       typeHead: 'string',
-      label: 'Fecha donación',
+      label: 'Fecha',
       value: (value) => moment(value).format('YYYY-MM-DD'),
       align: 'left',
       mostrarInicio: true,
@@ -108,7 +108,7 @@ const cells = [
    { 
       id: 'donacionesEstadoDonacion', 
       typeHead: 'string', 
-      label: 'Estado donación',  
+      label: 'Estado Ingreso',  
       value: (value) => value,
       align: 'left',
       mostrarInicio: false,

@@ -134,6 +134,7 @@ const DonacionCreador = (props) => {
                         ? selectedRow.persona_id 
                         : '',
                      persona_identificacion: selectedRow?.persona?.identificacion??'',
+                     persona_nombre: selectedRow?.persona?.nombre??'',
                      benefactor_id: selectedRow 
                         ? selectedRow.benefactor_id 
                         : '',

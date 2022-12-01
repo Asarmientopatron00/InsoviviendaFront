@@ -116,6 +116,7 @@ const DonacionForm=(props) => {
       if(values.persona_identificacion){
         const persona = personas.find((persona) => persona.identificacion == values.persona_identificacion) //eslint-disable-line
         setFieldValue('persona_id', persona?.id??'');
+        setFieldValue('persona_nombre', persona?.nombre??'');
       }
     },[values.persona_identificacion]) //eslint-disable-line
 
@@ -169,13 +170,36 @@ const DonacionForm=(props) => {
                         options={tiposDonacion} 
                         style={{paddingRight: '10px'}}
                         required
-                     />   
+                     />
+                     { parametro && tipoDonacion && parseInt(parametro.valor) !== tipoDonacion.id && (
+                        <MyAutocomplete 
+                           className={classes.myTextField} 
+                           label='Benefactor' 
+                           name='benefactor_id' 
+                           disabled={disabled} 
+                           options={benefactores} 
+                           style={{paddingRight: '10px'}}
+                           required
+                        />
+                     )}
                   </Box>
                   {tipoDonacion && (
                      <>
                         <Box className={classes.inputs_4_A}>
+                           <MyTextField 
+                              className={classes.myTextField} 
+                              label='Nombre Tercero' 
+                              name='donacionesNombreTercero' 
+                              disabled={disabled} 
+                           />
+                           <MyTextField 
+                              className={classes.myTextField} 
+                              label='Número Documento Tercero' 
+                              name='donacionesNumeroDocumentoTercero' 
+                              disabled={disabled} 
+                           />
                            <MyTextField
-                              label='Persona'
+                              label='Identificacion Persona'
                               name='persona_identificacion'
                               InputProps={{
                                  endAdornment: (
@@ -194,36 +218,17 @@ const DonacionForm=(props) => {
                               className={classes.myTextField}
                            />
                            { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleCloseSearcher} getValue={setSelectedPersona}/> }
-                           { parametro && tipoDonacion && parseInt(parametro.valor) !== tipoDonacion.id && (
-                              <MyAutocomplete 
-                                 className={classes.myTextField} 
-                                 label='Benefactor' 
-                                 name='benefactor_id' 
-                                 disabled={disabled} 
-                                 options={benefactores} 
-                                 style={{paddingRight: '10px'}}
-                                 required
-                              />
-                           )}
-                        </Box>
-                        <Box className={classes.inputs_4_A}>
                            <MyTextField 
                               className={classes.myTextField} 
-                              label='Nombre Tercero' 
-                              name='donacionesNombreTercero' 
-                              disabled={disabled} 
-                           />
-                           <MyTextField 
-                              className={classes.myTextField} 
-                              label='Número Documento Tercero' 
-                              name='donacionesNumeroDocumentoTercero' 
-                              disabled={disabled} 
+                              label='Nombre Persona' 
+                              name='persona_nombre' 
+                              disabled 
                            />
                         </Box>
                         <Box className={classes.inputs_4}>
                            <MyTextField                             
                               className={classes.myTextField} 
-                              label='Fecha donacion' 
+                              label='Fecha' 
                               name='donacionesFechaDonacion' 
                               disabled={disabled} 
                               required
@@ -234,14 +239,14 @@ const DonacionForm=(props) => {
                            />
                            <MyCurrencyField
                               className={classes.myTextField}
-                              label='Valor donación'
+                              label='Valor'
                               name='donacionesValorDonacion'
                               disabled={disabled}
                               required
                            />
                            <MySelectField 
                               className={classes.myTextField} 
-                              label='Estado donación' 
+                              label='Estado Ingreso' 
                               name='donacionesEstadoDonacion' 
                               disabled={disabled} 
                               options={ESTADOS_DONACIONES}
