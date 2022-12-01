@@ -47,7 +47,7 @@ import {useDebounce} from 'shared/hooks/useDebounce';
 import MyCell from 'shared/components/MyCell';
 import defaultConfig from '@crema/utility/ContextProvider/defaultConfig';
 import moment from 'moment';
-import { Search } from '@material-ui/icons';
+import { InsertDriveFile, PictureAsPdf, Search } from '@material-ui/icons';
 import MySearcher from 'shared/components/MySearcher';
 
 const currencyFormatter = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP'});
@@ -60,15 +60,23 @@ const cells = [
    { 
       id: 'nombre',           
       typeHead: 'string', 
-      label: 'Nombre',          
+      label: 'Beneficiario',          
       value: (value) => value,
       align: 'left',
       mostrarInicio: true,
    },
    { 
-      id: 'benefactor',                 
+      id: 'donacionesNumeroDocumentoTercero',                 
+      typeHead: 'numeric', 
+      label: 'Documento Tercero',       
+      value: (value) => value,
+      align: 'right',
+      mostrarInicio: true,
+   },
+   { 
+      id: 'donacionesNombreTercero',                 
       typeHead: 'string', 
-      label: 'Benefactor',       
+      label: 'Nombre Tercero',       
       value: (value) => value,
       align: 'left',
       mostrarInicio: true,
@@ -160,7 +168,7 @@ const cells = [
       value: (value) => (value === 1 
          ? 'Activo' 
          : 'Inactivo'),
-      align: 'center',
+      align: 'left',
       mostrarInicio: true,
       cellColor: (value) => value === 1 
          ? palette.secondary.main 
@@ -227,13 +235,8 @@ function EnhancedTableHead(props) {
                   return (
                      <TableCell
                         key = {cell.id}
-                        style = { {fontWeight: 'bold'} }
-                        align = { cell.typeHead === 'string' 
-                                    ? 'left' 
-                                    : cell.typeHead === 'numeric' 
-                                       ? 'right' 
-                                       : 'center' 
-                                 }
+                        style = {{fontWeight: 'bold'}}
+                        align = {cell.align}
                         className = {classes.cell}
                         sortDirection = { orderBy === cell.id 
                                              ? order 
@@ -341,7 +344,7 @@ const useToolbarStyles = makeStyles((theme) => ({
    contenedorFiltros: {
       width: '90%',
       display: 'grid',
-      gridTemplateColumns: '4fr 4fr 1fr',
+      gridTemplateColumns: '4fr 4fr 4fr 4fr 1fr',
       gap: '20px',
    },
    pairFilters: {
@@ -350,141 +353,187 @@ const useToolbarStyles = makeStyles((theme) => ({
       gap: '20px',
       minWidth: '100px',
    },
+   exportButton: {
+      backgroundColor: '#4caf50',
+      color: 'white',
+      boxShadow:
+        '0px 3px 5px -1px rgb(0 0 0 / 30%), 0px 6px 10px 0px rgb(0 0 0 / 20%), 0px 1px 18px 0px rgb(0 0 0 / 16%)',
+      '&:hover': {
+        backgroundColor: theme.palette.colorHover,
+        cursor: 'pointer',
+      },
+    },
+   x: {
+      position: 'absolute',
+      color: '#4caf50',
+      fontSize: '14px',
+      top: '19px',
+      fontWeight: 'bold',
+   },
 }));
 
 const EnhancedTableToolbar = (props) => {
    const classes = useToolbarStyles();
    const {
-      numSelected,
       titulo,
       onOpenAddDonacion,
       handleOpenPopoverColumns,
       queryFilter,
-      identificacionFiltro,
-      benefactorFiltro,
+      identificacion,
+      benefactor,
       limpiarFiltros,
       permisos,
       handleOnClose,
       handleOnOpen,
       showSearch,
       setSelectedPersona,
+      fechaInicial,
+      fechaFinal
    } = props;
    return (
       <Toolbar
-         className = {clsx(classes.root, {
-            [classes.highlight]: numSelected > 0,
-         })}>
-         {numSelected > 0 
-            ? (
+         className = {clsx(classes.root)}>
+         <>
+            <Box className = {classes.titleTop}>
                <Typography
                   className = {classes.title}
-                  color = 'inherit'
-                  variant = 'subtitle1'
-                   component = 'div'>
-                  {numSelected} selected
+                  variant = 'h6'
+                  id = 'tableTitle'
+                  component = 'div'>
+                  {titulo}
                </Typography>
-            ) 
-            : (
-               <>
-                  <Box className = {classes.titleTop}>
-                     <Typography
-                        className = {classes.title}
-                        variant = 'h6'
-                        id = 'tableTitle'
-                        component = 'div'>
-                        {titulo}
-                     </Typography>
-                     <Box className = {classes.horizontalBottoms}>
-                        <Tooltip
-                           title = 'Mostrar/Ocultar Columnas'
-                           onClick = {handleOpenPopoverColumns}>
-                           <IconButton
-                              className = {classes.columnFilterButton}
-                              aria-label = 'filter list'>
-                              <TuneIcon />
-                           </IconButton>
-                        </Tooltip>
-                        {permisos.indexOf('Crear') >= 0 && (
-                           <Tooltip 
-                              title = 'Crear Donacion' 
-                              onClick = { onOpenAddDonacion }>
-                              <IconButton
-                                 className = { classes.createButton }
-                                 aria-label = 'filter list'>
-                                 <AddIcon />
-                              </IconButton>
-                           </Tooltip>
-                        )}
-                     </Box>
-                  </Box>
-                  <Box className = {classes.contenedorFiltros}>
-                     <TextField
-                        label='Beneficiario'
-                        name='identificacionFiltro'
-                        id='identificacionFiltro'
-                        InputProps={{
-                           endAdornment: (
-                              <InputAdornment position='end'>
-                              <IconButton onClick={handleOnOpen}>
-                                 <Search/>
-                              </IconButton>
-                              </InputAdornment>
-                           )
-                        }}
-                        onChange={queryFilter}
-                        value={identificacionFiltro}
-                        />
-                        { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectedPersona}/> }
-                     <TextField
-                        label = 'Nombres y/o Apellidos Benefactor'
-                        name = 'benefactorFiltro'
-                        id = 'benefactorFiltro'
-                        onChange = {queryFilter}
-                        value = {benefactorFiltro}
-                        className = {classes.inputFiltros}
-                     />
-                     <Box display = 'grid'>
-                        <Box display = 'flex' mb = {2}>
-                           <Tooltip 
-                              title = 'Limpiar Filtros' 
-                              onClick = {limpiarFiltros}>
-                              <IconButton
-                                 className = {classes.clearButton}
-                                 aria-label = 'filter list'>
-                                 <ClearAllIcon />
-                              </IconButton>
-                           </Tooltip>
+               <Box className = {classes.horizontalBottoms}>
+                  {permisos.indexOf('Exportar') >= 0 && (
+                    <Tooltip
+                      title='Exportar'
+                      component='a'
+                      className={classes.linkDocumento}
+                      href={
+                        defaultConfig.API_URL +
+                        '/donaciones' +
+                        '?identificacion=' +
+                        identificacion +
+                        '&benefactor=' +
+                        benefactor +
+                        '&fechaInicial=' +
+                        fechaInicial +
+                        '&fechaFinal=' +
+                        fechaFinal
+                      }>
+                      <IconButton
+                        className={classes.exportButton}
+                        aria-label='filter list'>
+                        <Box component='span' className={classes.x}>
+                          X
                         </Box>
-                     </Box>
+                        <InsertDriveFile />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  <Tooltip
+                     title = 'Mostrar/Ocultar Columnas'
+                     onClick = {handleOpenPopoverColumns}>
+                     <IconButton
+                        className = {classes.columnFilterButton}
+                        aria-label = 'filter list'>
+                        <TuneIcon />
+                     </IconButton>
+                  </Tooltip>
+                  {permisos.indexOf('Crear') >= 0 && (
+                     <Tooltip 
+                        title = 'Crear Donacion/Otro Ingreso' 
+                        onClick = { onOpenAddDonacion }>
+                        <IconButton
+                           className = { classes.createButton }
+                           aria-label = 'filter list'>
+                           <AddIcon />
+                        </IconButton>
+                     </Tooltip>
+                  )}
+               </Box>
+            </Box>
+            <Box className = {classes.contenedorFiltros}>
+               <TextField
+                  label='Beneficiario'
+                  name='identificacion'
+                  id='identificacion'
+                  InputProps={{
+                     endAdornment: (
+                        <InputAdornment position='end'>
+                        <IconButton onClick={handleOnOpen}>
+                           <Search/>
+                        </IconButton>
+                        </InputAdornment>
+                     )
+                  }}
+                  onChange={queryFilter}
+                  value={identificacion}
+                  />
+                  { showSearch && <MySearcher showForm={showSearch} handleOnClose={handleOnClose} getValue={setSelectedPersona}/> }
+               <TextField
+                  label='Nombres y/o Apellidos Tercero'
+                  name='benefactor'
+                  id='benefactor'
+                  InputLabelProps={{
+                     // shrink: true,
+                     style: {
+                        fontSize: 14
+                     }
+                  }}
+                  onChange={queryFilter}
+                  value={benefactor}
+                  className={classes.inputFiltros}
+               />
+               <TextField
+                  label='Fecha Inicial Donación'
+                  name='fechaInicial'
+                  id='fechaInicial'
+                  type='date'
+                  InputLabelProps={{
+                     shrink: true
+                  }}
+                  onChange={queryFilter}
+                  value={fechaInicial}
+                  className={classes.inputFiltros}
+               />
+               <TextField
+                  label='Fecha Final Donación'
+                  name='fechaFinal'
+                  id='fechaFinal'
+                  type='date'
+                  InputLabelProps={{
+                     shrink: true
+                  }}
+                  onChange={queryFilter}
+                  value={fechaFinal}
+                  className={classes.inputFiltros}
+               />
+               <Box display='grid'>
+                  <Box display='flex' mb={2}>
+                     <Tooltip 
+                        title='Limpiar Filtros' 
+                        onClick={limpiarFiltros}>
+                        <IconButton
+                           className={classes.clearButton}
+                           aria-label='filter list'>
+                           <ClearAllIcon />
+                        </IconButton>
+                     </Tooltip>
                   </Box>
-               </>
-            )
-         }
-
-         {numSelected > 0 
-            ? (
-               <Tooltip title = 'Delete'>
-                  <IconButton aria-label = 'delete'>
-                     <DeleteIcon />
-                  </IconButton>
-               </Tooltip>
-            ) 
-            : (
-               ''
-            )
-         }
+               </Box>
+            </Box>
+         </>
       </Toolbar>
    );
 };
 
 EnhancedTableToolbar.propTypes = {
-   numSelected: PropTypes.number.isRequired,
    onOpenAddDonacion: PropTypes.func.isRequired,
    handleOpenPopoverColumns: PropTypes.func.isRequired,
    queryFilter: PropTypes.func.isRequired,
    limpiarFiltros: PropTypes.func.isRequired,
-   identificacionFiltro: PropTypes.string.isRequired,
-   benefactorFiltro: PropTypes.string.isRequired,
+   identificacion: PropTypes.string.isRequired,
+   benefactor: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -523,7 +572,7 @@ const useStyles = makeStyles((theme) => ({
    }),
    acciones: (props) => ({
       padding: props.vp + ' 0px ' + props.vp + ' 15px',
-      minWidth: '100px',
+      minWidth: '120px',
    }),
    paper: {
       width: '100%',
@@ -577,46 +626,51 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
+const initialFilters = {
+   identificacion: '',
+   benefactor: '',
+   fechaInicial: '',
+   fechaFinal: ''
+}
+
 const Donaciones = (props) => {
+   let columnasMostradasInicial = [];
    const [showForm, setShowForm] = useState(false);
    const [order, setOrder] = React.useState('asc');
    const [orderBy, setOrderBy] = React.useState('');
    const [orderByToSend, setOrderByToSend] = React.useState( 'fecha_modificacion:desc', );
    const [selected, setSelected] = React.useState([]);
    const [page, setPage] = React.useState(1);
-  // const [dense, setDense] = React.useState(false);
-   const dense = true; //Borrar cuando se use el change
    const [rowsPerPage, setRowsPerPage] = React.useState(10);
    const rowsPerPageOptions = [5, 10, 15, 25, 50];
    const [showSearch, setShowSearch] = useState(false);
-
    const [accion, setAccion] = useState('ver');
    const [donacionSeleccionado, setDonacionSeleccionado] = useState(0);
+   const [filters, setFilters] = useState(initialFilters);
+   const {
+      identificacion,
+      benefactor,
+      fechaFinal,
+      fechaInicial
+   } = filters;
+   const [openPopOver, setOpenPopOver] = useState(false);
+   const [popoverTarget, setPopoverTarget] = useState(null);
+   const [permisos, setPermisos] = useState('');
+   const [titulo, setTitulo] = useState('');
+   const [showTable, setShowTable] = useState(true);
+   const [columnasMostradas, setColumnasMostradas] = useState(
+      columnasMostradasInicial,
+   );   
    const {rows, desde, hasta, ultima_pagina, total} = useSelector(
       ({donacionReducer}) => donacionReducer,
    );
-
    const {message, error, messageType} = useSelector(({common}) => common);
-
-   useEffect(() => {
-      if (message || error) {
-         if (messageType === DELETE_TYPE) {
-            Swal.fire('Eliminado', message, 'success');
-            updateColeccion();
-         }
-      }
-   }, [message, error]); // eslint-disable-line react-hooks/exhaustive-deps
-
+   const {user} = useSelector(({auth}) => auth);
+   const debouncedFilters = useDebounce(filters, 600);
    const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
-   const [identificacionFiltro, setIdentificacionFiltro] = useState('');
-   const [benefactorFiltro, setBenefactorFiltro] = useState('');
-   const debouncedIdentificacionFiltro = useDebounce(identificacionFiltro, 800);
-   const debouncedBenefactorFiltro = useDebounce(benefactorFiltro, 800);
-   // const {pathname} = useLocation();
-   const [openPopOver, setOpenPopOver] = useState(false);
-   const [popoverTarget, setPopoverTarget] = useState(null);
+   const classes = useStyles({vp: '0px'});
+   const dispatch = useDispatch();
 
-   let columnasMostradasInicial = [];
 
    cells.forEach((cell) => {
       columnasMostradasInicial.push({
@@ -631,20 +685,21 @@ const Donaciones = (props) => {
       });
    });
 
-   const [columnasMostradas, setColumnasMostradas] = useState(
-      columnasMostradasInicial,
-   );
+   useEffect(() => {
+      if (message) {
+         if (messageType === DELETE_TYPE) {
+            Swal.fire('Eliminado', message, 'success');
+            updateColeccion();
+         }
+      }
+   }, [message]); // eslint-disable-line react-hooks/exhaustive-deps
 
-   let vp = '15px';
-   if (dense === true) 
-      vp = '0px';
-   
-   const classes = useStyles({vp: vp});
-   const dispatch = useDispatch();
-
-   const {user} = useSelector(({auth}) => auth);
-   const [permisos, setPermisos] = useState('');
-   const [titulo, setTitulo] = useState('');
+   useEffect(() => {
+      if (rows.length === 0) 
+         setShowTable(false);
+      else 
+         setShowTable(true);
+   }, [rows]);
 
    useEffect(() => {
       user && user.permisos.forEach((modulo) => {
@@ -663,34 +718,27 @@ const Donaciones = (props) => {
    }, [user, props.route]);
 
    useEffect(() => {
-      dispatch(onGetColeccion(page, rowsPerPage, identificacionFiltro, benefactorFiltro, orderByToSend));
-   }, [dispatch, page, rowsPerPage, debouncedIdentificacionFiltro, debouncedBenefactorFiltro, orderByToSend, showForm]); // eslint-disable-line react-hooks/exhaustive-deps
-
-   const updateColeccion = () => {
-      setPage(1);
-      dispatch(onGetColeccion(page, rowsPerPage, identificacionFiltro, benefactorFiltro, orderByToSend));
-   };
+      dispatch(onGetColeccion(page, rowsPerPage, orderByToSend, identificacion, benefactor, fechaInicial, fechaFinal));
+   }, [dispatch, page, rowsPerPage, debouncedFilters, orderByToSend]); // eslint-disable-line react-hooks/exhaustive-deps
   
    useEffect(() => {
       setPage(1);
-   }, [debouncedIdentificacionFiltro, debouncedBenefactorFiltro, orderByToSend]);
+   }, [debouncedFilters, orderByToSend]);
 
    const queryFilter = (e) => {
-      switch (e.target.name) {
-         case 'identificacionFiltro':
-            setIdentificacionFiltro(e.target.value);
-            break;
-         case 'benefactorFiltro':
-            setBenefactorFiltro(e.target.value);
-            break;
-         default:
-            break;
-      }
-   };
+      setFilters({
+         ...filters,
+         [e.target.name]: e.target.value
+      })
+   }
 
    const limpiarFiltros = () => {
-      setIdentificacionFiltro('');
-      setBenefactorFiltro('');
+      setFilters(initialFilters);
+   };
+
+   const updateColeccion = () => {
+      setPage(1);
+      dispatch(onGetColeccion(page, rowsPerPage, orderByToSend, identificacion, benefactor, fechaInicial, fechaFinal));
    };
 
    const changeOrderBy = (id) => {
@@ -806,40 +854,40 @@ const Donaciones = (props) => {
 
    const isSelected = (name) => selected.indexOf(name) !== -1;
 
-   const [showTable, setShowTable] = useState(true);
-   useEffect(() => {
-      if (rows.length === 0) 
-         setShowTable(false);
-      else 
-         setShowTable(true);
-   }, [rows]);
-
    const handleCloseSearcher = () => {
       setShowSearch(false);
-    }
-  
-    const handleOpenSearcher = () => {
+   }
+
+   const handleOpenSearcher = () => {
       setShowSearch(true);
-    }
-  
-    const setSelectedPersona = (id) => {
-      setIdentificacionFiltro(id);
-    }
+   }
+
+   const setSelectedPersona = (id) => {
+      setFilters({
+         ...filters,
+         identificacion: id
+      });
+   }
+
+   const onExportPago = (id) => {
+      window.location.href = defaultConfig.API_URL+'/donaciones/'+id;
+   }
 
    return (
       <div className = {classes.root}>
          <Paper className = {classes.paper}>
             { permisos && (
                <EnhancedTableToolbar
-                  numSelected = {selected.length}
-                  onOpenAddDonacion = {onOpenAddDonacion}
-                  handleOpenPopoverColumns = {handleOpenPopoverColumns}
-                  queryFilter = {queryFilter}
-                  limpiarFiltros = {limpiarFiltros}
-                  identificacionFiltro = {identificacionFiltro}
-                  benefactorFiltro = {benefactorFiltro}
-                  permisos = {permisos}
-                  titulo = {titulo}
+                  onOpenAddDonacion={onOpenAddDonacion}
+                  handleOpenPopoverColumns={handleOpenPopoverColumns}
+                  queryFilter={queryFilter}
+                  limpiarFiltros={limpiarFiltros}
+                  identificacion={identificacion}
+                  benefactor={benefactor}
+                  fechaInicial={fechaInicial}
+                  fechaFinal={fechaFinal}
+                  permisos={permisos}
+                  titulo={titulo}
                   handleOnClose={handleCloseSearcher}
                   handleOnOpen={handleOpenSearcher}
                   showSearch={showSearch}
@@ -880,10 +928,7 @@ const Donaciones = (props) => {
                         <Table
                            className = {classes.table}
                            aria-labelledby = 'tableTitle'
-                           size = { dense 
-                                    ? 'small' 
-                                    : 'medium'
-                                 }
+                           size = {'small'}
                            aria-label = 'enhanced table'>
                            <EnhancedTableHead
                               classes = {classes}
@@ -930,6 +975,15 @@ const Donaciones = (props) => {
                                                    onClick = {() => onDeleteDonacion(row.id)}
                                                    className = {`${classes.generalIcons} ${classes.deleteIcon}`}>
                                                 </DeleteIcon>
+                                             </Tooltip>
+                                          )}
+                                          {permisos.indexOf('Exportar') >= 0 && (
+                                             <Tooltip
+                                                title={<IntlMessages id='boton.recibo' />}>
+                                                <PictureAsPdf
+                                                onClick={() => onExportPago(row.id)}
+                                                style={{color: 'darkred'}}
+                                                className={`${classes.generalIcons} ${classes.deleteIcon}`}/>
                                              </Tooltip>
                                           )}
                                        </TableCell>
@@ -1058,11 +1112,7 @@ const Donaciones = (props) => {
                   ? 'success'
                   : 'error'
             }
-            message = {
-               messageType === UPDATE_TYPE || messageType === CREATE_TYPE
-               ? message
-               : ''
-            }
+            message = {message||error}
          />
       </div>
    );

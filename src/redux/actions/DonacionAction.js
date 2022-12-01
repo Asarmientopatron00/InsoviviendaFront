@@ -17,9 +17,11 @@ import {appIntl} from '../../@crema/utility/Utils';
 export const onGetColeccion = (
    currentPage,
    rowsPerPage,
+   orderByToSend,
    identificacionFiltro,
    benefactorFiltro,
-   orderByToSend,
+   fechaInicial,
+   fechaFinal,
 ) => {
    const {messages} = appIntl();
    const page = currentPage ? currentPage : 0;
@@ -36,6 +38,8 @@ export const onGetColeccion = (
                limite: rowsPerPage,
                identificacion: IdentificacionFiltroAux,
                benefactor: benefactorFiltroAux,
+               fechaInicial: fechaInicial??'',
+               fechaFinal: fechaFinal??'',
                ordenar_por: ordenar_por,
             },
          })
