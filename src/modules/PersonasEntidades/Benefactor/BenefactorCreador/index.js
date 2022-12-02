@@ -34,19 +34,12 @@ const validationSchema = yup.object({
    departamento_id: yup.string().nullable(),
    ciudad_id: yup.string().nullable(),
    benefactoresDireccion: yup.string().nullable(),
-   benefactoresCorreo: yup.string().required('Requerido'),
+   benefactoresCorreo: yup.string().nullable(),
    benefactoresNotas: yup.string().nullable(),
    benefactoresTelefonoFijo: yup.string().nullable(),
    benefactoresTelefonoCelular: yup
       .string()
-      .nullable()
-      .when('benefactoresTelefonoFijo', {
-         is: (benefactoresTelefonoFijo) => benefactoresTelefonoFijo,
-         then: yup.string().nullable(),
-         otherwise: yup
-            .string()
-            .required('Debe especificar un teléfono fijo o de celular')
-      }),
+      .nullable(),
    estado: yup.string().required('Requerido'),
 });
 

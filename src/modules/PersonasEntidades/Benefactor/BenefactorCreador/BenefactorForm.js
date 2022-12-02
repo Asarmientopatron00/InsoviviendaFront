@@ -82,11 +82,6 @@ const useStyles=makeStyles((theme) => ({
   },
 }));
 
-let departamentosSelec=[];
-let ciudadesSelec=[];
-let comunasSelec=[];
-let barriosSelec=[];
-
 const BenefactorForm=(props) => {
    const {
       handleOnClose, 
@@ -108,30 +103,6 @@ const BenefactorForm=(props) => {
       if (accion === 'ver' || initialValues.estado === '0') 
          setDisabled(true);
   }, [initialValues.estado, accion]);
-
-   useEffect(() => {
-      if (values.pais_id)
-         departamentosSelec=departamentos.filter((dep) => dep.pais_id === values.pais_id)
-      // eslint-disable-next-line 
-  }, [values.pais_id]); 
-
-   useEffect(() => {
-      if (values.departamento_id)
-         ciudadesSelec=ciudades.filter((ciu) => ciu.departamento_id === values.departamento_id) 
-      // eslint-disable-next-line  
-  }, [values.departamento_id]); 
-
-   useEffect(() => {
-      if (values.ciudad_id)
-         comunasSelec=comunas.filter((com) => com.ciudad_id === values.ciudad_id)
-      // eslint-disable-next-line  
-  }, [values.ciudad_id]); 
-   
-   useEffect(() => {
-      if (values.comuna_id)
-         barriosSelec=barrios.filter((bar) => bar.comuna_id === values.comuna_id) 
-      // eslint-disable-next-line 
-  }, [values.comuna_id]); 
 
    const classes=useStyles(props);
 
@@ -206,32 +177,29 @@ const BenefactorForm=(props) => {
                         disabled={disabled} 
                         options={paises} 
                         style={{paddingRight: '10px'}}
-                        required
                      />
                      <MyAutocomplete 
                         className={classes.myTextField} 
                         label='Departamento' 
                         name='departamento_id' 
                         disabled={disabled} 
-                        options={departamentosSelec} 
+                        options={departamentos.filter((dep) => dep.pais_id === values.pais_id)} 
                         style={{paddingRight: '10px'}}
-                        required
                      />
                      <MyAutocomplete 
                         className={classes.myTextField} 
                         label='Ciudad' 
                         name='ciudad_id' 
                         disabled={disabled} 
-                        options={ciudadesSelec} 
+                        options={ciudades.filter((ciu) => ciu.departamento_id === values.departamento_id)} 
                         style={{paddingRight: '10px'}}
-                        required
                      />
                      <MyAutocomplete 
                         className={classes.myTextField} 
                         label='Comuna' 
                         name='comuna_id' 
                         disabled={disabled} 
-                        options={comunasSelec} 
+                        options={comunas.filter((com) => com.ciudad_id === values.ciudad_id)} 
                         style={{paddingRight: '10px'}}
                      />
                   </Box>
@@ -241,7 +209,7 @@ const BenefactorForm=(props) => {
                         label='Barrio' 
                         name='barrio_id' 
                         disabled={disabled} 
-                        options={barriosSelec} 
+                        options={barrios.filter((bar) => bar.comuna_id === values.comuna_id)} 
                         style={{paddingRight: '10px'}}
                      />
                      <MyTextField 
@@ -249,7 +217,6 @@ const BenefactorForm=(props) => {
                         label='Dirección' 
                         name='benefactoresDireccion' 
                         disabled={disabled}
-                        required
                      />
                   </Box>
                   <Box className={classes.inputs_4_mod}>
@@ -270,7 +237,6 @@ const BenefactorForm=(props) => {
                         label='Correo' 
                         name='benefactoresCorreo' 
                         disabled={disabled}
-                        required
                      />
                   </Box>
                   <MyTextField 
@@ -278,7 +244,6 @@ const BenefactorForm=(props) => {
                      label='Notas' 
                      name='benefactoresNotas' 
                      disabled={disabled}
-                     required
                   />
                   <MyRadioField 
                      label='Estado' 
