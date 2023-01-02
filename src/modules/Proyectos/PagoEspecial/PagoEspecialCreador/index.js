@@ -23,7 +23,7 @@ const validationSchema = yup.object({
   valorSeguro: yup
     .number()
     .required('Requerido')
-    .oneOf([yup.ref('valorSeguroCuotas')], 'Debe corresponder con el valor de seguro de las cuotas'),
+    .max(yup.ref('valorSeguroCuotas'), 'No debe ser mayor al valor de seguro de las cuotas'),
   valorSeguroCuotas: yup.number().required('Requerido'),
   valorInteres: yup
     .number()
