@@ -6,6 +6,7 @@ import Scrollbar from '../../../../@crema/core/Scrollbar';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import MyTextField from 'shared/components/MyTextField';
 import MyCurrencyField from 'shared/components/MyCurrencyField';
+import MyCheckField from 'shared/components/MyCheckField';
 
 const useStyles = makeStyles((theme) => ({
   bottomsGroup: {
@@ -70,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     width: '70%',
     margin: '0 auto',
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: 'repeat(3, 1fr)',
   },
 }));
 
@@ -78,7 +79,9 @@ const PagoEspecialForm = (props) => {
   const {
     values,
     setFieldValue,
-    resetForm
+    resetForm,
+    check,
+    handleCheck
   } = props;
 
   useEffect(() => {
@@ -104,6 +107,8 @@ const PagoEspecialForm = (props) => {
             <Box className={classes.grid2}>
               <h2>Valores a Pagar</h2>
               <h2>Valores Cuotas</h2>
+            </Box>
+            <Box className={classes.grid2}>
               <MyTextField
                 className={classes.myTextField}
                 label='Fecha de Pago'
@@ -132,6 +137,8 @@ const PagoEspecialForm = (props) => {
                 }}
                 disabled
               />
+            </Box>
+            <Box className={classes.grid2}>
               <MyCurrencyField
                 className={classes.myTextField}
                 label='Valor Seguro'
@@ -148,6 +155,12 @@ const PagoEspecialForm = (props) => {
                   shrink: true,
                 }}
                 disabled
+              />
+              <MyCheckField
+                label='Condonar Seguro?'
+                name='condonarSeguro'
+                handleCheck={handleCheck}
+                checked={check.condonarSeguro}
               />
               <MyCurrencyField
                 className={classes.myTextField}
@@ -166,6 +179,12 @@ const PagoEspecialForm = (props) => {
                 }}
                 disabled
               />
+              <MyCheckField
+                label='Condonar Int. Mora?'
+                name='condonarMora'
+                handleCheck={handleCheck}
+                checked={check.condonarMora}
+              />
               <MyCurrencyField
                 className={classes.myTextField}
                 label='Valor Interés Corriente'
@@ -183,6 +202,14 @@ const PagoEspecialForm = (props) => {
                 }}
                 disabled
               />
+              <MyCheckField
+                label='Condonar Int. Corriente?'
+                name='condonarInteres'
+                handleCheck={handleCheck}
+                checked={check.condonarInteres}
+              />
+            </Box>
+            <Box className={classes.grid2}>
               <MyCurrencyField
                 className={classes.myTextField}
                 label='Valor Capital'

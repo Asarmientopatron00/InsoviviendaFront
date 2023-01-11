@@ -173,7 +173,10 @@ function EnhancedTableHead(props) {
     order,
     orderBy,
     onRequestSort,
-    columnasMostradas
+    columnasMostradas,
+    onSelectAllClick,
+    numSelected,
+    rowCount
   } = props;
 
   return (
@@ -183,7 +186,13 @@ function EnhancedTableHead(props) {
           align='center'
           style={{ fontWeight: 'bold' }}
           className={classes.headCell}>
-          {'Seleccionar'}
+          <Tooltip title={'Seleccionar Todas'}>
+            <Checkbox
+              checked={rowCount > 0 && numSelected === rowCount}
+              onClick={(e) => onSelectAllClick(e)}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          </Tooltip>
         </TableCell>
         {columnasMostradas.map((cell, index) => {
           if (cell.mostrar) {
@@ -500,12 +509,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const rowsPerPageOptions = [5, 10, 15, 25, 50, 100, 250];
+
 const PagoEspecial = (props) => {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [orderByToSend, setOrderByToSend] = React.useState(
     'plAmDeNumeroCuota:asc',
   );
+  const [permisos, setPermisos] = useState('');
+  const [showTable, setShowTable] = useState(true);
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const dense = true; //Borrar cuando se use el change
@@ -513,15 +526,6 @@ const PagoEspecial = (props) => {
   const [proyecto_id, setProyectoId] = React.useState('');
   const [showSearch, setShowSearch] = React.useState(false);
   const [titulo, setTitulo] = useState('');
-  const rowsPerPageOptions = [5, 10, 15, 25, 50];
-
-  const { rows, desde, hasta, ultima_pagina, total } = useSelector(
-    ({ planAmortizacionDefinitivoReducer }) => planAmortizacionDefinitivoReducer,
-  );
-
-  const { message, messageType, error } = useSelector(({ common }) => common);
-
-  const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
   // const {pathname}=useLocation();
   const [openPopOver, setOpenPopOver] = useState(false);
   const [popoverTarget, setPopoverTarget] = useState(null);
@@ -545,15 +549,22 @@ const PagoEspecial = (props) => {
     columnasMostradasInicial,
   );
 
-  let vp = '15px';
-  if (dense === true) {
-    vp = '0px';
-  }
-  const classes = useStyles({ vp: vp });
+  const classes = useStyles({ vp: '0px' });
   const dispatch = useDispatch();
 
   const { user } = useSelector(({ auth }) => auth);
-  const [permisos, setPermisos] = useState('');
+  const { rows, desde, hasta, ultima_pagina, total } = useSelector(
+    ({ planAmortizacionDefinitivoReducer }) => planAmortizacionDefinitivoReducer,
+  );
+  const { message, messageType, error } = useSelector(({ common }) => common);
+  const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
+  
+  useEffect(() => {
+    if (rows.length === 0)
+      setShowTable(false);
+    else
+      setShowTable(true);
+  }, [rows]);
 
   useEffect(() => {
     user &&
@@ -646,15 +657,6 @@ const PagoEspecial = (props) => {
     setColumnasMostradas(columnasMostradasInicial);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -665,14 +667,6 @@ const PagoEspecial = (props) => {
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
-
-  const [showTable, setShowTable] = useState(true);
-  useEffect(() => {
-    if (rows.length === 0)
-      setShowTable(false);
-    else
-      setShowTable(true);
-  }, [rows]);
 
   const calcTotal = (row) => {
     const total =
@@ -729,6 +723,14 @@ const PagoEspecial = (props) => {
     setProyectoId('');
   }
 
+  const handleCheckAll = (e) => {
+    if(e.target.checked){
+      setSelected(rows);
+    } else {
+      setSelected([]);
+    }
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -782,11 +784,11 @@ const PagoEspecial = (props) => {
                 <EnhancedTableHead
                   classes={classes}
                   numSelected={selected.length}
+                  rowCount={rows.length}
                   order={order}
                   orderBy={orderBy}
-                  onSelectAllClick={handleSelectAllClick}
+                  onSelectAllClick={handleCheckAll}
                   onRequestSort={changeOrderBy}
-                  rowCount={rows.length}
                   columnasMostradas={columnasMostradas}
                 />
                 <TableBody>

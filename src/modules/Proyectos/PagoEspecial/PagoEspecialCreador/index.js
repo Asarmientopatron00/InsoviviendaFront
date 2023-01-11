@@ -9,6 +9,7 @@ import {
 import { fetchError, hideMessage } from 'redux/actions';
 import PagoEspecialForm from './PagoEspecialForm';
 import { Box } from '@material-ui/core';
+import { useState } from 'react';
 
 const validationSchema = yup.object({
   proyecto_id: yup.number().required('Requerido'),
@@ -54,7 +55,29 @@ const PagoEspecialCreador = (props) => {
     cuotaSuperiorSeleccionada,
     resetForm
   } = props;
+
+  const [check, setCheck] = useState({
+    condonarSeguro: true,
+    condonarMora: true,
+    condonarInteres: true
+  });
+
+  useEffect(() => {
+    verificarSecuencia();
+  },[ // eslint-disable-line
+    cuotaInferiorSeleccionada, 
+    cuotaSuperiorSeleccionada, 
+    selected.length
+  ]);
+
   const dispatch = useDispatch();
+
+  const handleCheck = (e) => {
+    setCheck({
+      ...check,
+      [e.target.name]: e.target.checked
+    })
+  }
 
   const calcularTotalesCuotas = () => {
     const initialValue = 0;
@@ -72,32 +95,12 @@ const PagoEspecialCreador = (props) => {
     };
   }
   
-  useEffect(() => {
-    verificarSecuencia();
-  },[ // eslint-disable-line
-    cuotaInferiorSeleccionada, 
-    cuotaSuperiorSeleccionada, 
-    selected.length
-  ]);
-
   const verificarSecuencia = () => {
-    const cuotas = [];
-    let contador = 0;
-    for (let i = cuotaInferiorSeleccionada; i <= cuotaSuperiorSeleccionada; i++){
-      cuotas.push(i);
-    }
-    cuotas.forEach((cuota) => {
-      const filtro = (element) => element.plAmDeNumeroCuota === cuota;
-      const is = selected.some(filtro);
-      if(!is){
-        contador += 1;
-      }
-    })
-    if(contador>0){
-      secuencia = true;
-    } else {
-      secuencia = false;
-    }
+    const cuotas = Array.from(
+      {length: cuotaSuperiorSeleccionada-cuotaInferiorSeleccionada+1}, 
+      (_, index) => index+cuotaInferiorSeleccionada
+    );
+    secuencia = !cuotas.every((cuota) => selected.some((element) => element.plAmDeNumeroCuota === cuota));
     return secuencia;
   }
 
@@ -147,6 +150,9 @@ const PagoEspecialCreador = (props) => {
             }
             if(!error){
               setSubmitting(true);
+              data.condonarSeguro = check.condonarSeguro;
+              data.condonarMora = check.condonarMora;
+              data.condonarInteres = check.condonarInteres;
               dispatch(onCreateEspecial(data, resetForm));
               setSubmitting(false);
             }
@@ -156,6 +162,8 @@ const PagoEspecialCreador = (props) => {
               values={values}
               setFieldValue={setFieldValue}
               resetForm={resetForm}
+              check={check}
+              handleCheck={handleCheck}
             />
           )}
         </Formik>
