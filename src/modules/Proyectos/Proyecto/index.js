@@ -71,6 +71,7 @@ const stateColor = [
   {id: 'DES', value: '#628233'},
   {id: 'REC', value: '#B20A0A'},
   {id: 'CAN', value: '#B20A0A'},
+  {id: 'CUN', value: '#B20A0A'},
   {id: 'CON', value: '#B20A0A'},
 ]
 
@@ -1152,6 +1153,20 @@ const Proyecto = (props) => {
     orderByToSend,
   ]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [
+    orderByToSend,
+    debouncedFilters,
+  ]);
+
+  const queryFilter = (e) => {
+    setFilters({
+      ...filters, 
+      [e.target.name]: e.target.value
+    });
+  };
+
   const updateColeccion = () => {
     setPage(1);
     dispatch(
@@ -1165,19 +1180,6 @@ const Proyecto = (props) => {
         fechaFiltro,
       ),
     );
-  };
-  useEffect(() => {
-    setPage(1);
-  }, [
-    orderByToSend,
-    debouncedFilters,
-  ]);
-
-  const queryFilter = (e) => {
-    setFilters({
-      ...filters, 
-      [e.target.name]: e.target.value
-    });
   };
 
   const limpiarFiltros = () => {

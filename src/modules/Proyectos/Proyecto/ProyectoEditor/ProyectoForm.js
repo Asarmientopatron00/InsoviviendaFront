@@ -14,6 +14,7 @@ import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import MyAutocomplete from 'shared/components/MyAutoComplete';
 import MyCurrencyField from 'shared/components/MyCurrencyField';
+import MyProjectSearcher from 'shared/components/MyProjectSearcher';
 
 const useStyles = makeStyles((theme) => ({
   bottomsGroup: {
@@ -107,6 +108,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialSearch = {
+  persona: false,
+  remitente: false,
+  proyecto: false,
+}
+
 const ProyectoForm = (props) => {
   const {
     accion,
@@ -121,14 +128,13 @@ const ProyectoForm = (props) => {
     orientadores,
     paises,
     personas,
-    tiposPrograma
+    tiposPrograma,
+    proyectos
   } = props;
 
   const [disabled, setDisabled] = useState(false);
-  const [showSearch, setShowSearch] = useState({
-    persona: false,
-    remitente: false
-  });
+  const [showSearch, setShowSearch] = useState(initialSearch);
+
   const verifyInitialState = (label) => {
     if(values.proyectosEstadoProyecto === label){
       return true;
@@ -173,6 +179,17 @@ const ProyectoForm = (props) => {
       }
     }
   },[values.remitente_identificacion]) //eslint-disable-line
+
+  useEffect(() => {
+    if(values.proyecto_unificado_id){
+      const proyecto = proyectos.find((pro) => pro.id == values.proyecto_unificado_id) //eslint-disable-line
+      if(proyecto){
+        setFieldValue('proyectosValorSaldoUnificado', proyecto.saldo);
+      }
+    } else {
+      setFieldValue('proyectosValorSaldoUnificado', '');
+    }
+  },[values.proyecto_unificado_id]) //eslint-disable-line
   
   useEffect(() => {
     if(values.orientador_identificacion){
@@ -338,14 +355,28 @@ const ProyectoForm = (props) => {
   const classes = useStyles(props);
 
   const handleCloseSearcher = () => {
-    setShowSearch({persona: false, remitente: false});
+    setShowSearch(initialSearch);
   }
 
   const handleOpenPersonaSearcher = () => {
-    setShowSearch({persona: true, remitente: false});
+    setShowSearch({
+      ...initialSearch, 
+      persona: true
+    });
   }
+
   const handleOpenRemitenteSearcher = () => {
-    setShowSearch({persona: false, remitente: true});
+    setShowSearch({
+      ...initialSearch, 
+      remitente: true
+    });
+  }
+
+  const handleOpenProyectoSearcher = () => {
+    setShowSearch({
+      ...initialSearch, 
+      proyecto: true
+    });
   }
 
   const setSelectePersona = (id) => {
@@ -354,6 +385,10 @@ const ProyectoForm = (props) => {
 
   const setSelecteRemitente = (id) => {
     setFieldValue('remitente_identificacion',id);
+  }
+
+  const setSelectedProyecto = (id) => {
+    setFieldValue('proyecto_unificado_id',id);
   }
 
   return (
@@ -908,6 +943,32 @@ const ProyectoForm = (props) => {
               className={classes.myTextField}
               label='Nombre Asesor'
               name='nombreOrientador'
+              disabled
+            />
+            <MyTextField
+              label='Proyecto Unificado'
+              name='proyecto_unificado_id'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      style={{
+                        pointerEvents: accion==='ver'?'none':'auto'
+                      }} 
+                      onClick={handleOpenProyectoSearcher}>
+                      <Search/>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+              className={classes.myTextField}
+              disabled={disabled}
+            />
+            { showSearch.proyecto && <MyProjectSearcher showForm={showSearch.proyecto} handleOnClose={handleCloseSearcher} getValue={setSelectedProyecto}/> }
+            <MyCurrencyField
+              className={classes.myTextField}
+              label='Valor Saldo Unificado'
+              name='proyectosValorSaldoUnificado'
               disabled
             />
           </Box>

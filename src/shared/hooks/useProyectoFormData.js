@@ -13,6 +13,7 @@ export const useProyectoFormData = () => {
     barrios: [],
     bancos: [],
     orientadores: [],
+    proyectos: [],
   });
 
   const getProyectoFormData = async () => {
@@ -25,6 +26,7 @@ export const useProyectoFormData = () => {
     const barriosPromise = jwtAxios.get('barrios', {params: {ligera: true}});
     const bancosPromise = jwtAxios.get('bancos', {params: {ligera: true}});
     const orientadoresPromise = jwtAxios.get('orientadores', {params: {ligera: true}});
+    const proyectosPromise = jwtAxios.get('proyectos', {params: {ligera: true}});
 
     const [
       personasResp,
@@ -32,20 +34,26 @@ export const useProyectoFormData = () => {
       paisesResp,
       departamentosResp,
       ciudadesResp,
-      comunasResp,
-      barriosResp,
-      bancosResp,
-      orientadoresResp,
     ] = await Promise.all([
       personasPromise,
       tiposProgramaPromise,
       paisesPromise,
       departamentosPromise,
       ciudadesPromise,
+    ]);
+
+    const [
+      comunasResp,
+      barriosResp,
+      bancosResp,
+      orientadoresResp,
+      proyectosResp,
+    ] = await Promise.all([
       comunasPromise,
       barriosPromise,
       bancosPromise,
       orientadoresPromise,
+      proyectosPromise,
     ]);
 
     setState({
@@ -59,6 +67,7 @@ export const useProyectoFormData = () => {
       barrios: barriosResp.data,
       bancos: bancosResp.data,
       orientadores: orientadoresResp.data,
+      proyectos: proyectosResp.data,
     })
   };
 

@@ -8,7 +8,7 @@ import {
   onUpdate,
 } from '../../../../redux/actions/ProyectoAction';
 import ProyectoForm from './ProyectoForm';
-import {useParams, useLocation} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {history} from 'redux/store';
 import GetUsuario from '../../../../shared/functions/GetUsuario';
 import {UPDATE_TYPE, CREATE_TYPE} from 'shared/constants/Constantes';
@@ -321,6 +321,10 @@ const validationSchema = yup.object({
   orientador_id: yup
     .number()
     .required('Requerido'),
+  proyecto_unificado_id: yup
+    .number()
+    .nullable()
+    .typeError('Valor no válido'),
   orientador_identificacion: yup
     .number()
     .required('Requerido'),
@@ -335,7 +339,6 @@ const validationSchema = yup.object({
 
 const ProyectoCreador = (props) => {
   const {accion, id} = useParams();
-  const {state} = useLocation().state;
   const {
     bancos,
     barrios, 
@@ -346,12 +349,9 @@ const ProyectoCreador = (props) => {
     orientadores,
     paises,
     personas,
-    tiposPrograma
+    tiposPrograma,
+    proyectos
   } = useProyectoFormData();
-
-  const handleOnClose = () => {
-    history.goBack();
-  };
 
   const usuario = GetUsuario();
   const dispatch = useDispatch();
@@ -362,24 +362,31 @@ const ProyectoCreador = (props) => {
     ({proyectoReducer}) => proyectoReducer.selectedRow,
   );
 
-  const initializeSelectedRow = () => {
-    selectedRow = null;
-  };
   useEffect(() => {
     initializeSelectedRow();
   }, []);
 
-  if (accion === 'crear') {
-    initializeSelectedRow();
-  }
-  if (accion !== 'editar' && accion !== 'ver' && accion !== 'crear') {
-    history.goBack();
-  }
   useEffect(() => {
     if ((accion === 'editar') | (accion === 'ver')) {
       dispatch(onShow(id));
     }
   }, [accion, dispatch, id]);
+  
+  const initializeSelectedRow = () => {
+    selectedRow = null;
+  };
+
+  const handleOnClose = () => {
+    history.goBack();
+  };
+
+  if (accion === 'crear') {
+    initializeSelectedRow();
+  }
+
+  if (accion !== 'editar' && accion !== 'ver' && accion !== 'crear') {
+    history.goBack();
+  }
 
   return (
     <Scrollbar>
@@ -644,6 +651,8 @@ const ProyectoCreador = (props) => {
                 ? selectedRow.orientador_id 
                 : '') 
             : '',
+          proyecto_unificado_id: selectedRow?.proyectoUnificado?.id??'',
+          proyectosValorSaldoUnificado: '',
           proyectosObservaciones: selectedRow 
             ? (selectedRow.proyectosObservaciones 
                 ? selectedRow.proyectosObservaciones 
@@ -698,7 +707,7 @@ const ProyectoCreador = (props) => {
                 paises={paises}
                 personas={personas}
                 tiposPrograma={tiposPrograma}
-                state={state}
+                proyectos={proyectos}
               />
             )}
           </>

@@ -110,6 +110,7 @@ export const ESTADOS_PROYECTO = [
   {id: 'DES', nombre: 'Desembolsado', estado: 1},
   {id: 'CAN', nombre: 'Cancelado', estado: 1},
   {id: 'CON', nombre: 'Congelado', estado: 1},
+  {id: 'CUN', nombre: 'Cancelado por Unificación', estado: 1},
 ];
 
 export const TIPOS_PROYECTO = [
