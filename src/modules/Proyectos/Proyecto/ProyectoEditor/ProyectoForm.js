@@ -921,6 +921,32 @@ const ProyectoForm = (props) => {
                   disabled={disabled}
                   type='date'
                 />
+                <MyTextField
+                  label='Proyecto Unificado'
+                  name='proyecto_unificado_id'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton
+                          style={{
+                            pointerEvents: accion==='ver'?'none':'auto'
+                          }} 
+                          onClick={handleOpenProyectoSearcher}>
+                          <Search/>
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  className={classes.myTextField}
+                  disabled={disabled}
+                />
+                { showSearch.proyecto && <MyProjectSearcher showForm={showSearch.proyecto} handleOnClose={handleCloseSearcher} getValue={setSelectedProyecto}/> }
+                <MyCurrencyField
+                  className={classes.myTextField}
+                  label='Valor Saldo Unificado'
+                  name='proyectosValorSaldoUnificado'
+                  disabled
+                />
               </Box>
             </>
           }
@@ -943,32 +969,6 @@ const ProyectoForm = (props) => {
               className={classes.myTextField}
               label='Nombre Asesor'
               name='nombreOrientador'
-              disabled
-            />
-            <MyTextField
-              label='Proyecto Unificado'
-              name='proyecto_unificado_id'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton
-                      style={{
-                        pointerEvents: accion==='ver'?'none':'auto'
-                      }} 
-                      onClick={handleOpenProyectoSearcher}>
-                      <Search/>
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              className={classes.myTextField}
-              disabled={disabled}
-            />
-            { showSearch.proyecto && <MyProjectSearcher showForm={showSearch.proyecto} handleOnClose={handleCloseSearcher} getValue={setSelectedProyecto}/> }
-            <MyCurrencyField
-              className={classes.myTextField}
-              label='Valor Saldo Unificado'
-              name='proyectosValorSaldoUnificado'
               disabled
             />
           </Box>
