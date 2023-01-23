@@ -151,7 +151,7 @@ const ProyectoForm = (props) => {
   });
 
   useEffect(() => {
-    if (accion === 'ver' || initialValues.proyectosEstadoProyecto === 'CAN') {
+    if (accion === 'ver' || initialValues.proyectosEstadoProyecto === 'CAN' || initialValues.proyectosEstadoProyecto === 'CUN') {
       setDisabled(true);
     }
   }, [initialValues.proyectosEstadoProyecto, accion]); //eslint-disable-line
@@ -342,6 +342,7 @@ const ProyectoForm = (props) => {
       {id: 'FOR', nombre: 'Formalización', value: 5},
       {id: 'DES', nombre: 'Desembolsado', value: 6},
       {id: 'CAN', nombre: 'Cancelado', value: 7},
+      {id: 'CUN', nombre: 'Cancelado por unificación', value: 7},
       {id: 'CON', nombre: 'Congelado', value: 1},
     ];
     const currentEstado = estados.filter((estado) => estado.id === currentState);
