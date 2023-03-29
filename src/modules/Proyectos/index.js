@@ -47,6 +47,11 @@ export const proyectosConfigs = [
       },
       {
         exact: true,
+        path: '/gestion-cartera',
+        component: React.lazy(() => import('./GestionCartera')),
+      },
+      {
+        exact: true,
         path: '/pagos',
         component: React.lazy(() => import('./Pago')),
       },
@@ -81,5 +86,5 @@ export const proyectosConfigs = [
         component: React.lazy(() => import('./ReajustarFechaPago')),
       },
     ],
-  }
+  },
 ];

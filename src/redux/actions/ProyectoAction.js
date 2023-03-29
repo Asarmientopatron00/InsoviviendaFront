@@ -1,16 +1,16 @@
+import jwtAxios from '../../@crema/services/auth/jwt-auth/jwt-api';
 import {
-  GET_COLECCION_PROYECTO,
-  GET_COLECCION_LIGERA_PROYECTO,
-  SHOW_PROYECTO,
-  UPDATE_PROYECTO,
-  DELETE_PROYECTO,
   CREATE_PROYECTO,
+  DELETE_PROYECTO,
   FETCH_ERROR,
   FETCH_START,
   FETCH_SUCCESS,
+  GET_COLECCION_LIGERA_PROYECTO,
+  GET_COLECCION_PROYECTO,
   SHOW_MESSAGE,
+  SHOW_PROYECTO,
+  UPDATE_PROYECTO,
 } from '../../shared/constants/ActionTypes';
-import jwtAxios from '../../@crema/services/auth/jwt-auth/jwt-api';
 
 import {appIntl} from '../../@crema/utility/Utils';
 
@@ -43,6 +43,51 @@ export const onGetColeccion = (
           tipo: tipoAux,
           estado: estadoAux,
           fecha: fechaAux,
+        },
+      })
+      .then((data) => {
+        if (data.status === 200) {
+          dispatch({type: FETCH_SUCCESS});
+          dispatch({type: GET_COLECCION_PROYECTO, payload: data});
+        } else {
+          dispatch({
+            type: FETCH_ERROR,
+            payload: messages['message.somethingWentWrong'],
+          });
+        }
+      })
+      .catch((error) => {
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const onGetColeccionGestionC = (
+  currentPage,
+  rowsPerPage,
+  orderByToSend,
+  solicitante,
+  tipo,
+  fecha,
+) => {
+  const {messages} = appIntl();
+  const page = currentPage ? currentPage : 0;
+  const solicitanteAux = solicitante ? solicitante : '';
+  const tipoAux = tipo ? tipo : '';
+  const fechaAux = fecha ? fecha : '';
+  const ordenar_por = orderByToSend ? orderByToSend : '';
+
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+    jwtAxios
+      .get('proyectos', {
+        params: {
+          page: page,
+          limite: rowsPerPage,
+          ordenar_por: ordenar_por,
+          solicitante: solicitanteAux,
+          tipo: tipoAux,
+          fecha: fechaAux,
+          gestion_cartera: true,
         },
       })
       .then((data) => {
@@ -114,7 +159,7 @@ export const onShow = (id) => {
   };
 };
 
-export const onUpdate = (params, handleOnClose, /*updateColeccion*/) => {
+export const onUpdate = (params, handleOnClose /*updateColeccion*/) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios

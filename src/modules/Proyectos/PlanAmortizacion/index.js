@@ -730,7 +730,7 @@ const PlanAmortizacion = (props) => {
   };
 
   const onGoBack = () => {
-    history.push('/proyectos');
+    history.goBack();
   }
 
   const handleSelectAllClick = (event) => {

@@ -704,7 +704,7 @@ const useStyles = makeStyles((theme) => ({
   };
 
   const onGoBack = () => {
-    history.push('/proyectos');
+    history.goBack();
   }
 
   const handleSelectAllClick = (event) => {
