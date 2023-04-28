@@ -4,7 +4,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Popover from '@material-ui/core/Popover';
-import {lighten, makeStyles} from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -17,10 +16,10 @@ import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import {lighten, makeStyles} from '@material-ui/core/styles';
 import {Check, Comment, Money} from '@material-ui/icons';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Description from '@material-ui/icons/Description';
 import EditIcon from '@material-ui/icons/Edit';
 import Search from '@material-ui/icons/Search';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -31,6 +30,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {onGetColeccionLigera as onGetOrientadores} from 'redux/actions/OrientadorAction';
 import {history} from 'redux/store';
 import MyCell from 'shared/components/MyCell';
 import MySearcher from 'shared/components/MySearcher';
@@ -106,7 +106,7 @@ const cells = [
         estadoProyecto.id === value ? estadoProyecto.nombre : '',
       ),
     align: 'left',
-    mostrarInicio: true,
+    mostrarInicio: false,
     cellColor: (value) => setCellColor(value),
   },
   {
@@ -115,7 +115,7 @@ const cells = [
     label: 'Fecha Solicitud',
     value: (value) => moment(value).format('DD-MM-YYYY'),
     align: 'left',
-    mostrarInicio: true,
+    mostrarInicio: false,
   },
   {
     id: 'proyectosTipoProyecto',
@@ -125,6 +125,22 @@ const cells = [
       TIPOS_PROYECTO.map((tipoProyecto) =>
         tipoProyecto.id === value ? tipoProyecto.nombre : '',
       ),
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'asesor',
+    typeHead: 'string',
+    label: 'Asesor Gestión Cartera',
+    value: (value) => value,
+    align: 'left',
+    mostrarInicio: true,
+  },
+  {
+    id: 'proyectosObservacionesGestionC',
+    typeHead: 'string',
+    label: 'Observaciones Gestión C.',
+    value: (value) => value,
     align: 'left',
     mostrarInicio: true,
   },
@@ -565,18 +581,6 @@ function EnhancedTableHead(props) {
               align='center'
               style={{fontWeight: 'bold'}}
               className={classes.headCellWoMargin}>
-              {'Documentos'}
-            </TableCell>
-            <TableCell
-              align='center'
-              style={{fontWeight: 'bold'}}
-              className={classes.headCellWoMargin}>
-              {'Plan Amort. Inic.'}
-            </TableCell>
-            <TableCell
-              align='center'
-              style={{fontWeight: 'bold'}}
-              className={classes.headCellWoMargin}>
               {'Plan Amort. Def.'}
             </TableCell>
             <TableCell
@@ -706,7 +710,8 @@ const EnhancedTableToolbar = (props) => {
     queryFilter,
     solicitanteFiltro,
     tipoFiltro,
-    fechaFiltro,
+    orientadores,
+    orientador,
     limpiarFiltros,
     handleOnClose,
     handleOnOpen,
@@ -797,15 +802,24 @@ const EnhancedTableToolbar = (props) => {
               })}
             </TextField>
             <TextField
-              label='Fecha Solicitud'
-              name='fechaFiltro'
-              id='fechaFiltro'
-              type={'date'}
-              InputLabelProps={{
-                shrink: true,
-              }}
+              label='Asesor(a) Reponsable Cartera'
+              name='orientador'
+              id='orientador'
+              select
               onChange={queryFilter}
-              value={fechaFiltro}></TextField>
+              value={orientador}>
+              {orientadores.map((tipo) => {
+                return (
+                  <MenuItem
+                    value={tipo.id}
+                    key={tipo.id}
+                    id={tipo.id}
+                    className={classes.pointer}>
+                    {tipo.nombre}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
             <Box display='grid'>
               <Box display='flex' mb={2}>
                 <Tooltip title='Limpiar Filtros' onClick={limpiarFiltros}>
@@ -990,7 +1004,7 @@ const useStyles = makeStyles((theme) => ({
 const initialFilters = {
   solicitanteFiltro: '',
   tipoFiltro: '',
-  fechaFiltro: '',
+  orientador: '',
 };
 
 const Proyecto = (props) => {
@@ -1024,7 +1038,7 @@ const Proyecto = (props) => {
 
   const textoPaginacion = `Mostrando de ${desde} a ${hasta} de ${total} resultados - Página ${page} de ${ultima_pagina}`;
   const [filters, setFilters] = useState(initialFilters);
-  const {solicitanteFiltro, tipoFiltro, fechaFiltro} = filters;
+  const {solicitanteFiltro, tipoFiltro, orientador} = filters;
   const debouncedFilters = useDebounce(filters, 800);
   const [openPopOver, setOpenPopOver] = useState(false);
   const [accion, setAccion] = useState('ver');
@@ -1061,6 +1075,13 @@ const Proyecto = (props) => {
   const [permisos, setPermisos] = useState('');
   const [titulo, setTitulo] = useState('');
   const [showTable, setShowTable] = useState(true);
+  const orientadores = useSelector(
+    ({orientadorReducer}) => orientadorReducer.ligera,
+  );
+
+  useEffect(() => {
+    dispatch(onGetOrientadores());
+  }, []);
 
   useEffect(() => {
     if (rows.length === 0) {
@@ -1096,7 +1117,7 @@ const Proyecto = (props) => {
         orderByToSend,
         solicitanteFiltro,
         tipoFiltro,
-        fechaFiltro,
+        orientador,
       ),
     );
   }, [dispatch, page, rowsPerPage, debouncedFilters, orderByToSend]);
@@ -1121,7 +1142,7 @@ const Proyecto = (props) => {
         orderByToSend,
         solicitanteFiltro,
         tipoFiltro,
-        fechaFiltro,
+        orientador,
       ),
     );
   };
@@ -1212,14 +1233,6 @@ const Proyecto = (props) => {
     });
   };
 
-  const onGoDocumentosProyecto = (proyecto_id) => {
-    history.push('/documentos-proyecto/' + proyecto_id);
-  };
-
-  const onGoPlanAmortizacion = (proyecto_id) => {
-    history.push('/plan-amortizacion/' + proyecto_id);
-  };
-
   const onGoPlanAmortizacionDefinitivo = (proyecto_id) => {
     history.push('/plan-amortizacion-definitivo/' + proyecto_id);
   };
@@ -1280,7 +1293,8 @@ const Proyecto = (props) => {
             limpiarFiltros={limpiarFiltros}
             solicitanteFiltro={solicitanteFiltro}
             tipoFiltro={tipoFiltro}
-            fechaFiltro={fechaFiltro}
+            orientadores={orientadores}
+            orientador={orientador}
             titulo={titulo}
             handleOnClose={handleCloseSearcher}
             handleOnOpen={handleOpenSearcher}
@@ -1393,7 +1407,13 @@ const Proyecto = (props) => {
                                 align={columna.align}
                                 width={columna.width}
                                 claseBase={classes.cell}
-                                value={columna.value(row[columna.id])}
+                                value={
+                                  columna.id ===
+                                  'proyectosObservacionesGestionC'
+                                    ? (columna.value(row[columna.id]) ? `${columna.value(row[columna.id])?.substring(0, 15)}...` : "")
+                                    : columna.value(row[columna.id])
+                                }
+                                tooltipValue={columna.id === 'proyectosObservacionesGestionC' && columna.value(row[columna.id])}
                                 cellColor={
                                   columna.cellColor
                                     ? columna.cellColor(row[columna.id])
@@ -1409,44 +1429,6 @@ const Proyecto = (props) => {
                           ''
                         ) : (
                           <>
-                            <TableCell align='center' className={classes.cell}>
-                              <Tooltip title={'Documentos'}>
-                                <Box
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                  }}>
-                                  <Description
-                                    style={{
-                                      color: '#001597',
-                                    }}
-                                    onClick={() =>
-                                      onGoDocumentosProyecto(row.id)
-                                    }
-                                    className={`${classes.generalIcons}`}
-                                  />
-                                </Box>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell align='center' className={classes.cell2}>
-                              <Tooltip title={'Plan Amort. Ini.'}>
-                                <Box
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                  }}>
-                                  <Money
-                                    style={{
-                                      color: '#ff9800',
-                                    }}
-                                    onClick={() => onGoPlanAmortizacion(row.id)}
-                                    className={`${classes.generalIcons}`}
-                                  />
-                                </Box>
-                              </Tooltip>
-                            </TableCell>
                             <TableCell align='center' className={classes.cell2}>
                               <Tooltip title={'Plan Amort. Def.'}>
                                 <Box

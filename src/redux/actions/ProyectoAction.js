@@ -67,13 +67,13 @@ export const onGetColeccionGestionC = (
   orderByToSend,
   solicitante,
   tipo,
-  fecha,
+  asesor,
 ) => {
   const {messages} = appIntl();
   const page = currentPage ? currentPage : 0;
   const solicitanteAux = solicitante ? solicitante : '';
   const tipoAux = tipo ? tipo : '';
-  const fechaAux = fecha ? fecha : '';
+  const asesorAux = asesor ? asesor : '';
   const ordenar_por = orderByToSend ? orderByToSend : '';
 
   return (dispatch) => {
@@ -86,7 +86,7 @@ export const onGetColeccionGestionC = (
           ordenar_por: ordenar_por,
           solicitante: solicitanteAux,
           tipo: tipoAux,
-          fecha: fechaAux,
+          asesor: asesorAux,
           gestion_cartera: true,
         },
       })
@@ -159,7 +159,7 @@ export const onShow = (id) => {
   };
 };
 
-export const onUpdate = (params, handleOnClose /*updateColeccion*/) => {
+export const onUpdate = (params, handleOnClose, updateColeccion) => {
   return (dispatch) => {
     dispatch({type: FETCH_START});
     jwtAxios
@@ -171,7 +171,9 @@ export const onUpdate = (params, handleOnClose /*updateColeccion*/) => {
             type: UPDATE_PROYECTO,
             payload: data.data,
           });
-          // updateColeccion();
+          if (typeof updateColeccion === 'function') {
+            updateColeccion();
+          }
           handleOnClose();
           dispatch({
             type: SHOW_MESSAGE,

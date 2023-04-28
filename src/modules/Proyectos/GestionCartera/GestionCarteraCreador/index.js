@@ -19,6 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const validationSchema = yup.object({
   asesor_gestion_cartera_id: yup.number().required('Requerido'),
+  asesor_gestion_cartera_identificacion: yup.string().required('Requerido'),
   proyectosObservacionesGestionC: yup.string().nullable(),
 });
 
